@@ -1,13 +1,18 @@
+#include <iomanip>
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkCommand.h"
 #include "itkSimpleFilterWatcher.h"
 
-#include "itkImageFilter.h"
+#include "itkParabolicDilateImageFilter.h"
+#include "itkParabolicErodeImageFilter.h"
+#include "itkTimeProbe.h"
+#include "itkMultiThreader.h"
 
 
 int main(int, char * argv[])
 {
+  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
   
   typedef unsigned char PType;
@@ -16,18 +21,36 @@ int main(int, char * argv[])
   typedef itk::ImageFileReader< IType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
+  
+  typedef itk::ParabolicDilateImageFilter< IType, IType > FilterType;
 
-  typedef itk::ImageFilter< IType, IType > FilterType;
   FilterType::Pointer filter = FilterType::New();
+
   filter->SetInput( reader->GetOutput() );
 
-  itk::SimpleFilterWatcher watcher(filter, "filter");
+  FilterType::RadiusType scale;
+  scale[0]=1;
+  scale[1]=0.5;
+
+  filter->SetScale(scale);
+//   itk::SimpleFilterWatcher watcher(filter, "filter");
+  itk::TimeProbe NewTime;
+
+  for (unsigned i = 0; i < 100; i++)
+    {
+    filter->Modified();
+    NewTime.Start();
+    filter->Update();
+    NewTime.Stop();
+    }
 
   typedef itk::ImageFileWriter< IType > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName( argv[2] );
   writer->Update();
+  std::cout << std::setprecision(3) 
+            << NewTime.GetMeanTime() << std::endl;
 
   return 0;
 }
