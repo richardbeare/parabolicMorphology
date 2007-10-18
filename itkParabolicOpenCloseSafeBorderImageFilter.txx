@@ -1,14 +1,14 @@
-#ifndef __itkParabolicOpenImageFilter_txx
-#define __itkParabolicOpenImageFilter_txx
+#ifndef __itkParabolicOpenCloseSafeBorderImageFilter_txx
+#define __itkParabolicOpenCloseSafeBorderImageFilter_txx
 
 #include "itkProgressAccumulator.h"
 
 namespace itk
 {
 
-template <typename TInputImage, typename TOutputImage>
+template <typename TInputImage, bool doOpen, typename TOutputImage>
 void
-ParabolicOpenImageFilter<TInputImage, TOutputImage>
+ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 ::GenerateData(void)
 {
 
@@ -79,9 +79,9 @@ ParabolicOpenImageFilter<TInputImage, TOutputImage>
 
 
 ///////////////////////////////////
-template<typename TInputImage, typename TOutputImage>
+template<typename TInputImage, bool doOpen, typename TOutputImage>
 void
-ParabolicOpenImageFilter<TInputImage, TOutputImage>
+ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   os << indent << "SafeBorder: " << m_SafeBorder << std::endl;

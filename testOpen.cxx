@@ -22,7 +22,7 @@ int main(int, char * argv[])
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
   
-  typedef itk::ParabolicOpenImageFilter< IType, IType > FilterType;
+  typedef itk::ParabolicOpenImageFilter< IType,IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
 

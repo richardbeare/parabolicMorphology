@@ -1,5 +1,5 @@
-#ifndef __itkParabolicOpenImageFilter_h
-#define __itkParabolicOpenImageFilter_h
+#ifndef __itkParabolicCloseImageFilter_h
+#define __itkParabolicCloseImageFilter_h
 
 #include "itkParabolicOpenCloseSafeBorderImageFilter.h"
 #include "itkNumericTraits.h"
@@ -8,14 +8,14 @@ namespace itk
 {
 template <typename TInputImage,
           typename TOutputImage= TInputImage >
-class ITK_EXPORT ParabolicOpenImageFilter:
-    public ParabolicOpenCloseSafeBorderImageFilter<TInputImage, true,
+class ITK_EXPORT ParabolicCloseImageFilter:
+    public ParabolicOpenCloseSafeBorderImageFilter<TInputImage, false,
 					   TOutputImage>
 {
 
 public:
   /** Standard class typedefs. */
-  typedef ParabolicOpenImageFilter  Self;
+  typedef ParabolicCloseImageFilter  Self;
   typedef ParabolicOpenCloseSafeBorderImageFilter<TInputImage, true, TOutputImage> Superclass;
   typedef SmartPointer<Self>                   Pointer;
   typedef SmartPointer<const Self>        ConstPointer;
@@ -48,12 +48,12 @@ public:
 
 
 protected:
-  ParabolicOpenImageFilter(){};
-  virtual ~ParabolicOpenImageFilter() {};
+  ParabolicCloseImageFilter(){};
+  virtual ~ParabolicCloseImageFilter() {};
 //   void PrintSelf(std::ostream& os, Indent indent) const;
   
 private:
-  ParabolicOpenImageFilter(const Self&); //purposely not implemented
+  ParabolicCloseImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   
