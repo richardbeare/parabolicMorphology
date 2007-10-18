@@ -16,7 +16,7 @@ class ITK_EXPORT ParabolicCloseImageFilter:
 public:
   /** Standard class typedefs. */
   typedef ParabolicCloseImageFilter  Self;
-  typedef ParabolicOpenCloseSafeBorderImageFilter<TInputImage, true, TOutputImage> Superclass;
+  typedef ParabolicOpenCloseSafeBorderImageFilter<TInputImage, false, TOutputImage> Superclass;
   typedef SmartPointer<Self>                   Pointer;
   typedef SmartPointer<const Self>        ConstPointer;
 
