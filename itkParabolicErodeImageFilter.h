@@ -48,11 +48,7 @@ public:
 
 
 protected:
-  ParabolicErodeImageFilter()
-  {
-    this->SetMagnitudeSign(-1);
-    this->SetExtreme(itk::NumericTraits<typename TInputImage::PixelType>::max());
-  }
+  ParabolicErodeImageFilter(){};
   virtual ~ParabolicErodeImageFilter() {};
 //   void PrintSelf(std::ostream& os, Indent indent) const;
   

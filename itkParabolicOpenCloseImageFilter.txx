@@ -1,41 +1,49 @@
-#ifndef __itkParabolicErodeDilateImageFilter_txx
-#define __itkParabolicErodeDilateImageFilter_txx
+#ifndef __itkParabolicOpenCloseImageFilter_txx
+#define __itkParabolicOpenCloseImageFilter_txx
 
-#include "itkParabolicErodeDilateImageFilter.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
 
+#include "itkParabolicOpenCloseImageFilter.h"
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
+#include "itkStatisticsImageFilter.h"
 #include "itkParabolicMorphUtils.h"
 
 namespace itk
 {
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
-::ParabolicErodeDilateImageFilter()
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
+::ParabolicOpenCloseImageFilter()
 {
   this->SetNumberOfRequiredOutputs( 1 );
   this->SetNumberOfRequiredInputs( 1 );
 // needs to be selected according to erosion/dilation
-
-  if (doDilate)
+  if (doOpen)
     {
-    m_Extreme = NumericTraits<PixelType>::min();
-    m_MagnitudeSign = 1;
-    }
+    // erosion then dilation
+    m_Extreme1 = NumericTraits<PixelType>::max();
+    m_Extreme2 = NumericTraits<PixelType>::min();
+    m_MagnitudeSign1 = -1;
+    m_MagnitudeSign2 = 1;
+    } 
   else
     {
-    m_Extreme = NumericTraits<PixelType>::max();
-    m_MagnitudeSign = -1;
+    // dilation then erosion
+    m_Extreme1 = NumericTraits<PixelType>::min();
+    m_Extreme2 = NumericTraits<PixelType>::max();
+    m_MagnitudeSign1 = 1;
+    m_MagnitudeSign2 = -1;
     }
+  m_Extreme = m_Extreme1;
+  m_MagnitudeSign = m_MagnitudeSign1;
   m_UseImageSpacing = false;
 }
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 ::SetScale( ScalarRealType scale )
 {
 
@@ -43,9 +51,9 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   this->Modified();
 }
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 ::SetScale( RadiusType scale)
 {
 
@@ -56,9 +64,9 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   this->Modified();
 }
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 ::GenerateInputRequestedRegion() throw(InvalidRequestedRegionError)
 {
   // call the superclass' implementation of this method. this should
@@ -73,9 +81,9 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
     }
 }
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
-ParabolicErodeDilateImageFilter<TInputImage,doDilate, TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage,doOpen, TOutputImage>
 ::EnlargeOutputRequestedRegion(DataObject *output)
 {
   TOutputImage *out = dynamic_cast<TOutputImage*>(output);
@@ -87,9 +95,9 @@ ParabolicErodeDilateImageFilter<TInputImage,doDilate, TOutputImage>
 }
 
 
-template <typename TInputImage, bool doDilate, typename TOutputImage >
+template <typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 ::GenerateData(void)
 {
 
@@ -102,13 +110,15 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
   typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
   typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
-  typename TOutputImage::Pointer       outputImage(   this->GetOutput()        );
+  typename TOutputImage::Pointer       outputImage(   this->GetOutput()   );
+
 
   const unsigned int imageDimension = inputImage->GetImageDimension();
 
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
   RegionType region = inputImage->GetRequestedRegion();
+
 
   InputConstIteratorType  inputIterator(  inputImage,  region );
   OutputIteratorType      outputIterator( outputImage, region );
@@ -120,6 +130,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
     {
     numberOfLinesToProcess += region.GetSize()[dd];
     }
+  numberOfLinesToProcess *= 2;
 
   ProgressReporter progress(this,0, numberOfLinesToProcess);
 
@@ -133,13 +144,13 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
     RealType image_scale = this->GetInput()->GetSpacing()[0];
 
     doOneDimension<InputConstIteratorType,OutputIteratorType, 
-      RealType, OutputPixelType, doDilate>(inputIterator, outputIterator, 
-					   progress, LineLength, 0, 
-					   this->m_MagnitudeSign, 
-					   this->m_UseImageSpacing,
-					   this->m_Extreme,
-					   image_scale, 
-					   this->m_Sigma[0]);
+      RealType, OutputPixelType, !doOpen>(inputIterator, outputIterator, 
+					  progress, LineLength, 0, 
+					  this->m_MagnitudeSign, 
+					  this->m_UseImageSpacing,
+					  this->m_Extreme,
+					  image_scale, 
+					  this->m_Sigma[0]);
     }
   else 
     {
@@ -155,32 +166,57 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
       ++InIt;
       ++OutIt;
       }
+
     }
-  // now deal with the other dimensions
+  // now deal with the other dimensions for first stage
   for (unsigned dd = 1; dd < imageDimension; dd++)
+    {
+    // Perform as normal
+    RealType magnitude = 1.0/(2.0 * m_Sigma[dd]);
+    unsigned long LineLength = region.GetSize()[dd];
+    RealType image_scale = this->GetInput()->GetSpacing()[dd];
+    
+    doOneDimension<OutputConstIteratorType,OutputIteratorType, 
+      RealType, OutputPixelType, !doOpen>(inputIteratorStage2, outputIterator, 
+					  progress, LineLength, dd, 
+					  this->m_MagnitudeSign, 
+					  this->m_UseImageSpacing,
+					  this->m_Extreme,
+					  image_scale, 
+					  this->m_Sigma[dd]);
+      
+    }
+  // swap over the parameters controlling erosion/dilation
+  m_Extreme = m_Extreme2;
+  m_MagnitudeSign = m_MagnitudeSign2;
+
+  // now deal with the other dimensions for second stage
+  for (unsigned dd = 0; dd < imageDimension; dd++)
     {
     if (m_Sigma[dd] > 0)
       {
-      // create a vector to buffer lines
-      unsigned long LineLength = region.GetSize()[dd];
       RealType magnitude = 1.0/(2.0 * m_Sigma[dd]);
+      unsigned long LineLength = region.GetSize()[dd];
       RealType image_scale = this->GetInput()->GetSpacing()[dd];
-
+      
       doOneDimension<OutputConstIteratorType,OutputIteratorType,
-	RealType, OutputPixelType, doDilate>(inputIteratorStage2, outputIterator, 
-					     progress, LineLength, dd,
-					     this->m_MagnitudeSign, 
-					     this->m_UseImageSpacing,
-					     this->m_Extreme,
-					     image_scale,
-					     this->m_Sigma[dd]);
+ 	RealType, OutputPixelType, doOpen>(inputIteratorStage2, outputIterator, 
+					   progress, LineLength, dd, 
+					   this->m_MagnitudeSign, 
+					   this->m_UseImageSpacing,
+					   this->m_Extreme,
+					   image_scale, 
+					   this->m_Sigma[dd]);
       }
     }
+  // swap them back
+  m_Extreme = m_Extreme1;
+  m_MagnitudeSign = m_MagnitudeSign1;
 }
 
-template <typename TInputImage, bool doDilate, typename TOutputImage>
+template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
