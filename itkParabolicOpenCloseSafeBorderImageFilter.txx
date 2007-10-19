@@ -65,11 +65,13 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     m_CropFilt->SetUpperBoundaryCropSize(BoundsSize);
     m_CropFilt->SetLowerBoundaryCropSize(BoundsSize);
     progress->RegisterInternalFilter(m_CropFilt, 0.1f );
+    m_CropFilt->GraftOutput( this->GetOutput() );
     m_CropFilt->Update();
     this->GraftOutput( m_CropFilt->GetOutput() );
     }
   else
     {
+    m_MorphFilt->GraftOutput( this->GetOutput() );
     m_MorphFilt->Update();
     this->GraftOutput( m_MorphFilt->GetOutput() );
     std::cout << "Finished grafting" << std::endl;
