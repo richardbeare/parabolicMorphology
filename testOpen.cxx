@@ -14,7 +14,7 @@ int main(int, char * argv[])
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
   
-  typedef float PType;
+  typedef unsigned char PType;
   typedef itk::Image< PType, dim > IType;
 
 
