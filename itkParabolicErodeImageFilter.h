@@ -23,6 +23,9 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
+  /** Runtime information support. */
+  itkTypeMacro(ParabolicErodeImageFilter, ParabolicErodeDilateImageFilter);
+
 
   /** Pixel Type of the input image */
   typedef TInputImage                                    InputImageType;

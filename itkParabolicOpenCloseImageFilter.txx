@@ -46,22 +46,9 @@ void
 ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 ::SetScale( ScalarRealType scale )
 {
-
-  this->m_Sigma.Fill(scale);
-  this->Modified();
-}
-
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
-void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
-::SetScale( RadiusType scale)
-{
-
-  for (unsigned i = 0; i < TInputImage::ImageDimension; i++)
-    {
-    this->m_Sigma[i] = scale[i];
-    }
-  this->Modified();
+  RadiusType s;
+  s.Fill(scale);
+  this->SetScale( s );
 }
 
 template <typename TInputImage, bool doOpen,  typename TOutputImage>
@@ -136,10 +123,10 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 
   // deal with the first dimension - this should be copied to the
   // output if the scale is 0
-  if (m_Sigma[0] > 0)
+  if (m_Scale[0] > 0)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Sigma[0]);
+    RealType magnitude = 1.0/(2.0 * m_Scale[0]);
     unsigned long LineLength = region.GetSize()[0];
     RealType image_scale = this->GetInput()->GetSpacing()[0];
 
@@ -150,7 +137,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					  this->m_UseImageSpacing,
 					  this->m_Extreme,
 					  image_scale, 
-					  this->m_Sigma[0]);
+					  this->m_Scale[0]);
     }
   else 
     {
@@ -172,7 +159,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   for (unsigned dd = 1; dd < imageDimension; dd++)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Sigma[dd]);
+    RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
     unsigned long LineLength = region.GetSize()[dd];
     RealType image_scale = this->GetInput()->GetSpacing()[dd];
     
@@ -183,7 +170,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					  this->m_UseImageSpacing,
 					  this->m_Extreme,
 					  image_scale, 
-					  this->m_Sigma[dd]);
+					  this->m_Scale[dd]);
       
     }
   // swap over the parameters controlling erosion/dilation
@@ -193,9 +180,9 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // now deal with the other dimensions for second stage
   for (unsigned dd = 0; dd < imageDimension; dd++)
     {
-    if (m_Sigma[dd] > 0)
+    if (m_Scale[dd] > 0)
       {
-      RealType magnitude = 1.0/(2.0 * m_Sigma[dd]);
+      RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
       unsigned long LineLength = region.GetSize()[dd];
       RealType image_scale = this->GetInput()->GetSpacing()[dd];
       
@@ -206,7 +193,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					   this->m_UseImageSpacing,
 					   this->m_Extreme,
 					   image_scale, 
-					   this->m_Sigma[dd]);
+					   this->m_Scale[dd]);
       }
     }
   // swap them back
@@ -222,11 +209,11 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   Superclass::PrintSelf(os,indent);
   if (m_UseImageSpacing)
     {
-    os << "Scale in world units: " << m_Sigma << std::endl;
+    os << "Scale in world units: " << m_Scale << std::endl;
     }
   else
     {
-    os << "Scale in voxels: " << m_Sigma << std::endl;
+    os << "Scale in voxels: " << m_Scale << std::endl;
     }
 }
 

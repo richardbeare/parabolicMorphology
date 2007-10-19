@@ -30,6 +30,9 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
+  /** Runtime information support. */
+  itkTypeMacro(ParabolicOpenCloseSafeBorderImageFilter, ImageToImageFilter);
+
 
   /** Pixel Type of the input image */
   typedef TInputImage                                    InputImageType;
@@ -56,21 +59,47 @@ public:
   // set all of the scales the same
   void SetScale(ScalarRealType scale)
   {
+    RadiusType s = this->GetScale();
     this->m_MorphFilt->SetScale(scale);
+    if( s != this->GetScale() )
+      {
+      this->Modified();
+      }
   }
   // different scale for each direction
   void SetScale(RadiusType scale)
   {
-    this->m_MorphFilt->SetScale(scale);
+    if( scale != this->GetScale() )
+      {
+      this->m_MorphFilt->SetScale(scale);
+      this->Modified();
+      }
   }
+  //
+  const RadiusType & GetScale() const
+  {
+    this->m_MorphFilt->GetScale();
+  }
+  
 
   void SetUseImageSpacing(bool B)
   {
-    this->m_MorphFilt->SetUseImageSpacing(B);
+    if( B != this->GetUseImageSpacing() )
+      {
+      this->m_MorphFilt->SetUseImageSpacing(B);
+      this->Modified();
+      }
   }
+  bool GetUseImageSpacing() const
+  {
+    this->m_MorphFilt->GetUseImageSpacing();
+  }
+  itkBooleanMacro(UseImageSpacing);
+  
 
   itkSetMacro(SafeBorder, bool);
   itkGetConstReferenceMacro(SafeBorder, bool);
+  itkBooleanMacro(SafeBorder);
   // should add the Get methods
 
   

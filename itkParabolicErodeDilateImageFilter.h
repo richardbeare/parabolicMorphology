@@ -58,6 +58,8 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
+  /** Runtime information support. */
+  itkTypeMacro(ParabolicErodeDilateImageFilter, ImageToImageFilter);
 
   /** Pixel Type of the input image */
   typedef TInputImage                                    InputImageType;
@@ -86,7 +88,8 @@ public:
 
   // set all of the scales the same
   void SetScale(ScalarRealType scale);
-  void SetScale(RadiusType scale);
+  itkSetMacro(Scale, RadiusType);
+  itkGetConstReferenceMacro(Scale, RadiusType);
 
   /**
    * Set/Get whether the scale refers to pixels or world units -
@@ -94,6 +97,7 @@ public:
    */
   itkSetMacro(UseImageSpacing, bool);
   itkGetConstReferenceMacro(UseImageSpacing, bool);
+  itkBooleanMacro(UseImageSpacing);
 
 protected:
   ParabolicErodeDilateImageFilter();
@@ -109,7 +113,7 @@ protected:
 private:
   ParabolicErodeDilateImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
-  RadiusType m_Sigma;
+  RadiusType m_Scale;
   typename TInputImage::PixelType m_Extreme;
 
   int m_MagnitudeSign;

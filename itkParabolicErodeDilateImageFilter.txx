@@ -38,22 +38,9 @@ void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 ::SetScale( ScalarRealType scale )
 {
-
-  this->m_Sigma.Fill(scale);
-  this->Modified();
-}
-
-template <typename TInputImage, bool doDilate, typename TOutputImage>
-void
-ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
-::SetScale( RadiusType scale)
-{
-
-  for (unsigned i = 0; i < TInputImage::ImageDimension; i++)
-    {
-    this->m_Sigma[i] = scale[i];
-    }
-  this->Modified();
+  RadiusType s;
+  s.Fill(scale);
+  this->SetScale( s );
 }
 
 template <typename TInputImage, bool doDilate, typename TOutputImage>
@@ -125,10 +112,10 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 
   // deal with the first dimension - this should be copied to the
   // output if the scale is 0
-  if (m_Sigma[0] > 0)
+  if (m_Scale[0] > 0)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Sigma[0]);
+    RealType magnitude = 1.0/(2.0 * m_Scale[0]);
     unsigned long LineLength = region.GetSize()[0];
     RealType image_scale = this->GetInput()->GetSpacing()[0];
 
@@ -139,7 +126,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 					   this->m_UseImageSpacing,
 					   this->m_Extreme,
 					   image_scale, 
-					   this->m_Sigma[0]);
+					   this->m_Scale[0]);
     }
   else 
     {
@@ -159,11 +146,11 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
   // now deal with the other dimensions
   for (unsigned dd = 1; dd < imageDimension; dd++)
     {
-    if (m_Sigma[dd] > 0)
+    if (m_Scale[dd] > 0)
       {
       // create a vector to buffer lines
       unsigned long LineLength = region.GetSize()[dd];
-      RealType magnitude = 1.0/(2.0 * m_Sigma[dd]);
+      RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
       RealType image_scale = this->GetInput()->GetSpacing()[dd];
 
       doOneDimension<OutputConstIteratorType,OutputIteratorType,
@@ -173,7 +160,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 					     this->m_UseImageSpacing,
 					     this->m_Extreme,
 					     image_scale,
-					     this->m_Sigma[dd]);
+					     this->m_Scale[dd]);
       }
     }
 }
@@ -186,11 +173,11 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   Superclass::PrintSelf(os,indent);
   if (m_UseImageSpacing)
     {
-    os << "Scale in world units: " << m_Sigma << std::endl;
+    os << "Scale in world units: " << m_Scale << std::endl;
     }
   else
     {
-    os << "Scale in voxels: " << m_Sigma << std::endl;
+    os << "Scale in voxels: " << m_Scale << std::endl;
     }
 }
 

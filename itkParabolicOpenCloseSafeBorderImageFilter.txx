@@ -27,7 +27,7 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     m_StatsFilt->SetInput(this->GetInput());
     m_StatsFilt->Update();
     InputPixelType range = m_StatsFilt->GetMaximum() - m_StatsFilt->GetMinimum();
-    typename MorphFilterType::RadiusType Sigma = m_MorphFilt->GetSigma();
+    typename MorphFilterType::RadiusType Sigma = m_MorphFilt->GetScale();
     for (unsigned s = 0; s < ImageDimension;s++)
       {
       if (m_MorphFilt->GetUseImageSpacing())
@@ -85,6 +85,14 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   os << indent << "SafeBorder: " << m_SafeBorder << std::endl;
+  if( this->GetUseImageSpacing() )
+    {
+    os << "Scale in world units: " << this->GetScale() << std::endl;
+    }
+  else
+    {
+    os << "Scale in voxels: " << this->GetScale() << std::endl;
+    }
 }
 } //namespace itk
 
