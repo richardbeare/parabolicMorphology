@@ -74,7 +74,7 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     m_MorphFilt->GraftOutput( this->GetOutput() );
     m_MorphFilt->Update();
     this->GraftOutput( m_MorphFilt->GetOutput() );
-    std::cout << "Finished grafting" << std::endl;
+    // std::cout << "Finished grafting" << std::endl;
     }
 
 }
