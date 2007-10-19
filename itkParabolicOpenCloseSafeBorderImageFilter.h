@@ -103,6 +103,9 @@ public:
   // should add the Get methods
 
   
+  /** ParabolicOpenCloseImageFilter must forward the Modified() call to its internal filters */
+  virtual void Modified() const;
+
 protected:
   void GenerateData();
   void PrintSelf(std::ostream& os, Indent indent) const;

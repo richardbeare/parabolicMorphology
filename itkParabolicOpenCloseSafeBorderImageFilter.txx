@@ -78,6 +78,19 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 }
 
 
+template<typename TInputImage, bool doOpen, typename TOutputImage>
+void
+ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
+::Modified() const
+{
+  Superclass::Modified();
+  m_MorphFilt->Modified();
+  m_PadFilt->Modified();
+  m_CropFilt->Modified();
+  m_StatsFilt->Modified();
+}
+
+
 ///////////////////////////////////
 template<typename TInputImage, bool doOpen, typename TOutputImage>
 void
