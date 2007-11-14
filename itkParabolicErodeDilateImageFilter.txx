@@ -4,6 +4,7 @@
 #include "itkParabolicErodeDilateImageFilter.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
+
 //#define NOINDEX
 #ifndef NOINDEX
 #include "itkImageLinearIteratorWithIndex.h"
