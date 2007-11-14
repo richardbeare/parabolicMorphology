@@ -28,11 +28,13 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     m_StatsFilt->Update();
     InputPixelType range = m_StatsFilt->GetMaximum() - m_StatsFilt->GetMinimum();
     typename MorphFilterType::RadiusType Sigma = m_MorphFilt->GetScale();
+    typename TInputImage::SpacingType spcing = m_StatsFilt->GetOutput()->GetSpacing();
+    std::cout << spcing << std::endl;
     for (unsigned s = 0; s < ImageDimension;s++)
       {
       if (m_MorphFilt->GetUseImageSpacing())
 	{
-	RealType image_scale = this->GetInput()->GetSpacing()[s];
+	RealType image_scale =spcing[s];
 	Bounds[s] = (unsigned long)ceil(sqrt(2*(Sigma[s]/image_scale)*range));
 	BoundsSize[s] = Bounds[s];
 	}
@@ -41,7 +43,9 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 	Bounds[s] = (unsigned long)ceil(sqrt(2*Sigma[s]*range));
 	BoundsSize[s] = Bounds[s];
 	}
+      std::cout << Bounds[s] << ",";
       }
+    std::cout << std::endl;
 
     m_PadFilt->SetPadLowerBound(Bounds);
     m_PadFilt->SetPadUpperBound(Bounds);

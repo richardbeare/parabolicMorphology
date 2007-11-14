@@ -78,7 +78,7 @@ public:
   //
   const RadiusType & GetScale() const
   {
-    this->m_MorphFilt->GetScale();
+    return(this->m_MorphFilt->GetScale());
   }
   
 
@@ -92,7 +92,7 @@ public:
   }
   bool GetUseImageSpacing() const
   {
-    this->m_MorphFilt->GetUseImageSpacing();
+    return(this->m_MorphFilt->GetUseImageSpacing());
   }
   itkBooleanMacro(UseImageSpacing);
   

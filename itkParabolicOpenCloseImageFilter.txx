@@ -126,7 +126,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   if (m_Scale[0] > 0)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Scale[0]);
+//     RealType magnitude = 1.0/(2.0 * m_Scale[0]);
     unsigned long LineLength = region.GetSize()[0];
     RealType image_scale = this->GetInput()->GetSpacing()[0];
 
@@ -159,7 +159,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   for (unsigned dd = 1; dd < imageDimension; dd++)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
+//     RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
     unsigned long LineLength = region.GetSize()[dd];
     RealType image_scale = this->GetInput()->GetSpacing()[dd];
     
@@ -182,7 +182,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
     {
     if (m_Scale[dd] > 0)
       {
-      RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
+      //RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
       unsigned long LineLength = region.GetSize()[dd];
       RealType image_scale = this->GetInput()->GetSpacing()[dd];
       

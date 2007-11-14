@@ -33,6 +33,7 @@ int main(int, char * argv[])
   scale[1]=0.5;
 
   filter->SetScale(scale);
+  filter->SetUseImageSpacing(true);
 //   itk::SimpleFilterWatcher watcher(filter, "filter");
   itk::TimeProbe NewTime;
 

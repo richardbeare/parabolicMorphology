@@ -4,9 +4,14 @@
 #include "itkParabolicErodeDilateImageFilter.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
-
+//#define NOINDEX
+#ifndef NOINDEX
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
+#else
+#include "itkImageLinearIterator.h"
+#include "itkImageLinearConstIterator.h"
+#endif
 #include "itkParabolicMorphUtils.h"
 
 namespace itk
@@ -79,12 +84,19 @@ void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 ::GenerateData(void)
 {
-
+#ifndef NOINDEX
   typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
   typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
 
   // for stages after the first
   typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
+#else
+  typedef ImageLinearConstIterator< TInputImage  >  InputConstIteratorType;
+  typedef ImageLinearIterator< TOutputImage >  OutputIteratorType;
+
+  // for stages after the first
+  typedef ImageLinearConstIterator< TOutputImage  >  OutputConstIteratorType;
+#endif
 
   typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
@@ -115,7 +127,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
   if (m_Scale[0] > 0)
     {
     // Perform as normal
-    RealType magnitude = 1.0/(2.0 * m_Scale[0]);
+    //RealType magnitude = 1.0/(2.0 * m_Scale[0]);
     unsigned long LineLength = region.GetSize()[0];
     RealType image_scale = this->GetInput()->GetSpacing()[0];
 
@@ -150,7 +162,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
       {
       // create a vector to buffer lines
       unsigned long LineLength = region.GetSize()[dd];
-      RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
+      //RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
       RealType image_scale = this->GetInput()->GetSpacing()[dd];
 
       doOneDimension<OutputConstIteratorType,OutputIteratorType,
