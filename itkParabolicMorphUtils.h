@@ -66,7 +66,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
     {
     iscale = image_scale;
     }
-  const RealType magnitude = m_MagnitudeSign * 1.0/(2.0 * Sigma)/iscale;
+  const RealType magnitude = m_MagnitudeSign * 1.0/(2.0 * Sigma/iscale);
   LineBufferType LineBuf(LineLength);
   LineBufferType tmpLineBuf(LineLength);
   inputIterator.SetDirection(direction);

@@ -63,7 +63,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "check" "testOpen")
+FOREACH(CurrentExe "check" "testOpen" "testSpacing")
 ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
 TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
@@ -86,4 +86,8 @@ ADD_TEST(Test ${TEST_COMMAND}
 ADD_TEST(Open ${TEST_COMMAND}
    testOpen ${INPUT_IMAGE} open.png
    --compare open.png ${CMAKE_CURRENT_SOURCE_DIR}/images/open.png
+)
+ADD_TEST(Spacing ${TEST_COMMAND}
+   testSpacing ${INPUT_IMAGE} o1.png o2.png
+   --compare o1.png o2.png
 )
