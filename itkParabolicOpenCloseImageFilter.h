@@ -12,7 +12,7 @@ namespace itk
  * \brief Parent class for morphological opening and closing
  * operations  with parabolic structuring elements.
  *
- * This filter is doesn't use the erode/dilate classes directly so
+ * This filter doesn't use the erode/dilate classes directly so
  * that multiple image copies aren't necessary.
  *
  * This filter isn't threaded.

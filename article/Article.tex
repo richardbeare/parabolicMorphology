@@ -33,7 +33,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % The title should be descriptive enough for people to be able to find
 % the relevant document. 
-\title{}
+\title{Morphology with parabolic structuring elements}
 
 % Increment the release number whenever significant changes are made.
 % The author and/or editor can define 'significant' however they like.
@@ -41,8 +41,8 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % At minimum, give your name and an email address.  You can include a
 % snail-mail address if you like.
-\author{}
-\authoraddress{}
+\author{Richard Beare}
+\authoraddress{Richard.Beare@med.monash.edu.au\\Department of Medicine\\Monash University\\Melbourne\\Australia}
 
 \begin{document}
 \maketitle
@@ -54,36 +54,54 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 \begin{abstract}
 \noindent
-% The abstract should be a paragraph or two long, and describe the
-% scope of the document.
+Morphological erosion and dilation filters employ a structuring
+function, with flat structuring functions being the most common
+example. Parabolic\footnote{This article will use the term
+``parabolic'', but much of the literature uses ``quadratic''}
+structuring functions are less well known but theoretically very
+important and practically very useful. This paper briefly introduces
+morphology using parabolic structuring functions, describes the ITK
+classes used to implement them and includes a number of sample
+applications.
 \end{abstract}
 
 \tableofcontents
 
+\section{Introduction}
+Parabolic structuring functions (PSF) have the following important properties:
+\begin{itemize}
+\item They are closed under dilation - i.e. dilating two PSFs in a third PSF.
+\item An n-dimensional PSF can be obtained by combining n
+one-dimensional PSFs in independent directions.
+\item PSFs are rotationally symmetric allowing the dimensional
+decomposition by dilation.
+\end{itemize}
+These properties make PSFs the morphological counterpart of the
+Gaussian in linear image processing \cite{Boomgaard96}.
 
-% \url{http://www.itk.org}
-% \code{Insight/Documentation/Style.pdf}
-% \section{Principles of Solar Spot Detection}
-% \cite{ITKSoftwareGuide}.
-% \doxygen{ImageToImageFilter}
+The dimensional decompostion properties lead to efficient algorithms
+for implementing parabolic morphological operations.
 
-% \small \begin{verbatim}
-% \end{verbatim} \normalsize
+Parabolic morphology operations are useful in image sharpening,
+distance transforms, are a less vigorous alternative to conventional
+morphological operations based on flat structuring elements and a
+potentially useful, faster, alternative to shaped structuring elements
+such as the ``rolling ball'' often used in background estimation in
+tools such as ImageJ.
 
-
-% The {itemize} environment uses a bullet for each \item.  If you want the 
-% \item's numbered, use the {enumerate} environment instead.
-% \begin{itemize}
-%   \item  Insight Toolkit 2.4.
-%   \item  CMake 2.2
-% \end{itemize}
-
-% \ref{cthead1}
+\section{Brief background theory}
+A dilation by a one dimensional parabolic structuring element is
+illustrated in Figure \ref{fig:paradilate}. The dilation of the signal
+at point A is found by lowering the structuring function centred at A
+until the structuring function comes into contact with the signal, in
+this case at point B. The dilation at this point is given by point C,
+the height of the parabola turning point. The equivalent erosion is
+calculated by raising an inverted parabola into the signal from below.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{cthead1}
-\caption{The input image.\label{cthead1}}
+\includegraphics[scale=0.75]{dilate_parabolic}
+\caption{Dilation of a 1D signal with a parabolic structuring element.\label{fig:paradilate}}
 \end{figure}
 
 
@@ -92,7 +110,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 
 \bibliographystyle{plain}
-\bibliography{InsightJournal}
+\bibliography{local,InsightJournal}
 \nocite{ITKSoftwareGuide}
 
 \end{document}
