@@ -104,6 +104,28 @@ calculated by raising an inverted parabola into the signal from below.
 \caption{Dilation of a 1D signal with a parabolic structuring element.\label{fig:paradilate}}
 \end{figure}
 
+\section{ITK classes}
+The filters discussed in this section implement the ``point of
+contact'' algorithm \cite{Boomgaard96}. Algorithms that are more
+efficient for larger kernel sizes are available and are discussed by
+van den Boomgaard et al, but haven't been implemented in this package.
+The classes {\em itkParabolicErodeImageFilter}, {\em
+itkParabolicDilateImageFilter}, {\em itkParabolicCloseImageFilter} and
+{\em itkParabolicOpenImageFilter} provide the range of parabolic
+morphology operations. These classes derive from {\em
+itkParabolicErodeDilateImageFilter} and {\em
+itkParabolicOpenCloseImageFilter}, which implement the core
+functionality. The open and close filters offer an optional border
+padding facility.
+
+The controling methods available for these classes is :
+\begin{itemize}
+\item {\bf Set/GetScale} : a PSF is usually defined as $f(x)=\frac{1}{2\rho}x^2$. This method sets $\rho$.
+\item {\bf Set/GetUseImageSpacing} : defines whether the units for $\rho$ are voxels or image spacing.
+\item {\bf SetSafeBorder} : controls whether border padding is used in opening or closing operations.
+\end{itemize}
+
+
 
 \appendix
 

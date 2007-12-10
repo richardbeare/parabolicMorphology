@@ -1,0 +1,118 @@
+#ifndef __itkMorphologicalSharpeningImageFilter_h
+#define __itkMorphologicalSharpeningImageFilter_h
+
+#include "itkImageToImageFilter.h"
+#include "itkProgressReporter.h"
+
+#include "itkParabolicErodeImageFilter.h"
+#include "itkParabolicDilateImageFilter.h"
+
+namespace itk
+{
+/**
+ * \class MorphologicalSharpeningImageFilter
+ * \brief Image sharpening using methods based on parabolic
+ * structuring elements.
+ *
+ * This is an implemtentation of the method of Schavemaker for testing
+ * the parabolic morphology routines. No particular efforts have been
+ * made to minimize memory consumption.
+ *
+@article{Schavemaker2000,
+  author    = {Schavemaker, J. and Reinders, M. and Gerbrands, J. and Backer, E.
+},
+  title     = {Image sharpening by morphological filtering},
+  journal   = {Pattern Recognition},
+  volume    = {33},
+  number    = {6},
+  year      = {2000},
+  pages     = {997-1012},
+  ee        = {http://dx.doi.org/10.1016/S0031-3203(99)00160-0},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+**/
+
+
+template <typename TInputImage, typename TOutputImage= TInputImage>
+class ITK_EXPORT MorphologicalSharpeningImageFilter:
+    public ImageToImageFilter<TInputImage,
+			      TOutputImage>
+{
+public:
+  /** Standard class typedefs. */
+  typedef   Self;
+  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
+  typedef SmartPointer<Self>                   Pointer;
+  typedef SmartPointer<const Self>        ConstPointer;
+
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
+
+  /** Runtime information support. */
+  itkTypeMacro(MorphologicalSharpeningImageFilter, ImageToImageFilter);
+
+
+  /** Pixel Type of the input image */
+  typedef TInputImage                                    InputImageType;
+  typedef TOutputImage                                   OutputImageType;
+  typedef typename TInputImage::PixelType                InputPixelType;
+  typedef typename NumericTraits<InputPixelType>::RealType    RealType;
+  typedef typename NumericTraits<InputPixelType>::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType  OutputPixelType;
+
+  /** Smart pointer typedef support.  */
+  typedef typename TInputImage::Pointer  InputImagePointer;
+  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+
+  /** a type to represent the "kernel radius" */
+  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+
+  itkSetMacro(Iterations, int);
+  itkGetConstReferenceMacro(Iterations, int);
+  itkIntegerMacro(Iterations);
+
+  void SetScale(ScalarRealType scale)
+  {
+    m_Erode->SetScale(scale);
+    m_Dilate->SetScale(scale);
+  }
+
+  void SetScale(RadiusType scale)
+  {
+    m_Erode->SetScale(scale);
+    m_Dilate->SetScale(scale);
+  }
+  
+  void SetUseImageSpacing(boolean uis)
+  {
+    m_Erode->SetUseImageSpacing(uis);
+    m_Dilate->SetUseImageSpacing(uis);
+  }
+
+  // need to include the Get methods
+
+protected:
+  MorphologicalSharpeningImageFilter();
+  virtual ~MorphologicalSharpeningImageFilter() {};
+  void PrintSelf(std::ostream& os, Indent indent) const;
+  
+  /** Generate Data */
+  void GenerateData( void );
+  
+  // do everything in the output image type, which should have high precision
+  typedef typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType> ErodeType;
+  typedef typename itk::ParabolicDilateImageFilter<OutputImageType, OutputImageType> DilateType;
+  typedef typename itk::CastImageFilter<InputImageType, OutputImageType> CastType;
+  
+
+private:
+  int m_Iterations;
+  ErodeType::Pointer m_Erode;
+  DilateType::Pointer m_Dilate;
+  CastType::Pointer m_Cast;
+};
+
+} // namespace itk
+
+#endif

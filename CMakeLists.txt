@@ -63,7 +63,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "check" "testOpen" "testSpacing")
+FOREACH(CurrentExe "check" "testOpen" "testSpacing" "testSharpen")
 ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
 TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
