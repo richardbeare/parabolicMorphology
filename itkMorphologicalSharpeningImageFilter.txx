@@ -17,13 +17,15 @@ MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
   m_Erode = ErodeType::New();
   m_Dilate = DilateType::New();
   m_Cast = CastType::New();
+  m_SharpenOp = SharpenOpType::New();
   m_Iterations = 1;
   this->SetScale(1);
-  this->SetUseImageSpacing(false)
+  this->SetUseImageSpacing(false);
 }
 
 
 template <typename TInputImage, typename TOutputImage> 
+void
 MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
 ::GenerateData(void)
 {
@@ -37,12 +39,38 @@ MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
   InputImageConstPointer inputImage = this->GetInput();
   m_Cast->SetInput(inputImage);
 
+  // set the input to the morph operations
   m_Erode->SetInput(m_Cast->GetOutput());
-  m_Dilate->SetInput(m_Cast->GetOutput()));
+  m_Dilate->SetInput(m_Cast->GetOutput());
+  m_SharpenOp->SetInput(m_Dilate->GetOutput());
+  m_SharpenOp->SetInput2(m_Cast->GetOutput());
+  m_SharpenOp->SetInput3(m_Erode->GetOutput());
 
+  for (int i = 0; i < m_Iterations; i++)
+    {
+    if (i != 0)
+      {
+      m_Erode->SetInput(this->GetOutput());
+      m_Dilate->SetInput(this->GetOutput());
+      m_SharpenOp->SetInput2(this->GetOutput());
+      m_Erode->Modified();
+      m_Dilate->Modified();
+      }
 
+    m_SharpenOp->GraftOutput(this->GetOutput());
+    m_SharpenOp->Update();
+    this->GraftOutput(m_SharpenOp->GetOutput());
+    }
+}
 
-  
+template <typename TInputImage, typename TOutputImage> 
+void
+MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
+::PrintSelf(std::ostream& os, Indent indent) const
+{
+  Superclass::PrintSelf(os,indent);
+  os << "Iterations = " << m_Iterations << std::endl;
+
 }
 
 

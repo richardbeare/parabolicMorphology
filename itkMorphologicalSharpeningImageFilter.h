@@ -4,8 +4,10 @@
 #include "itkImageToImageFilter.h"
 #include "itkProgressReporter.h"
 
+#include "itkCastImageFilter.h"
 #include "itkParabolicErodeImageFilter.h"
 #include "itkParabolicDilateImageFilter.h"
+#include "itkSharpenOpImageFilter.h"
 
 namespace itk
 {
@@ -41,7 +43,7 @@ class ITK_EXPORT MorphologicalSharpeningImageFilter:
 {
 public:
   /** Standard class typedefs. */
-  typedef   Self;
+  typedef MorphologicalSharpeningImageFilter Self;
   typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
   typedef SmartPointer<Self>                   Pointer;
   typedef SmartPointer<const Self>        ConstPointer;
@@ -70,7 +72,6 @@ public:
 
   itkSetMacro(Iterations, int);
   itkGetConstReferenceMacro(Iterations, int);
-  itkIntegerMacro(Iterations);
 
   void SetScale(ScalarRealType scale)
   {
@@ -84,7 +85,7 @@ public:
     m_Dilate->SetScale(scale);
   }
   
-  void SetUseImageSpacing(boolean uis)
+  void SetUseImageSpacing(bool uis)
   {
     m_Erode->SetUseImageSpacing(uis);
     m_Dilate->SetUseImageSpacing(uis);
@@ -105,14 +106,23 @@ protected:
   typedef typename itk::ParabolicDilateImageFilter<OutputImageType, OutputImageType> DilateType;
   typedef typename itk::CastImageFilter<InputImageType, OutputImageType> CastType;
   
+  typedef typename itk::SharpenOpImageFilter<OutputImageType, OutputImageType, OutputImageType, OutputImageType> SharpenOpType;
 
 private:
+  MorphologicalSharpeningImageFilter(const Self&); //purposely not implemented
+  void operator=(const Self&); //purposely not implemented
+
   int m_Iterations;
-  ErodeType::Pointer m_Erode;
-  DilateType::Pointer m_Dilate;
-  CastType::Pointer m_Cast;
+  typename ErodeType::Pointer m_Erode;
+  typename DilateType::Pointer m_Dilate;
+  typename CastType::Pointer m_Cast;
+  typename SharpenOpType::Pointer m_SharpenOp;
 };
 
 } // namespace itk
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itkMorphologicalSharpeningImageFilter.txx"
+#endif
+
 
 #endif

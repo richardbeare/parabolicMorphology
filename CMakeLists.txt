@@ -91,3 +91,15 @@ ADD_TEST(Spacing ${TEST_COMMAND}
    testSpacing ${INPUT_IMAGE} o1.png o2.png
    --compare o1.png o2.png
 )
+
+ADD_TEST(Sharpen1 ${TEST_COMMAND}
+   testSharpen 1 sharp1.mha
+)
+
+ADD_TEST(Sharpen2 ${TEST_COMMAND}
+   testSharpen 2 sharp2.mha
+)
+
+ADD_TEST(Sharpen3 ${TEST_COMMAND}
+   testSharpen 3 sharp3.mha
+)
