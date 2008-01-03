@@ -4,6 +4,7 @@
 #include "itkCommand.h"
 #include "itkSimpleFilterWatcher.h"
 
+#include "plotutils.h"
 
 #include "itkGrayscaleDilateImageFilter.h"
 #include "itkBinaryBallStructuringElement.h"
@@ -21,9 +22,9 @@ int main(int argc, char * argv[])
 
   int iterations = 1;
 
-  if (argc != 3)
+  if (argc != 4)
     {
-    std::cerr << "Usage: " << argv[0] << " iterations outputfile" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " iterations outputimage outputprofile" << std::endl;
     }
 
   iterations = atoi(argv[1]);
@@ -85,6 +86,7 @@ int main(int argc, char * argv[])
   writer->SetFileName( "blurrredinput.tif" );
   writer->Update();
 
+
   // now to apply the sharpening
   
   typedef itk::MorphologicalSharpeningImageFilter< IType, FType > FilterType;
@@ -102,6 +104,18 @@ int main(int argc, char * argv[])
   flwriter->SetInput(filter->GetOutput());
   flwriter->SetFileName(argv[2]);
   flwriter->Update();
+
+  // write out profiles
+  // input 
+  IType::IndexType first, last;
+  first[0]=50;
+  first[1]=0;
+  last[0]=50;
+  last[1]=99;
+
+  extractProfile<IType>(smallDilate->GetOutput(), first, last, "inputprof.txt");
+  extractProfile<IType>(smoother->GetOutput(), first, last, "blurredprof.txt");
+  extractProfile<FType>(filter->GetOutput(), first, last, argv[3]);
 
   return EXIT_SUCCESS;
 }

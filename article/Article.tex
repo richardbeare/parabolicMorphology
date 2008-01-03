@@ -125,6 +125,36 @@ The controling methods available for these classes is :
 \item {\bf SetSafeBorder} : controls whether border padding is used in opening or closing operations.
 \end{itemize}
 
+\section{Applications}
+\subsection{Sharpening}
+Image sharpening using parabolic operations has been analysed in
+\cite{Schavemaker2000}. This form of sharpening is based on the following formula:
+\begin{equation}
+\epsilon[f](x, \rho) =
+\begin{cases}
+F^\oplus(x,\rho), &F^\oplus(x,\rho) - F(x,0) < F(x,0) - F^\ominus(x,\rho),\\
+F^\ominus(x,\rho), &F^\oplus(x,\rho) - F(x,0) > F(x,0) - F^\ominus(x,\rho),\\
+F(x,0), &otherwise
+\end{cases}
+\end{equation}
+where $F^\oplus(x,\rho)$ indicates dilation by parabolic structuring
+element with scale $\rho$ amd $F^\ominus$ indicates erosion. In
+summary, the output of the sharpening process at a pixel is the
+dilation, if the difference between the dilation and the input is less
+than the difference between the erosion and the input. This formula
+describes one step in an iterative process. The parameters controling
+the process are scale and number of iterations.
+
+This sharpening algorithm has been implemented in the {\em
+  itkMorphologicalSharpeningImageFilter}, and {\em testSharpening}
+illustrates its use. Figure \ref{fig:sharpprofs} illustrates the
+results of sharpening using profiles through an artificial image.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.8]{sharp.eps}
+\caption{Profiles through an artificial image illustrating the sharpening process. Scale value was 1 pixel.\label{fig:sharpprofs}}
+\end{figure}
 
 
 \appendix

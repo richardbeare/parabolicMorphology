@@ -93,13 +93,19 @@ ADD_TEST(Spacing ${TEST_COMMAND}
 )
 
 ADD_TEST(Sharpen1 ${TEST_COMMAND}
-   testSharpen 1 sharp1.mha
+   testSharpen 1 sharp1.mha sharp1.txt
 )
 
 ADD_TEST(Sharpen2 ${TEST_COMMAND}
-   testSharpen 2 sharp2.mha
+   testSharpen 2 sharp2.mha sharp2.txt
 )
 
 ADD_TEST(Sharpen3 ${TEST_COMMAND}
-   testSharpen 3 sharp3.mha
+   testSharpen 3 sharp3.mha sharp3.txt
+)
+ADD_TEST(Sharpen10 ${TEST_COMMAND}
+   testSharpen 10 sharp10.mha sharp10.txt
+)
+ADD_TEST(Sharpen100 ${TEST_COMMAND}
+   testSharpen 100 sharp100.mha sharp100.txt
 )
