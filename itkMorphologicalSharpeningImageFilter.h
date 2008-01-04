@@ -66,6 +66,14 @@ public:
   /** Smart pointer typedef support.  */
   typedef typename TInputImage::Pointer  InputImagePointer;
   typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+ 
+  /** Image related typedefs. */
+  itkStaticConstMacro(OutputImageDimension, unsigned int,
+                      TOutputImage::ImageDimension);
+  itkStaticConstMacro(InputImageDimension, unsigned int,
+                      TInputImage::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int,
+                      TInputImage::ImageDimension);
 
   /** a type to represent the "kernel radius" */
   typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
@@ -92,6 +100,18 @@ public:
   }
 
   // need to include the Get methods
+#ifdef ITK_USE_CONCEPT_CHECKING
+  /** Begin concept checking */
+  itkConceptMacro(SameDimension,
+                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),itkGetStaticConstMacro(OutputImageDimension)>));
+
+  itkConceptMacro(Comparable,
+		  (Concept::Comparable<InputPixelType>));
+
+  /** End concept checking */
+#endif
+
+
 
 protected:
   MorphologicalSharpeningImageFilter();

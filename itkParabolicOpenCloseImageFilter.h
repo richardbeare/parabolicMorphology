@@ -56,12 +56,19 @@ public:
   typedef typename TInputImage::Pointer  InputImagePointer;
   typedef typename TInputImage::ConstPointer  InputImageConstPointer;
 
+  /** Image related typedefs. */
+  itkStaticConstMacro(OutputImageDimension, unsigned int,
+                      TOutputImage::ImageDimension);
+  itkStaticConstMacro(InputImageDimension, unsigned int,
+                      TInputImage::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int,
+                      TInputImage::ImageDimension);
+
+
   /** a type to represent the "kernel radius" */
   typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
 
-  /** Image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TInputImage::ImageDimension);
+
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
@@ -80,6 +87,17 @@ public:
   itkSetMacro(UseImageSpacing, bool);
   itkGetConstReferenceMacro(UseImageSpacing, bool);
   itkBooleanMacro(UseImageSpacing);
+
+#ifdef ITK_USE_CONCEPT_CHECKING
+  /** Begin concept checking */
+  itkConceptMacro(SameDimension,
+                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),itkGetStaticConstMacro(OutputImageDimension)>));
+
+  itkConceptMacro(Comparable,
+		  (Concept::Comparable<PixelType>));
+
+  /** End concept checking */
+#endif
 
 protected:
   ParabolicOpenCloseImageFilter();
