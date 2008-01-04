@@ -100,6 +100,18 @@ public:
   }
 
   // need to include the Get methods
+  const RadiusType &GetScale()
+  {
+    return m_Erode->GetScale();
+  }
+
+  const bool GetUseImageSpacing()
+  {
+    return m_Erode->GetUseImageSpacing();
+  }
+
+
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(SameDimension,
