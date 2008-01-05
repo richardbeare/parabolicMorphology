@@ -66,6 +66,6 @@ int main(int, char * argv[])
   filter->Update();
   writer->SetFileName( argv[3] );
   writer->Update();
-  return 0;
+  return EXIT_SUCCESS;
 }
 

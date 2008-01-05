@@ -51,6 +51,6 @@ int main(int, char * argv[])
   std::cout << std::setprecision(3) 
             << NewTime.GetMeanTime() << std::endl;
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 

@@ -20,18 +20,22 @@ namespace itk
  * the parabolic morphology routines. No particular efforts have been
  * made to minimize memory consumption.
  *
-@article{Schavemaker2000,
-  author    = {Schavemaker, J. and Reinders, M. and Gerbrands, J. and Backer, E.
+ * 
+ * @article{Schavemaker2000,
+ *  author    = {Schavemaker, J. and Reinders, M. and Gerbrands, J. and Backer, E.
 },
-  title     = {Image sharpening by morphological filtering},
-  journal   = {Pattern Recognition},
-  volume    = {33},
-  number    = {6},
-  year      = {2000},
-  pages     = {997-1012},
-  ee        = {http://dx.doi.org/10.1016/S0031-3203(99)00160-0},
-  bibsource = {DBLP, http://dblp.uni-trier.de}
+ * title     = {Image sharpening by morphological filtering},
+ * journal   = {Pattern Recognition},
+ * volume    = {33},
+ * number    = {6},
+ * year      = {2000},
+ * pages     = {997-1012},
+ * ee        = {http://dx.doi.org/10.1016/S0031-3203(99)00160-0},
+ * bibsource = {DBLP, http://dblp.uni-trier.de}
 }
+
+ * \author Richard Beare, Monash University, Department of Medicine,
+ * Melbourne, Australia. <Richard.Beare@med.monash.edu.au>
 
 **/
 

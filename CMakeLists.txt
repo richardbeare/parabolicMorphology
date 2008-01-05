@@ -63,7 +63,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "check" "testOpen" "testSpacing" "testSharpen")
+FOREACH(CurrentExe "check" "testOpen" "testSpacing" "testSharpen" "testDT")
 ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
 TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
@@ -109,3 +109,12 @@ ADD_TEST(Sharpen10 ${TEST_COMMAND}
 ADD_TEST(Sharpen100 ${TEST_COMMAND}
    testSharpen 100 sharp100.mha sharp100.txt
 )
+
+ADD_TEST(Dist1 ${TEST_COMMAND}
+   testDT ${INPUT_IMAGE} 100 0 mask.png dist1.mha
+)
+
+ADD_TEST(Dist2 ${TEST_COMMAND}
+   testDT ${INPUT_IMAGE} 100 255 mask.png dist2.mha
+)
+

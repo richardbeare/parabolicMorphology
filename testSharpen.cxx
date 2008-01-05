@@ -25,6 +25,7 @@ int main(int argc, char * argv[])
   if (argc != 4)
     {
     std::cerr << "Usage: " << argv[0] << " iterations outputimage outputprofile" << std::endl;
+    return(EXIT_FAILURE);
     }
 
   iterations = atoi(argv[1]);
