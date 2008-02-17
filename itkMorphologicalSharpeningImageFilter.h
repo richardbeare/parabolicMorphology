@@ -2,8 +2,8 @@
 #define __itkMorphologicalSharpeningImageFilter_h
 
 #include "itkImageToImageFilter.h"
-#include "itkProgressReporter.h"
-
+//#include "itkProgressReporter.h"
+#include "itkWatershedMiniPipelineProgressCommand.h"
 #include "itkCastImageFilter.h"
 #include "itkParabolicErodeImageFilter.h"
 #include "itkParabolicDilateImageFilter.h"
@@ -36,7 +36,7 @@ namespace itk
 
  * \author Richard Beare, Monash University, Department of Medicine,
  * Melbourne, Australia. <Richard.Beare@med.monash.edu.au>
-
+ *
 **/
 
 

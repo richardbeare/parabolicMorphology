@@ -2,7 +2,7 @@
 #define __itkMorphologicalSharpeningImageFilter_txx
 
 #include "itkMorphologicalSharpeningImageFilter.h"
-#include "itkProgressAccumulator.h"
+//#include "itkProgressAccumulator.h"
 
 namespace itk 
 
@@ -30,8 +30,8 @@ MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
 ::GenerateData(void)
 {
 
-  ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
-  progress->SetMiniPipelineFilter(this);
+//   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
+//   progress->SetMiniPipelineFilter(this);
 
   // Allocate the output
   this->AllocateOutputs();
@@ -45,6 +45,17 @@ MorphologicalSharpeningImageFilter<TInputImage, TOutputImage>
   m_SharpenOp->SetInput(m_Dilate->GetOutput());
   m_SharpenOp->SetInput2(m_Cast->GetOutput());
   m_SharpenOp->SetInput3(m_Erode->GetOutput());
+
+  // set up the progrss monitor
+  WatershedMiniPipelineProgressCommand::Pointer c =
+    WatershedMiniPipelineProgressCommand::New();
+  c->SetFilter(this);
+  c->SetNumberOfFilters(3 * m_Iterations);
+
+  m_Erode->AddObserver(ProgressEvent(), c);
+  m_Dilate->AddObserver(ProgressEvent(), c);
+  m_SharpenOp->AddObserver(ProgressEvent(), c);
+
 
   for (int i = 0; i < m_Iterations; i++)
     {

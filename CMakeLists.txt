@@ -33,6 +33,7 @@ SET(Libraries
   ITKCommon
   ITKBasicFilters
   ITKIO
+  ITKAlgorithms
 )
 
 
