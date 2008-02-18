@@ -7,7 +7,7 @@
 #include "itkBinaryThresholdImageFilter.h"
 #include "itkParabolicErodeImageFilter.h"
 #include "itkParabolicDilateImageFilter.h"
-#include "itkMorphDTHelperImageFilter.h"
+#include "itkMorphSDTHelperImageFilter.h"
 
 namespace itk
 {
@@ -85,6 +85,8 @@ public:
   /** a type to represent the "kernel radius" */
   typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
 
+  virtual void Modified() const;
+
   /** this describes the input mask - default value 0 - we compute the
   distance from all voxels with value not equal to "OutsideValue" to
   the nearest voxel with value "OutsideValue" */
@@ -147,7 +149,7 @@ protected:
   typedef typename itk::BinaryThresholdImageFilter<InputImageType, OutputImageType> ThreshType;
   typedef typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType> ErodeType;
   typedef typename itk::ParabolicDilateImageFilter<OutputImageType, OutputImageType> DilateType;
-  typedef typename itk::MorphDTHelperImageFilter<OutputImageType, OutputImageType> HelperType;
+  typedef typename itk::MorphSDTHelperImageFilter<OutputImageType, OutputImageType> HelperType;
 
 private:
   MorphologicalSignedDistanceTransformImageFilter(const Self&); //purposely not implemented

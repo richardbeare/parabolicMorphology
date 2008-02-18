@@ -1,7 +1,7 @@
 #ifndef __itkMorphDTHelperImageFilter_h
 #define __itkMorphDTHelperImageFilter_h
 
-#include "itkTernaryFunctorImageFilter.h"
+#include "itkUnaryFunctorImageFilter.h"
 #include "vnl/vnl_math.h"
 
 namespace itk
@@ -16,13 +16,13 @@ namespace itk
  */
 namespace Function {  
 
-template< class TInput1, class TInput2=TInput1, class TInput3=TInput1, class TOutput=TInput1>
+template< class TInput1, class TOutput=TInput1>
 class MorphDTHelper
 {
 public:
   MorphDTHelper() {}
   ~MorphDTHelper() {}
-  void SetVal(double i) { m_Val = i; }
+  void SetWeight(double i) { m_Weight = i; }
   bool operator!=( const MorphDTHelper & ) const
   {
     return false;
@@ -31,44 +31,30 @@ public:
   {
     return !(*this != other);
   }
-  inline TOutput operator()( const TInput1 & A, const TInput2 & B, const TInput3 & C)
+  inline TOutput operator()( const TInput1 & A)
   { 
-    // A should be the output of the erosion, B the dilation, C the mask
-    if ( C > 0)
-      {
-      // inside the mask
-      return static_cast<TOutput>(vcl_sqrt((double)A + m_Val));
-      }
-    else
-      {
-      // outside the mask
-      return static_cast<TOutput>(- vcl_sqrt(m_Val -(double)B));
-      }
+    return static_cast<TOutput>(m_Weight * vcl_sqrt((double)A));
   }
 private:
-  double m_Val;
+  double m_Weight;
 
 };
 }
 
-template <class TInputImage1, class TInputImage2=TInputImage1, class TInputImage3=TInputImage1, class TOutputImage=TInputImage1>
+template <class TInputImage1, class TOutputImage=TInputImage1>
 class ITK_EXPORT MorphDTHelperImageFilter :
     public
-TernaryFunctorImageFilter<TInputImage1,TInputImage2,TInputImage3,TOutputImage, 
+UnaryFunctorImageFilter<TInputImage1,TOutputImage, 
                          Function::MorphDTHelper< 
   typename TInputImage1::PixelType, 
-  typename TInputImage2::PixelType,
-  typename TInputImage3::PixelType,
   typename TOutputImage::PixelType>   >
 {
 public:
   /** Standard class typedefs. */
   typedef MorphDTHelperImageFilter  Self;
-  typedef TernaryFunctorImageFilter<TInputImage1,TInputImage2,TInputImage3,TOutputImage, 
+  typedef UnaryFunctorImageFilter<TInputImage1,TOutputImage, 
                                    Function::MorphDTHelper< 
     typename TInputImage1::PixelType, 
-    typename TInputImage2::PixelType,
-    typename TInputImage3::PixelType,
     typename TOutputImage::PixelType>   
   > Superclass;
   typedef SmartPointer<Self>   Pointer;
@@ -79,11 +65,11 @@ public:
 
   /** Runtime information support. */
   itkTypeMacro(MorphDTHelperImageFilter, 
-               TernaryFunctorImageFilter);
+               UnaryFunctorImageFilter);
 
-  void SetVal(double val)
+  void SetWeight(double val)
   {
-    this->GetFunctor().SetVal(val);
+    this->GetFunctor().SetWeight(val);
     this->Modified();
   }
 
@@ -92,12 +78,6 @@ public:
   itkConceptMacro(Input1ConvertibleToOutputCheck,
     (Concept::Convertible<typename TInputImage1::PixelType,
                           typename TOutputImage::PixelType>));
-  itkConceptMacro(Input2ConvertibleToOutputCheck,
-    (Concept::Convertible<typename TInputImage2::PixelType,
-                          typename TOutputImage::PixelType>));
-  itkConceptMacro(GreaterThanComparable,
-    (Concept::GreaterThanComparable<typename TInputImage3::PixelType,
-                                    typename TInputImage3::PixelType>));
   /** End concept checking */
 #endif
 

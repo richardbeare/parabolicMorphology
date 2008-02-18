@@ -22,6 +22,17 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   this->SetUseImageSpacing(true);
   this->SetInsideIsPositive(false);
 }
+template <typename TInputImage, typename TOutputImage> 
+void
+MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
+::Modified() const
+{
+  Superclass::Modified();
+  m_Erode->Modified();
+  m_Dilate->Modified();
+  m_Thresh->Modified();
+  m_Helper->Modified();
+}
 
 template <typename TInputImage, typename TOutputImage> 
 void
@@ -45,13 +56,14 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   typename TOutputImage::SpacingType sp = this->GetOutput()->GetSpacing();
 
   double MaxDist = 0.0;
-
+  double Wt = 0.0;
   if (this->GetUseImageSpacing()) 
     {
     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
       {
       double thisdim = (sz[k] * sp[k]);
       MaxDist += thisdim*thisdim;
+      Wt += sp[k] * sp[k];
       }
     }
   else
@@ -60,20 +72,23 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
       {
       double thisdim = sz[k];
       MaxDist += thisdim*thisdim;
+      Wt += 1.0;
       }
     }
+
+  Wt = sqrt(Wt);
 
   m_Thresh->SetLowerThreshold(m_OutsideValue);
   m_Thresh->SetUpperThreshold(m_OutsideValue);
   if (this->GetInsideIsPositive())
     {
-    m_Thresh->SetOutsideValue(MaxDist);
-    m_Thresh->SetInsideValue(-MaxDist);
+    m_Thresh->SetOutsideValue(-MaxDist);
+    m_Thresh->SetInsideValue(MaxDist);
     }
   else
     {
-    m_Thresh->SetOutsideValue(-MaxDist);
-    m_Thresh->SetInsideValue(MaxDist);
+    m_Thresh->SetOutsideValue(MaxDist);
+    m_Thresh->SetInsideValue(-MaxDist);
     }
 
   m_Thresh->SetInput(this->GetInput());
@@ -84,6 +99,7 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Helper->SetInput2(m_Dilate->GetOutput());
   m_Helper->SetInput3(m_Thresh->GetOutput());
   m_Helper->SetVal(MaxDist);
+  m_Helper->SetWeight(Wt);
   m_Helper->GraftOutput(this->GetOutput());
   m_Helper->Update();
   this->GraftOutput(m_Helper->GetOutput());

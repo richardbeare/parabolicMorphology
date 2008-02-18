@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
 	    << ParabolicT.GetMeanTime() <<"\t"
 	    << DanielssonT.GetMeanTime() << std::endl;
 
-  writeIm<FType>(daniel->GetOutput(), argv[6]);
+  writeIm<FType>(daniel->GetDistanceMap(), argv[6]);
   
 
   return EXIT_SUCCESS;

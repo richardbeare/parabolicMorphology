@@ -156,10 +156,53 @@ results of sharpening using profiles through an artificial image.
 \caption{Profiles through an artificial image illustrating the sharpening process. Scale value was 1 pixel.\label{fig:sharpprofs}}
 \end{figure}
 
-
+\subsection{Distance Tranforms}
+Parabolic erosions and dilations can be used to construct distance
+transforms. Two classes have been provided in this package:
+\begin{itemize}
+\item {\em itkMorphologicalDistanceTransformImageFilter} for one sided distance transforms.
+\item {\em itkMorphologicalSignedDistanceTransformImageFilter} for signed distance transforms.
+\end{itemize}
+The concept is fairly simple - consider applying a parabolic erosion,
+with scale 1, to a mask image with values of $0$ and $\inf$. The value
+of the erosion at mask locations with value 0 will remain 0. The value
+at mask locations of $\inf$ are equal to the square of the distance to
+the nearest 0 value. The idea can be easily extended to allow
+computation of the inside and outside distances without
+rethresholding. This method should be more accurate than basic chamfer
+approaches and appears slightly faster than the {\em
+  SignedDanielssonDistanceTransform} currently provided in ITK, as
+illustrated in Table \ref{tbl:perf}. The parabolic version does not
+return voronoi tesselations or vectors pointing to the nearest inverse
+pixel because such things aren't required in construction of the
+distance transform. I cannot comment on the relative accuracy of the
+two methods at this stage as there appears to be no difference in
+output for the cthead image, but expect that the Danielsson method
+uses approximations that aren't necessary in the parabolic
+version. There are prospect for further improvement when the parabolic
+methods are threaded. The parabolic method should retain efficiency in
+arbitary dimensions due to the separable nature of the parabolic
+operations.
+\begin{table}[phtb]
+\centering
+\begin{tabular}{cc}
+\hline
+Parabolic &  Danielsson \\
+0.0416  & 0.0588 \\
+\hline
+\end{tabular}
+\caption{Execution times for computing signed distance tranforms using parabolic morphology and the Danielsson method in ITK. The standard, $256 \times 256$ {\em cthead} image was used and the test was repeated 100 times. These figures were obtained using perfDT, in this package.\label{tbl:perf}}
+\end{table}
 \appendix
 
 
+\section{Conclusions and further work}
+This article introduces implementations of an important class of
+morphological operations - erosions and dilations be parabolic
+structuring elements. Applications of these operations to sharpening
+and distance transforms are also presented. The latter appears to
+outperform some existing implementations, but more tests are
+necessary.
 
 \bibliographystyle{plain}
 \bibliography{local,InsightJournal}
