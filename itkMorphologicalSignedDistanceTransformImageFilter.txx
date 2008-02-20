@@ -17,8 +17,8 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Dilate = DilateType::New();
   m_Thresh = ThreshType::New();
   m_Helper = HelperType::New();
-  m_Erode->SetScale(1);
-  m_Dilate->SetScale(1);
+  m_Erode->SetScale(0.5);
+  m_Dilate->SetScale(0.5);
   this->SetUseImageSpacing(true);
   this->SetInsideIsPositive(false);
 }
