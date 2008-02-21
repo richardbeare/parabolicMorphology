@@ -83,11 +83,13 @@ int main(int argc, char * argv[])
     daniel->Update();
     DanielssonT.Stop();
     }
+  writeIm<FType>(daniel->GetDistanceMap(), argv[6]);
+
+
   std::cout << std::setprecision(3)
 	    << ParabolicT.GetMeanTime() <<"\t"
 	    << DanielssonT.GetMeanTime() << std::endl;
 
-  writeIm<FType>(daniel->GetDistanceMap(), argv[6]);
   
 
   return EXIT_SUCCESS;
