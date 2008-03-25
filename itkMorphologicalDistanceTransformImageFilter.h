@@ -80,6 +80,8 @@ public:
   the nearest voxel with value "OutsideValue" */
   itkSetMacro(OutsideValue, InputPixelType);
   itkGetConstReferenceMacro(OutsideValue, InputPixelType);
+
+  
   
   /** Is the transform in world or voxel units - default is world */
   void SetUseImageSpacing(bool uis)
@@ -93,6 +95,9 @@ public:
     return m_Erode->GetUseImageSpacing();
   }
 
+  itkSetMacro(SqrDist, bool);
+  itkGetConstReferenceMacro(SqrDist, bool);
+  itkBooleanMacro(SqrDist);
 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
@@ -129,6 +134,7 @@ private:
   typename ErodeType::Pointer m_Erode;
   typename ThreshType::Pointer m_Thresh;
   typename SqrtType::Pointer m_Sqrt;
+  bool m_SqrDist;
 };
 
 } // namespace itk

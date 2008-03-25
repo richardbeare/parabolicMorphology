@@ -19,6 +19,7 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
 
   m_Erode->SetScale(0.5);
   this->SetUseImageSpacing(true);
+  m_SqrDist = false;
 }
 template <typename TInputImage, typename TOutputImage> 
 void
@@ -70,16 +71,20 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
 
   m_Thresh->SetInput(this->GetInput());
   m_Erode->SetInput(m_Thresh->GetOutput());
-#if 1
-  m_Sqrt->SetInput(m_Erode->GetOutput());
-  m_Sqrt->GraftOutput(this->GetOutput());
-  m_Sqrt->Update();
-  this->GraftOutput(m_Sqrt->GetOutput());
-#else
-  m_Erode->GraftOutput(this->GetOutput());
-  m_Erode->Update();
-  this->GraftOutput(m_Erode->GetOutput());
-#endif
+  
+  if (m_SqrDist)
+    {
+    m_Erode->GraftOutput(this->GetOutput());
+    m_Erode->Update();
+    this->GraftOutput(m_Erode->GetOutput());
+    }
+  else
+    {
+    m_Sqrt->SetInput(m_Erode->GetOutput());
+    m_Sqrt->GraftOutput(this->GetOutput());
+    m_Sqrt->Update();
+    this->GraftOutput(m_Sqrt->GetOutput());
+    }
 
 }
 template <typename TInputImage, typename TOutputImage> 
