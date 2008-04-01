@@ -85,7 +85,7 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
     m_Sqrt->Update();
     this->GraftOutput(m_Sqrt->GetOutput());
     }
-
+  
 }
 template <typename TInputImage, typename TOutputImage> 
 void
