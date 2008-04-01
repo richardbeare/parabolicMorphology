@@ -3,8 +3,9 @@
 #include "itkImageFileWriter.h"
 #include "itkCommand.h"
 #include "itkSimpleFilterWatcher.h"
+#include "itkChangeInformationImageFilter.h"
 
-#include "plotutils.h"
+//#include "plotutils.h"
 #include "ioutils.h"
 
 #include "itkBinaryThresholdImageFilter.h"
@@ -36,7 +37,21 @@ int main(int argc, char * argv[])
   typedef itk::Image< PType, dim > IType;
   typedef itk::Image< float, dim > FType;
 
-  IType::Pointer input = readIm<IType>(argv[1]);
+  IType::Pointer inputOrig = readIm<IType>(argv[1]);
+
+  typedef itk::ChangeInformationImageFilter<IType> ChangeType;
+  ChangeType::Pointer changer = ChangeType::New();
+  changer->SetInput(inputOrig);
+  ChangeType::SpacingType newspacing;
+
+  newspacing[0] = 0.5;
+  newspacing[1] = 0.25;
+
+
+  changer->SetOutputSpacing(newspacing);
+  changer->ChangeSpacingOn();
+
+  IType::Pointer input = changer->GetOutput();
 
   // threshold the input to create a mask
   typedef itk::BinaryThresholdImageFilter<IType, IType> ThreshType;

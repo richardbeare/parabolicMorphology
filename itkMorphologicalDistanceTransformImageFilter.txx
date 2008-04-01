@@ -45,28 +45,47 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   progress->RegisterInternalFilter(m_Erode, 0.8f);
   progress->RegisterInternalFilter(m_Sqrt, 0.1f);
 
+  double MaxDist = 0.0;
   typename TOutputImage::SpacingType sp = this->GetOutput()->GetSpacing();
-  double Wt = 0.0;
+  typename TOutputImage::SizeType sz = this->GetOutput()->GetLargestPossibleRegion().GetSize();
   if (this->GetUseImageSpacing()) 
     {
     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
       {
-      Wt += sp[k] * sp[k];
+      double thisdim = (sz[k] * sp[k]);
+      MaxDist += thisdim*thisdim;
       }
     }
   else
     {
     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
       {
-      Wt += 1.0;
+      double thisdim = sz[k];
+      MaxDist += thisdim*thisdim;
       }
     }
-  Wt = sqrt(Wt);
+
+//   double Wt = 0.0;
+//   if (this->GetUseImageSpacing()) 
+//     {
+//     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
+//       {
+//       Wt += sp[k] * sp[k];
+//       }
+//     }
+//   else
+//     {
+//     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
+//       {
+//       Wt += 1.0;
+//       }
+//     }
+//   Wt = sqrt(Wt);
   this->AllocateOutputs();
 
   m_Thresh->SetLowerThreshold(m_OutsideValue);
   m_Thresh->SetUpperThreshold(m_OutsideValue);
-  m_Thresh->SetOutsideValue(NumericTraits<OutputPixelType>::max());
+  m_Thresh->SetOutsideValue(MaxDist);
   m_Thresh->SetInsideValue(0);
 
   m_Thresh->SetInput(this->GetInput());
