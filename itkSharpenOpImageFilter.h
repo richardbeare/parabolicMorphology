@@ -17,6 +17,10 @@ namespace itk
  * 
  * In reality the input and output types of this filter are expected
  * to be the same.
+ *
+* \author Richard Beare, Department of Medicine, Monash University,
+ * Australia.  <Richard.Beare@med.monash.edu.au>
+ *
  */
 namespace Function {  
   

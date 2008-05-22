@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 
+// some simple profile extraction utilities for production of plots of
+// image transects
+
 template <typename TImage>
 void extractProfile(typename TImage::Pointer Im, typename TImage::IndexType first, 
 		    typename TImage::IndexType last, std::string outputfile)

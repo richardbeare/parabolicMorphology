@@ -6,6 +6,21 @@
 
 namespace itk
 {
+/**
+ * \class ParabolicErodeImageFilter
+ * \brief Class for morphological erosion
+ * operations with parabolic structuring elements.
+ *
+ * This filter doesn't use the erode/dilate classes directly so
+ * that multiple image copies aren't necessary.
+ *
+ * This filter isn't threaded.
+ *
+ * \sa itkParabolicErodeDilateImageFilter
+ *
+ * \author Richard Beare, Department of Medicine, Monash University,
+ * Australia.  <Richard.Beare@med.monash.edu.au>
+**/
 template <typename TInputImage,
           typename TOutputImage= TInputImage >
 class ITK_EXPORT ParabolicErodeImageFilter:

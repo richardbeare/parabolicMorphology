@@ -6,6 +6,20 @@
 
 namespace itk
 {
+/**
+ * \class ParabolicDilateImageFilter
+ * \brief Class for morphological dilation
+ * operations  with parabolic structuring elements.
+ *
+ * This filter isn't threaded.
+ *
+ * \sa itkParabolicOpenCloseImageFilter
+ *
+ * \author Richard Beare, Department of Medicine, Monash University,
+ * Australia.  <Richard.Beare@med.monash.edu.au>
+ *
+**/
+
 template <typename TInputImage,
           typename TOutputImage= TInputImage >
 class ITK_EXPORT ParabolicDilateImageFilter:
