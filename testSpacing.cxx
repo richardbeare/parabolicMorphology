@@ -51,15 +51,15 @@ int main(int, char * argv[])
   changer->SetInput(reader->GetOutput());
   ChangeType::SpacingType newspacing;
 
-  newspacing[0] = 0.5;
-  newspacing[1] = 0.25;
+  newspacing[0] = 1/sqrt(1);
+  newspacing[1] = 1/sqrt(0.5);
 
 
   changer->SetOutputSpacing(newspacing);
   changer->ChangeSpacingOn();
   // set scales to deliver the same result
-  scale[0] = 0.5;
-  scale[1] = 0.25/2.0;
+  scale[0] = 1;
+  scale[1] = 1;
   filter->SetInput( changer->GetOutput() );
   filter->SetScale(scale);
   filter->SetUseImageSpacing(true);
