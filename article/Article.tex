@@ -70,7 +70,7 @@ applications.
 \section{Introduction}
 Parabolic structuring functions (PSF) have the following important properties:
 \begin{itemize}
-\item They are closed under dilation - i.e. dilating two PSFs in a third PSF.
+\item They are closed under dilation - i.e. dilating two PSFs results in a third PSF.
 \item An n-dimensional PSF can be obtained by combining n
 one-dimensional PSFs in independent directions.
 \item PSFs are rotationally symmetric allowing the dimensional
@@ -125,8 +125,10 @@ The controling methods available for these classes is :
 \item {\bf SetSafeBorder} : controls whether border padding is used in opening or closing operations.
 \end{itemize}
 
-Note that there are actually a variety of ways in which scale can be
-defined for PSFs, including $f(x) =  (\frac{x}{scale})^2$ and $f(x) =  (\frac{x^2}{scale})$. Logarithmic scales are another alternative.
+Note that there are actually a variety of ways in which scale is of
+PSFs is defined in the literature, including $f(x) =
+(\frac{x}{scale})^2$ and $f(x) = (\frac{x^2}{scale})$. Logarithmic
+scales are another alternative.
 
 \section{Applications}
 \subsection{Sharpening}
@@ -196,8 +198,6 @@ Parabolic &  Danielsson \\
 \end{tabular}
 \caption{Execution times for computing signed distance tranforms using parabolic morphology and the Danielsson method in ITK. The standard, $256 \times 256$ {\em cthead} image was used and the test was repeated 100 times. These figures were obtained using perfDT, in this package.\label{tbl:perf}}
 \end{table}
-\appendix
-
 
 \section{Conclusions and further work}
 This article introduces implementations of an important class of
@@ -206,6 +206,9 @@ structuring elements. Applications of these operations to sharpening
 and distance transforms are also presented. The latter appears to
 outperform some existing implementations, but more tests are
 necessary.
+
+\section*{Acknowledgements}
+Thanks to Paul Jackway for valuable discussions.
 
 \bibliographystyle{plain}
 \bibliography{local,InsightJournal}

@@ -34,7 +34,7 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
       if (m_MorphFilt->GetUseImageSpacing())
 	{
 	RealType image_scale =spcing[s];
-	Bounds[s] = (unsigned long)ceil(sqrt(2*(Sigma[s]/image_scale)*range));
+	Bounds[s] = (unsigned long)ceil(sqrt(2*(Sigma[s]/(image_scale*image_scale)*range));
 	BoundsSize[s] = Bounds[s];
 	}
       else
