@@ -16,7 +16,7 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Erode = ErodeType::New();
   m_Thresh = ThreshType::New();
   m_Sqrt = SqrtType::New();
-
+  m_OutsideValue = 0;
   m_Erode->SetScale(0.5);
   this->SetUseImageSpacing(true);
   m_SqrDist = false;
