@@ -75,8 +75,8 @@ int main(int argc, char * argv[])
 
   std::cout << "Parabolic   Danielsson" << std::endl;
 
-  const unsigned TESTS = 100;
-  for (unsigned repeats = 0; repeats < TESTS; repeats++)
+  const unsigned pTESTS = 100;
+  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
     {
     ParabolicT.Start();
     filter->Modified();
@@ -86,6 +86,8 @@ int main(int argc, char * argv[])
 
   writeIm<FType>(filter->GetOutput(), argv[5]);
 
+
+  const unsigned TESTS = 10;
 
   typedef itk::DanielssonDistanceMapImageFilter<IType, FType> DanielssonType;
   DanielssonType::Pointer daniel = DanielssonType::New();
