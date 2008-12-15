@@ -4,6 +4,7 @@
 #include "itkCommand.h"
 #include "itkSimpleFilterWatcher.h"
 #include "itkChangeInformationImageFilter.h"
+#include "itkSignedMaurerDistanceMapImageFilter.h"
 
 //#include "plotutils.h"
 #include "ioutils.h"
@@ -22,7 +23,7 @@ int main(int argc, char * argv[])
 
   int iterations = 1;
 
-  if (argc != 7)
+  if (argc != 8)
     {
     std::cerr << "Usage: " << argv[0] << " inputimage threshold outsideval outim1 outim2 outim3" << std::endl;
     return (EXIT_FAILURE);
@@ -71,11 +72,11 @@ int main(int argc, char * argv[])
   filter->SetOutsideValue(atoi(argv[3]));
   filter->SetUseImageSpacing(true);
   
-  itk::TimeProbe ParabolicT, DanielssonT;
+  itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
 
-  std::cout << "Parabolic   Danielsson" << std::endl;
+  std::cout << "Parabolic  Maurer  Danielsson" << std::endl;
 
-  const unsigned TESTS = 100;
+  const unsigned TESTS = 10;
   for (unsigned repeats = 0; repeats < TESTS; repeats++)
     {
     ParabolicT.Start();
@@ -86,6 +87,18 @@ int main(int argc, char * argv[])
 
   writeIm<FType>(filter->GetOutput(), argv[5]);
 
+  typedef itk::SignedMaurerDistanceMapImageFilter<IType, FType> MaurerType;
+  MaurerType::Pointer maurer = MaurerType::New();
+  maurer->SetInput(thresh->GetOutput());
+  maurer->SetUseImageSpacing(true);
+  for (unsigned repeats = 0; repeats < TESTS; repeats++)
+    {
+    MaurerT.Start();
+    maurer->Modified();
+    maurer->Update();
+    MaurerT.Stop();
+    }
+  writeIm<FType>(maurer->GetOutput(), argv[6]);
 
   typedef itk::SignedDanielssonDistanceMapImageFilter<IType, FType> DanielssonType;
   DanielssonType::Pointer daniel = DanielssonType::New();
@@ -98,11 +111,12 @@ int main(int argc, char * argv[])
     daniel->Update();
     DanielssonT.Stop();
     }
-  writeIm<FType>(daniel->GetDistanceMap(), argv[6]);
+  writeIm<FType>(daniel->GetDistanceMap(), argv[7]);
 
 
   std::cout << std::setprecision(3)
 	    << ParabolicT.GetMeanTime() <<"\t"
+	    << MaurerT.GetMeanTime() <<"\t"
 	    << DanielssonT.GetMeanTime() << std::endl;
 
   

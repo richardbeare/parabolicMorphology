@@ -8,6 +8,8 @@ SET(INPUT_IMAGE3D ${CMAKE_CURRENT_SOURCE_DIR}/images/bunnyPadded.nrrd)
 #include some macros from another file...
 INCLUDE(IJMacros.txt)
 
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+
 #The following lines are required to use Dart
 ENABLE_TESTING()
 INCLUDE(Dart)
@@ -121,10 +123,10 @@ ADD_TEST(Dist2 ${TEST_COMMAND}
 )
 
 ADD_TEST(Perf ${TEST_COMMAND}
-   perfDT ${INPUT_IMAGE} 100 255 mask.png dist3.mha dist4.mha
+   perfDT ${INPUT_IMAGE} 100 255 mask.png dist3.mha dist4.mha dist5.mha
    --compare dist3.mha dist4.mha
 )
 
 ADD_TEST(Perf3D ${TEST_COMMAND}
-   perfDT3D ${INPUT_IMAGE3D} 100 255 bmask.nii.gz distA.nii.gz distB.nii.gz
+   perfDT3D ${INPUT_IMAGE3D} 100 255 bmask.nii.gz distA.nii.gz distB.nii.gz distC.nii.gz
 )

@@ -5,7 +5,7 @@
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
 
-//#define NOINDEX
+#define NOINDEX
 #ifndef NOINDEX
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
@@ -106,6 +106,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 
   const unsigned int imageDimension = inputImage->GetImageDimension();
 
+  
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
   RegionType region = inputImage->GetRequestedRegion();

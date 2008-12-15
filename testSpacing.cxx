@@ -51,8 +51,8 @@ int main(int, char * argv[])
   changer->SetInput(reader->GetOutput());
   ChangeType::SpacingType newspacing;
 
-  newspacing[0] = 1/sqrt(1);
-  newspacing[1] = 1/sqrt(0.5);
+  newspacing[0] = 1/sqrt((float)1);
+  newspacing[1] = 1/sqrt((float)0.5);
 
 
   changer->SetOutputSpacing(newspacing);

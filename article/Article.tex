@@ -143,12 +143,14 @@ F(x,0), &otherwise
 \end{cases}
 \end{equation}
 where $F^\oplus(x,\rho)$ indicates dilation by parabolic structuring
-element with scale $\rho$ amd $F^\ominus$ indicates erosion. In
+element with scale $\rho$ and $F^\ominus$ indicates erosion. In
 summary, the output of the sharpening process at a pixel is the
 dilation, if the difference between the dilation and the input is less
 than the difference between the erosion and the input. This formula
 describes one step in an iterative process. The parameters controling
-the process are scale and number of iterations.
+the process are scale and number of iterations. Scale selection will
+require experimentation, but will tend to be related to the size of
+blurring.
 
 This sharpening algorithm has been implemented in the {\em
   itkMorphologicalSharpeningImageFilter}, and {\em testSharpening}
@@ -199,6 +201,23 @@ $258 \times 258 \times 182$ & 0.992 & 88\\
 \end{tabular}
 \caption{Execution times for computing signed distance tranforms using parabolic morphology and the Danielsson method in ITK. The standard, $256 \times 256$ {\em cthead} image was used for 2D, the bunnyPadded image for 3D, and the test was repeated 100 times. These figures were obtained using perfDT and perfDT3D, in this package.\label{tbl:perf}}
 \end{table}
+
+\section{Multi-threaded implementations}
+The morphological operations described in this article are constructed
+using sequences of one dimensional operations along directions
+parallel to the image axes. Such operations are easily parallelisable,
+with each line operation being independent. However the current ITK
+threading framework is not ideal for implementing this style of
+parallel operation. Alternative approaches are available but haven't
+yet been implemented. When they are available they will also provide a
+useful framework for threading other line based filters, such as the
+recursive gaussian smoothing filters and morphological operations
+using flat structuring elements.
+
+Parallel implementation will also allow acceleration of the
+morphological distance transform computation - which is not feasible
+for queue based approaches like the Danielsson method.
+
 
 \section{Conclusions and further work}
 This article introduces implementations of an important class of

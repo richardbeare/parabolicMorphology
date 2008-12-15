@@ -21,16 +21,19 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   this->SetUseImageSpacing(true);
   m_SqrDist = false;
 }
+
 template <typename TInputImage, typename TOutputImage> 
 void
 MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
 ::Modified() const
 {
+  Superclass::Modified();
   m_Erode->Modified();
   m_Thresh->Modified();
   m_Sqrt->Modified();
   
 }
+
 template <typename TInputImage, typename TOutputImage> 
 void
 MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
@@ -44,6 +47,8 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   progress->RegisterInternalFilter(m_Thresh, 0.1f);
   progress->RegisterInternalFilter(m_Erode, 0.8f);
   progress->RegisterInternalFilter(m_Sqrt, 0.1f);
+
+  //std::cout << "DT" << std::endl;
 
   double MaxDist = 0.0;
   typename TOutputImage::SpacingType sp = this->GetOutput()->GetSpacing();

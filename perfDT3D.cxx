@@ -9,7 +9,9 @@
 #include "ioutils.h"
 
 #include "itkBinaryThresholdImageFilter.h"
-#include "itkMorphologicalDistanceTransformImageFilter.h"
+#include "itkMorphologicalSignedDistanceTransformImageFilter.h"
+//#include "itkMorphologicalDistanceTransformImageFilter.h"
+#include "itkSignedMaurerDistanceMapImageFilter.h"
 
 #include "itkDanielssonDistanceMapImageFilter.h"
 
@@ -22,7 +24,7 @@ int main(int argc, char * argv[])
 
   int iterations = 1;
 
-  if (argc != 7)
+  if (argc != 8)
     {
     std::cerr << "Usage: " << argv[0] << " inputimage threshold outsideval outim1 outim2 outim3" << std::endl;
     return (EXIT_FAILURE);
@@ -46,7 +48,7 @@ int main(int argc, char * argv[])
 
   newspacing[0] = 0.5;
   newspacing[1] = 0.25;
-
+  newspacing[2] = 0.75;
 
   changer->SetOutputSpacing(newspacing);
   changer->ChangeSpacingOn();
@@ -63,7 +65,10 @@ int main(int argc, char * argv[])
   thresh->SetOutsideValue(255);
   writeIm<IType>(thresh->GetOutput(), argv[4]);
   // now to apply the signed distance transform
-  typedef itk::MorphologicalDistanceTransformImageFilter< IType, FType > FilterType;
+  std::cout << "Finished loading etc" << std::endl;
+
+
+  typedef itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -71,11 +76,11 @@ int main(int argc, char * argv[])
   filter->SetOutsideValue(atoi(argv[3]));
   filter->SetUseImageSpacing(true);
   
-  itk::TimeProbe ParabolicT, DanielssonT;
+  itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
 
-  std::cout << "Parabolic   Danielsson" << std::endl;
+  std::cout << "Parabolic  Maurer   Danielsson" << std::endl;
 
-  const unsigned pTESTS = 100;
+  const unsigned pTESTS = 10;
   for (unsigned repeats = 0; repeats < pTESTS; repeats++)
     {
     ParabolicT.Start();
@@ -85,6 +90,19 @@ int main(int argc, char * argv[])
     }
 
   writeIm<FType>(filter->GetOutput(), argv[5]);
+
+  typedef itk::SignedMaurerDistanceMapImageFilter<IType, FType> MaurerType;
+  MaurerType::Pointer maurer = MaurerType::New();
+  maurer->SetInput(thresh->GetOutput());
+  maurer->SetUseImageSpacing(true);
+  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
+    {
+    MaurerT.Start();
+    maurer->Modified();
+    maurer->Update();
+    MaurerT.Stop();
+    }
+  writeIm<FType>(maurer->GetOutput(), argv[6]);
 
 
   const unsigned TESTS = 10;
@@ -105,6 +123,7 @@ int main(int argc, char * argv[])
 
   std::cout << std::setprecision(3)
 	    << ParabolicT.GetMeanTime() <<"\t"
+	    << MaurerT.GetMeanTime() <<"\t"
 	    << DanielssonT.GetMeanTime() << std::endl;
 
   
