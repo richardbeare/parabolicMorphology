@@ -5,8 +5,14 @@
 #include "itkImageRegionIterator.h"
 
 #include "itkParabolicOpenCloseImageFilter.h"
+//#define NOINDEX
+#ifndef NOINDEX
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
+#else
+#include "itkImageLinearIterator.h"
+#include "itkImageLinearConstIterator.h"
+#endif
 #include "itkStatisticsImageFilter.h"
 #include "itkParabolicMorphUtils.h"
 
@@ -88,11 +94,19 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 ::GenerateData(void)
 {
 
+#ifndef NOINDEX
   typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
   typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
 
   // for stages after the first
   typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
+#else
+  typedef ImageLinearConstIterator< TInputImage  >  InputConstIteratorType;
+  typedef ImageLinearIterator< TOutputImage >  OutputIteratorType;
+
+  // for stages after the first
+  typedef ImageLinearConstIterator< TOutputImage  >  OutputConstIteratorType;
+#endif
 
   typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 

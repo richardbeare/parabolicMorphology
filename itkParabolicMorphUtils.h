@@ -14,7 +14,8 @@ void DoLine(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
   // negative half of the parabola
   for (long pos = 0; pos < LineLength; pos++)
     {
-    RealType BaseVal = (RealType)m_Extreme; // the base value for comparison
+    RealType BaseVal = (RealType)m_Extreme; // the base value for
+					    // comparison
     for (long krange = koffset; krange <= 0; krange++)
       {
       // difference needs to be paramaterised

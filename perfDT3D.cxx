@@ -49,6 +49,7 @@ int main(int argc, char * argv[])
   newspacing[0] = 0.5;
   newspacing[1] = 0.25;
   newspacing[2] = 0.75;
+  newspacing.Fill(1);
 
   changer->SetOutputSpacing(newspacing);
   changer->ChangeSpacingOn();
@@ -95,6 +96,7 @@ int main(int argc, char * argv[])
   MaurerType::Pointer maurer = MaurerType::New();
   maurer->SetInput(thresh->GetOutput());
   maurer->SetUseImageSpacing(true);
+  maurer->SetSquaredDistance(false);
   for (unsigned repeats = 0; repeats < pTESTS; repeats++)
     {
     MaurerT.Start();
@@ -118,7 +120,7 @@ int main(int argc, char * argv[])
     daniel->Update();
     DanielssonT.Stop();
     }
-  writeIm<FType>(daniel->GetDistanceMap(), argv[6]);
+  writeIm<FType>(daniel->GetDistanceMap(), argv[7]);
 
 
   std::cout << std::setprecision(3)

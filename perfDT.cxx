@@ -91,6 +91,7 @@ int main(int argc, char * argv[])
   MaurerType::Pointer maurer = MaurerType::New();
   maurer->SetInput(thresh->GetOutput());
   maurer->SetUseImageSpacing(true);
+  maurer->SetSquaredDistance(false);
   for (unsigned repeats = 0; repeats < TESTS; repeats++)
     {
     MaurerT.Start();

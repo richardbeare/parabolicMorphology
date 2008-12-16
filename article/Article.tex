@@ -178,31 +178,34 @@ the nearest 0 value. The idea can be easily extended to allow
 computation of the inside and outside distances without
 rethresholding. This method should be more accurate than basic chamfer
 approaches and appears slightly faster than the {\em
-  SignedDanielssonDistanceTransform} currently provided in ITK, as
+  SignedDanielssonDistanceTransform} but slower than the {\em
+  SignedMaurerDistanceTransform} currently provided in ITK, as
 illustrated in Table \ref{tbl:perf}. The parabolic version does not
 return voronoi tesselations or vectors pointing to the nearest inverse
 pixel because such things aren't required in construction of the
-distance transform. I cannot comment on the relative accuracy of the
-two methods at this stage as there appears to be no difference in
-output for the cthead image, but expect that the Danielsson method
-uses approximations that aren't necessary in the parabolic
-version. There are prospects for further improvements in performance
-when the parabolic methods are threaded. The parabolic method should
-retain efficiency in arbitary dimensions due to the separable nature
-of the parabolic operations.
+distance transform. The Danielsson approach produces an approximate
+distance transform (albeit a good one for most purposes), while the
+approach using parabolic morphology is exact. The parabolic morphology
+approach does not perform as well as the Maurer approach, but may be
+able to do better in the future since it is easily threadable (see
+Section \ref{sect:threading}) and other optimizations that haven't yet
+been implemented are available. In addition, no attempt has been made
+to use integer arithmetic.
+
 \begin{table}[phtb]
 \centering
-\begin{tabular}{ccc}
+\begin{tabular}{cccc}
 \hline
-Image & Parabolic &  Danielsson \\
-$256 times 256$ & 0.0416  & 0.0588 \\
-$258 \times 258 \times 182$ & 0.992 & 88\\
+Image & Parabolic & Maurer & Danielsson \\ 
+$256 \times 256$ & 0.0457 & 0.0152 & 0.0568 \\
+$258 \times 258 \times 182$ & 10.4  &  7.28  &  16.1 \\
 \hline
 \end{tabular}
-\caption{Execution times for computing signed distance tranforms using parabolic morphology and the Danielsson method in ITK. The standard, $256 \times 256$ {\em cthead} image was used for 2D, the bunnyPadded image for 3D, and the test was repeated 100 times. These figures were obtained using perfDT and perfDT3D, in this package.\label{tbl:perf}}
+\caption{Execution times, in seconds, for computing signed distance tranforms using parabolic morphology, Maurer and Danielsson methods in ITK. The standard, $256 \times 256$ {\em cthead} image was used for 2D, the bunnyPadded image for 3D, and the test was repeated 10 times. These figures were obtained using perfDT and perfDT3D, in this package. Tests were single threaded and run on an Intel Core2 Duo CPU, E4600, 2.40GHz, 2M cache running Linux.\label{tbl:perf}}
 \end{table}
 
 \section{Multi-threaded implementations}
+\label{sect:threading}
 The morphological operations described in this article are constructed
 using sequences of one dimensional operations along directions
 parallel to the image axes. Such operations are easily parallelisable,
@@ -224,8 +227,8 @@ This article introduces implementations of an important class of
 morphological operations - erosions and dilations be parabolic
 structuring elements. Applications of these operations to sharpening
 and distance transforms are also presented. The latter appears to
-outperform some existing implementations, but more tests are
-necessary.
+outperform some existing implementations and may do better as improved
+algorithms are implemented.
 
 \section*{Acknowledgements}
 Thanks to Paul Jackway for valuable discussions.

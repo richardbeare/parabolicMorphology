@@ -139,6 +139,7 @@ public:
     this->m_BeginLine = this->m_Offset;
     this->m_EndLine = this->m_BeginLine + this->m_Region.GetSize()[this->m_Direction] * this->m_Jump;
     
+    this->m_Remaining = true;
   };
 
   void GoToEnd()
