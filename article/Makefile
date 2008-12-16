@@ -44,7 +44,7 @@ eps: $(OUTPUT_EPS)
 	fig2dev -L eps $< $@
 
 %.eps: ../images/%.gnuplot
-	gnuplot $< > $@
+	(cd ../images; gnuplot $<) > $@
 
 
 ${NAME}.ps: ${NAME}.dvi
