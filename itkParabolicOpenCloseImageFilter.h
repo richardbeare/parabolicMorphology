@@ -15,7 +15,8 @@ namespace itk
  * This filter doesn't use the erode/dilate classes directly so
  * that multiple image copies aren't necessary.
  *
- * This filter isn't threaded.
+ * This filter is threaded. Threading mechanism derived from
+ * SignedMaurerDistanceMap extensions by Gaetan Lehman
  *
  * \sa itkParabolicErodeDilateImageFilter
  *
@@ -51,6 +52,9 @@ public:
   typedef typename NumericTraits<PixelType>::RealType    RealType;
   typedef typename NumericTraits<PixelType>::ScalarRealType ScalarRealType;
   typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef typename OutputImageType::RegionType OutputImageRegionType;
+  typedef typename TInputImage::SizeType    InputSizeType;
+  typedef typename TOutputImage::SizeType   OutputSizeType;
 
   /** Smart pointer typedef support.  */
   typedef typename TInputImage::Pointer  InputImagePointer;
@@ -106,7 +110,9 @@ protected:
   
   /** Generate Data */
   void GenerateData( void );
-  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
+  int SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion);
+  void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, int threadId );
+//  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.
   void EnlargeOutputRequestedRegion(DataObject *output);
   
@@ -119,7 +125,8 @@ private:
   typename TInputImage::PixelType m_Extreme, m_Extreme1, m_Extreme2;
 
   int m_MagnitudeSign, m_MagnitudeSign1, m_MagnitudeSign2;
-
+  int m_CurrentDimension;
+  int m_Stage;
   bool m_UseImageSpacing;
 };
 
