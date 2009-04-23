@@ -40,6 +40,66 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 }
 
 template <typename TInputImage, bool doDilate, typename TOutputImage>
+int
+ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+::SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion)
+{
+  // Get the output pointer
+  OutputImageType * outputPtr = this->GetOutput();
+  const typename TOutputImage::SizeType& requestedRegionSize 
+    = outputPtr->GetRequestedRegion().GetSize();
+
+  int splitAxis;
+  typename TOutputImage::IndexType splitIndex;
+  typename TOutputImage::SizeType splitSize;
+
+  // Initialize the splitRegion to the output requested region
+  splitRegion = outputPtr->GetRequestedRegion();
+  splitIndex = splitRegion.GetIndex();
+  splitSize = splitRegion.GetSize();
+
+  // split on the outermost dimension available
+  // and avoid the current dimension
+  splitAxis = outputPtr->GetImageDimension() - 1;
+  while (requestedRegionSize[splitAxis] == 1 || splitAxis == (int)m_CurrentDimension)
+    {
+    --splitAxis;
+    if (splitAxis < 0)
+      { // cannot split
+      itkDebugMacro("  Cannot Split");
+      return 1;
+      }
+    }
+
+  // determine the actual number of pieces that will be generated
+  typename TOutputImage::SizeType::SizeValueType range = requestedRegionSize[splitAxis];
+  int valuesPerThread = (int)::ceil(range/(double)num);
+  int maxThreadIdUsed = (int)::ceil(range/(double)valuesPerThread) - 1;
+
+  // Split the region
+  if (i < maxThreadIdUsed)
+    {
+    splitIndex[splitAxis] += i*valuesPerThread;
+    splitSize[splitAxis] = valuesPerThread;
+    }
+  if (i == maxThreadIdUsed)
+    {
+    splitIndex[splitAxis] += i*valuesPerThread;
+    // last thread needs to process the "rest" dimension being split
+    splitSize[splitAxis] = splitSize[splitAxis] - i*valuesPerThread;
+    }
+  
+  // set the split region ivars
+  splitRegion.SetIndex( splitIndex );
+  splitRegion.SetSize( splitSize );
+
+  itkDebugMacro("  Split Piece: " << splitRegion );
+
+  return maxThreadIdUsed + 1;
+}
+
+
+template <typename TInputImage, bool doDilate, typename TOutputImage>
 void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 ::SetScale( ScalarRealType scale )
@@ -49,6 +109,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   this->SetScale( s );
 }
 
+#if 0
 template <typename TInputImage, bool doDilate, typename TOutputImage>
 void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
@@ -65,7 +126,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
     image->SetRequestedRegion( this->GetInput()->GetLargestPossibleRegion() );
     }
 }
-
+#endif
+#if 1
 template <typename TInputImage, bool doDilate, typename TOutputImage>
 void
 ParabolicErodeDilateImageFilter<TInputImage,doDilate, TOutputImage>
@@ -78,106 +140,149 @@ ParabolicErodeDilateImageFilter<TInputImage,doDilate, TOutputImage>
     out->SetRequestedRegion( out->GetLargestPossibleRegion() );
     }
 }
-
+#endif
 
 template <typename TInputImage, bool doDilate, typename TOutputImage >
 void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
 ::GenerateData(void)
 {
-#ifndef NOINDEX
+
+  typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
+  typename TOutputImage::Pointer       outputImage(   this->GetOutput()        );
+
+  //const unsigned int imageDimension = inputImage->GetImageDimension();
+  outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
+  outputImage->Allocate();
+
+  // Set up the multithreaded processing
+  typename ImageSource< TOutputImage >::ThreadStruct str;
+  str.Filter = this;
+  this->GetMultiThreader()->SetNumberOfThreads(this->GetNumberOfThreads());
+  this->GetMultiThreader()->SetSingleMethod(this->ThreaderCallback, &str);
+  
+  // multithread the execution
+  for( unsigned int d=0; d<ImageDimension; d++ )
+    {
+    m_CurrentDimension = d;
+    this->GetMultiThreader()->SingleMethodExecute();
+    }
+
+}
+
+template <typename TInputImage, bool doDilate, typename TOutputImage>
+void
+ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
+::ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, int threadId )
+{
+  // compute the number of rows first, so we can setup a progress reporter
+  typename std::vector< unsigned int > NumberOfRows;
+  InputSizeType   size   = outputRegionForThread.GetSize();
+
+  for (unsigned int i = 0; i < InputImageDimension; i++)
+    {
+    NumberOfRows.push_back( 1 );
+    for (unsigned int d = 0; d < InputImageDimension; d++)
+      {
+      if( d != i )
+        {
+        NumberOfRows[i] *= size[ d ];
+        }
+      }
+    }
+  float progressPerDimension = 1.0/ImageDimension;
+
+  ProgressReporter * progress = new ProgressReporter(this, threadId, NumberOfRows[m_CurrentDimension], 30, m_CurrentDimension * progressPerDimension, progressPerDimension);
+
+
   typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
   typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
 
   // for stages after the first
   typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
-#else
-  typedef ImageLinearConstIterator< TInputImage  >  InputConstIteratorType;
-  typedef ImageLinearIterator< TOutputImage >  OutputIteratorType;
 
-  // for stages after the first
-  typedef ImageLinearConstIterator< TOutputImage  >  OutputConstIteratorType;
-#endif
 
   typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
   typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
   typename TOutputImage::Pointer       outputImage(   this->GetOutput()        );
 
-  const unsigned int imageDimension = inputImage->GetImageDimension();
-
   
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
-  RegionType region = inputImage->GetRequestedRegion();
+  RegionType region = outputRegionForThread;
 
   InputConstIteratorType  inputIterator(  inputImage,  region );
   OutputIteratorType      outputIterator( outputImage, region );
   OutputConstIteratorType inputIteratorStage2( outputImage, region );
 
   // setup the progress reporting 
-  unsigned int numberOfLinesToProcess = 0;
-  for (unsigned  dd = 0; dd < imageDimension; dd++)
-    {
-    numberOfLinesToProcess += region.GetSize()[dd];
-    }
+//   unsigned int numberOfLinesToProcess = 0;
+//   for (unsigned  dd = 0; dd < imageDimension; dd++)
+//     {
+//     numberOfLinesToProcess += region.GetSize()[dd];
+//     }
 
-  ProgressReporter progress(this,0, numberOfLinesToProcess);
+//   ProgressReporter progress(this,0, numberOfLinesToProcess);
 
   // deal with the first dimension - this should be copied to the
   // output if the scale is 0
-  if (m_Scale[0] > 0)
+  if(m_CurrentDimension == 0)
     {
-    // Perform as normal
-    //RealType magnitude = 1.0/(2.0 * m_Scale[0]);
-    unsigned long LineLength = region.GetSize()[0];
-    RealType image_scale = this->GetInput()->GetSpacing()[0];
-
-    doOneDimension<InputConstIteratorType,OutputIteratorType, 
-      RealType, OutputPixelType, doDilate>(inputIterator, outputIterator, 
-					   progress, LineLength, 0, 
-					   this->m_MagnitudeSign, 
-					   this->m_UseImageSpacing,
-					   this->m_Extreme,
-					   image_scale, 
-					   this->m_Scale[0]);
+    if (m_Scale[0] > 0)
+      {
+      // Perform as normal
+      //RealType magnitude = 1.0/(2.0 * m_Scale[0]);
+      unsigned long LineLength = region.GetSize()[0];
+      RealType image_scale = this->GetInput()->GetSpacing()[0];
+      
+      doOneDimension<InputConstIteratorType,OutputIteratorType, 
+	RealType, OutputPixelType, doDilate>(inputIterator, outputIterator, 
+					     *progress, LineLength, 0, 
+					     this->m_MagnitudeSign, 
+					     this->m_UseImageSpacing,
+					     this->m_Extreme,
+					     image_scale, 
+					     this->m_Scale[0]);
+      }
+    else 
+      {
+      // copy to output
+      typedef ImageRegionConstIterator<TInputImage> InItType;
+      typedef ImageRegionIterator<TOutputImage> OutItType;
+      
+      InItType InIt(inputImage, region);
+      OutItType OutIt(outputImage, region);
+      while (!InIt.IsAtEnd())
+	{
+	OutIt.Set(static_cast<OutputPixelType>(InIt.Get()));
+	++InIt;
+	++OutIt;
+	}
+      }
     }
   else 
     {
-    // copy to output
-    typedef ImageRegionConstIterator<TInputImage> InItType;
-    typedef ImageRegionIterator<TOutputImage> OutItType;
-
-    InItType InIt(inputImage, region);
-    OutItType OutIt(outputImage, region);
-    while (!InIt.IsAtEnd())
-      {
-      OutIt.Set(static_cast<OutputPixelType>(InIt.Get()));
-      ++InIt;
-      ++OutIt;
-      }
-    }
-  // now deal with the other dimensions
-  for (unsigned dd = 1; dd < imageDimension; dd++)
-    {
-    if (m_Scale[dd] > 0)
-      {
-      // create a vector to buffer lines
-      unsigned long LineLength = region.GetSize()[dd];
-      //RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
-      RealType image_scale = this->GetInput()->GetSpacing()[dd];
+      // other dimensions
+      if (m_Scale[m_CurrentDimension] > 0)
+	{
+	// create a vector to buffer lines
+	unsigned long LineLength = region.GetSize()[m_CurrentDimension];
+	//RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
+      RealType image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
 
       doOneDimension<OutputConstIteratorType,OutputIteratorType,
 	RealType, OutputPixelType, doDilate>(inputIteratorStage2, outputIterator, 
-					     progress, LineLength, dd,
+					     *progress, LineLength, m_CurrentDimension,
 					     this->m_MagnitudeSign, 
 					     this->m_UseImageSpacing,
 					     this->m_Extreme,
 					     image_scale,
-					     this->m_Scale[dd]);
-      }
+					     this->m_Scale[m_CurrentDimension]);
+	}
     }
 }
+
 
 template <typename TInputImage, bool doDilate, typename TOutputImage>
 void

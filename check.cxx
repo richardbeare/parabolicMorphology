@@ -12,7 +12,7 @@
 
 int main(int, char * argv[])
 {
-  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
+//  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
   
   typedef unsigned char PType;

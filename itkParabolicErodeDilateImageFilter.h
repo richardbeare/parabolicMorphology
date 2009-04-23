@@ -33,7 +33,8 @@ namespace itk
  * are cast back and forth between low and high precision types. Use a
  * high precision output type and cast manually if this is a problem.
  *
- * This filter isn't threaded.
+ * This filter is threaded. Threading mechanism derived from
+ * SignedMaurerDistanceMap extensions by Gaetan Lehman
  *
  * \author Richard Beare, Department of Medicine, Monash University,
  * Australia.  <Richard.Beare@med.monash.edu.au>
@@ -72,6 +73,9 @@ public:
   /** Smart pointer typedef support.  */
   typedef typename TInputImage::Pointer  InputImagePointer;
   typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+  typedef typename TInputImage::SizeType    InputSizeType;
+  typedef typename TOutputImage::SizeType   OutputSizeType;
+
 
   /** a type to represent the "kernel radius" */
   typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
@@ -83,6 +87,9 @@ public:
                       TOutputImage::ImageDimension);
   itkStaticConstMacro(InputImageDimension, unsigned int,
                       TInputImage::ImageDimension);
+
+
+  typedef typename OutputImageType::RegionType OutputImageRegionType;
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
@@ -122,7 +129,10 @@ protected:
   
   /** Generate Data */
   void GenerateData( void );
-  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
+  int SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion);
+  void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, int threadId );
+
+//  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.
   void EnlargeOutputRequestedRegion(DataObject *output);
   
@@ -133,8 +143,8 @@ private:
   typename TInputImage::PixelType m_Extreme;
 
   int m_MagnitudeSign;
-
   bool m_UseImageSpacing;
+  int m_CurrentDimension;
 };
 
 } // end namespace itk
