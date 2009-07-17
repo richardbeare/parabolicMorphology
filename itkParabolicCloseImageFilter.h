@@ -13,7 +13,7 @@ namespace itk
  *
  * This filter provides options for padded borders
  *
- * This filter isn't threaded.
+ * This filter is threaded.
  *
  * \sa itkParabolicOpenCloseImageFilter 
  *

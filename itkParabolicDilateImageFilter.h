@@ -11,7 +11,7 @@ namespace itk
  * \brief Class for morphological dilation
  * operations  with parabolic structuring elements.
  *
- * This filter isn't threaded.
+ * This filter is threaded.
  *
  * \sa itkParabolicOpenCloseImageFilter
  *

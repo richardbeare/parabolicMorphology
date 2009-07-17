@@ -1,6 +1,8 @@
 #ifndef __itkParabolicUtils_h
 #define __itkParabolicUtils_h
 
+#include <itkArray.h>
+
 #include "itkProgressReporter.h"
 namespace itk {
 template <class LineBufferType, class RealType, bool doDilate>
@@ -61,7 +63,11 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 		    const RealType image_scale,
 		    const RealType Sigma)
 {
-  typedef typename std::vector<RealType> LineBufferType;
+//  typedef typename std::vector<RealType> LineBufferType;
+
+  // message from M.Starring suggested performance gain using Array
+  // instead of std::vector.
+  typedef typename itk::Array<RealType> LineBufferType;
   RealType iscale = 1.0;
   if (m_UseImageSpacing)
     {

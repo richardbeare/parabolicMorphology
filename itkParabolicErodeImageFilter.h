@@ -14,7 +14,7 @@ namespace itk
  * This filter doesn't use the erode/dilate classes directly so
  * that multiple image copies aren't necessary.
  *
- * This filter isn't threaded.
+ * This filter is threaded.
  *
  * \sa itkParabolicErodeDilateImageFilter
  *
