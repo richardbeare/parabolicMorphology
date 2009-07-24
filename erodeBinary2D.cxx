@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
   writeIm<IType>(thresh->GetOutput(), argv[4]);
-  // now to apply the signed distance transform
+  // now to apply the erosion
   typedef itk::BinaryErodeParaImageFilter< IType, IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();

@@ -154,7 +154,6 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
   //const unsigned int imageDimension = inputImage->GetImageDimension();
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
-  std::cout << "PEDI called" << std::endl;
   // Set up the multithreaded processing
   typename ImageSource< TOutputImage >::ThreadStruct str;
   str.Filter = this;

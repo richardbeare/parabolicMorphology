@@ -2,7 +2,7 @@
 #define __itkBinaryErodeParaImageFilter_h
 
 #include "itkParabolicErodeImageFilter.h"
-#include "itkCastImageFilter.h"
+#include "itkBinaryThresholdImageFilter.h"
 
 namespace itk
 {
@@ -21,11 +21,7 @@ namespace itk
  * can be carried out by thresholding a distance transform. By using
  * the parabolic filters we can avoid computing the entire distance
  * transform and instead only compute the subset we are interested
- * in. In addition in the special case of erosion, the threshold
- * operation can be replaced by a floating point to integer cast.
- *
- * The output type must be integer (probably char) and the foreground
- * value must be 1. Float types are used internally.
+ * in.
  *
  * This filter was developed as a result of discussions with
  * M.Starring on the ITK mailing list.
@@ -71,6 +67,9 @@ public:
   typedef typename TInputImage::ConstPointer  InputImageConstPointer;
 
   typedef typename NumericTraits< PixelType >::FloatType   InternalRealType;
+  // perhaps a bit dodgy, change to int if you want to do enormous
+  // binary operations
+  typedef  short     InternalIntType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -84,9 +83,16 @@ public:
 
   void SetUseImageSpacing(bool g)
   {
-    m_Para->SetUseImageSpacing(true);
+    m_RectPara->SetUseImageSpacing(g);
+    m_CircPara->SetUseImageSpacing(g);
   }
-
+  /**
+   * Set/Get whether the erosion is circular/rectangular -
+   * default is true (circular)
+   */
+  itkSetMacro(Circular, bool);
+  itkGetConstReferenceMacro(Circular, bool);
+  itkBooleanMacro(Circular);
   /** Image related typedefs. */
 
   /* add in the traits here */
@@ -98,16 +104,22 @@ protected:
   virtual ~BinaryErodeParaImageFilter() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  typedef typename itk::Image<InternalRealType, InputImageType::ImageDimension> InternalImageType;
-  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalImageType> ParabolicType;
-  typedef typename itk::CastImageFilter<InternalImageType, OutputImageType> CastType;
+  typedef typename itk::Image<InternalRealType, InputImageType::ImageDimension> InternalRealImageType;
+  typedef typename itk::Image<InternalIntType, InputImageType::ImageDimension> InternalIntImageType;
+  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalRealImageType> CircParabolicType;
+  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalIntImageType> RectParabolicType;
+  typedef typename itk::BinaryThresholdImageFilter<InternalRealImageType, OutputImageType> CCastType;
+  typedef typename itk::BinaryThresholdImageFilter<InternalIntImageType, OutputImageType> RCastType;
 private:
   BinaryErodeParaImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   RadiusType m_Radius;
+  bool m_Circular;
+  typename CircParabolicType::Pointer m_CircPara;
+  typename CCastType::Pointer m_CircCast;
 
-  typename ParabolicType::Pointer m_Para;
-  typename CastType::Pointer m_Cast;
+  typename RectParabolicType::Pointer m_RectPara;
+  typename RCastType::Pointer m_RectCast;
 
 };
 

@@ -15,9 +15,13 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage>
 {
   this->SetNumberOfRequiredOutputs( 1 );
   this->SetNumberOfRequiredInputs( 1 );
-  this->m_Para = ParabolicType::New();
-  this->m_Cast = CastType::New();
-  // Need to call this after filters are created
+  this->m_CircPara = CircParabolicType::New();
+  this->m_CircCast = CCastType::New();
+
+  this->m_RectPara = RectParabolicType::New();
+  this->m_RectCast = RCastType::New();
+  this->m_Circular = true;
+    // Need to call this after filters are created
   this->SetUseImageSpacing(false);
 }
 
@@ -40,7 +44,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
   // Allocate the output
   this->AllocateOutputs();
   // set up the scaling before we pass control over to superclass
-  if (this->m_Para->GetUseImageSpacing())
+  if (this->m_RectPara->GetUseImageSpacing())
     {
     // radius is in mm
     RadiusType R;
@@ -49,35 +53,64 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
       R[P] = 0.5*m_Radius[P] * m_Radius[P];
       //this->SetScale(0.5*m_Radius[P] * m_Radius[P]);
       }
-    m_Para->SetScale(R);
+    m_RectPara->SetScale(R);
+    m_CircPara->SetScale(R);
 
     }
   else
     {
-    std::cout << "no image spacing " << m_Radius << std::endl;
     // radius is in pixels
     RadiusType R;
+    // this gives us a little bit of a margin 
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
-      R[P] = 0.5*m_Radius[P] * m_Radius[P] + 1;
+      R[P] = (0.5*(m_Radius[P]+1) * (m_Radius[P] + 1));
       }
-    m_Para->SetScale(R);
+    std::cout << "no image spacing " << m_Radius << R << std::endl;
+    m_RectPara->SetScale(R);
+    m_CircPara->SetScale(R);
+
     }
 
-  ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
-  progress->SetMiniPipelineFilter(this);
-  InputImageConstPointer inputImage;
-  inputImage = this->GetInput();
+  if (m_Circular)
+    {
+    ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
+    progress->SetMiniPipelineFilter(this);
+    InputImageConstPointer inputImage;
+    inputImage = this->GetInput();
 
-  progress->RegisterInternalFilter(m_Para, 0.8f);
-  progress->RegisterInternalFilter(m_Cast, 0.2f);
+    progress->RegisterInternalFilter(m_CircPara, 0.8f);
+    progress->RegisterInternalFilter(m_CircCast, 0.2f);
 
-  m_Para->SetInput(inputImage);
-  m_Cast->SetInput(m_Para->GetOutput());
-  m_Cast->GraftOutput(this->GetOutput());
-  m_Cast->Update();
-  this->GraftOutput(m_Cast->GetOutput());
-  
+    m_CircPara->SetInput(inputImage);
+    m_CircCast->SetInput(m_CircPara->GetOutput());
+    m_CircCast->SetInsideValue(0);
+    m_CircCast->SetOutsideValue(1);
+    // setting the correct threshold value is a little tricky - needs
+    // to produce a result matching a bresenham circle
+    m_CircCast->SetUpperThreshold(0.99);
+
+    m_CircCast->GraftOutput(this->GetOutput());
+    m_CircCast->Update();
+    this->GraftOutput(m_CircCast->GetOutput());
+    }
+  else
+    {
+    ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
+    progress->SetMiniPipelineFilter(this);
+    InputImageConstPointer inputImage;
+    inputImage = this->GetInput();
+
+    progress->RegisterInternalFilter(m_RectPara, 0.8f);
+    progress->RegisterInternalFilter(m_RectCast, 0.2f);
+
+    m_RectPara->SetInput(inputImage);
+    m_RectCast->SetInput(m_RectPara->GetOutput());
+    m_RectCast->GraftOutput(this->GetOutput());
+    m_RectCast->Update();
+    this->GraftOutput(m_RectCast->GetOutput());
+
+    }
 }
 
 
@@ -87,7 +120,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
-  if (this->m_Para->GetUseImageSpacing())
+  if (this->m_CircPara->GetUseImageSpacing())
     {
     os << "Radius in world units: " << this->GetRadius() << std::endl;
     }
