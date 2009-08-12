@@ -5,9 +5,9 @@
 #include "ioutils.h"
 #include <itkBinaryThresholdImageFilter.h>
 #include <itkBinaryBallStructuringElement.h>
-#include <itkBinaryErodeImageFilter.h>
+#include <itkBinaryDilateImageFilter.h>
 
-#include "itkBinaryErodeParaImageFilter.h"
+#include "itkBinaryDilateParaImageFilter.h"
 
 #include "itkTimeProbe.h"
 #include "itkMultiThreader.h"
@@ -43,11 +43,11 @@ int main(int argc, char * argv[])
   region.SetSize(size);
   image->SetRegions(region);
   image->Allocate();
-  image->FillBuffer(1);
-  image->SetPixel(ind, 0);
+  image->FillBuffer(0);
+  image->SetPixel(ind, 1);
 
 
-  typedef itk::BinaryErodeParaImageFilter< IType, IType > FilterType;
+  typedef itk::BinaryDilateParaImageFilter< IType, IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
   int testrad = atoi(argv[1]);
@@ -67,13 +67,13 @@ int main(int argc, char * argv[])
   SE.SetRadius(SErad);
   SE.CreateStructuringElement();
 
-  typedef itk::BinaryErodeImageFilter<IType, IType, SEType> OldBinErodeType;
-  OldBinErodeType::Pointer olderode = OldBinErodeType::New();
-  olderode->SetInput(image);
-  olderode->SetKernel(SE);
-  olderode->SetErodeValue(1);
+  typedef itk::BinaryDilateImageFilter<IType, IType, SEType> OldBinDilateType;
+  OldBinDilateType::Pointer olddilate = OldBinDilateType::New();
+  olddilate->SetInput(image);
+  olddilate->SetKernel(SE);
+  olddilate->SetDilateValue(1);
 
-  writeIm<IType>(olderode->GetOutput(), std::string(argv[2]) + "_" + argv[1] + "_old.png");  
+  writeIm<IType>(olddilate->GetOutput(), std::string(argv[2]) + "_" + argv[1] + "_old.png");  
 
 
   return EXIT_SUCCESS;

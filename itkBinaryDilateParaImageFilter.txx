@@ -1,17 +1,17 @@
-#ifndef __itkBinaryErodeParabolicImageFilter_txx
-#define __itkBinaryErodeParabolicImageFilter_txx
+#ifndef __itkBinaryDilateParabolicImageFilter_txx
+#define __itkBinaryDilateParabolicImageFilter_txx
 
 #include "itkProgressAccumulator.h"
-#include "itkBinaryErodeParaImageFilter.h"
-#include "itkParabolicErodeImageFilter.h"
+#include "itkBinaryDilateParaImageFilter.h"
+#include "itkParabolicDilateImageFilter.h"
 #include "itkProgressAccumulator.h"
 
 namespace itk
 {
 
 template <typename TInputImage, typename TOutputImage>
-BinaryErodeParaImageFilter<TInputImage, TOutputImage>
-::BinaryErodeParaImageFilter()
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>
+::BinaryDilateParaImageFilter()
 {
   this->SetNumberOfRequiredOutputs( 1 );
   this->SetNumberOfRequiredInputs( 1 );
@@ -28,7 +28,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage>
 
 template <typename TInputImage, typename TOutputImage>
 void
-BinaryErodeParaImageFilter<TInputImage, TOutputImage>
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>
 ::SetRadius( ScalarRealType radius )
 {
   RadiusType s;
@@ -38,7 +38,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage>
 
 template <typename TInputImage, typename TOutputImage >
 void
-BinaryErodeParaImageFilter<TInputImage, TOutputImage >
+BinaryDilateParaImageFilter<TInputImage, TOutputImage >
 ::GenerateData(void)
 {
   // Allocate the output
@@ -85,15 +85,14 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
 
     m_CircPara->SetInput(inputImage);
     m_CircCast->SetInput(m_CircPara->GetOutput());
-    m_CircCast->SetVal(1.0);
     //m_CircCast->SetInsideValue(0);
     //m_CircCast->SetOutsideValue(1);
     // setting the correct threshold value is a little tricky - needs would
     // to produce a result matching a bresenham circle, but these
     // circles are such that the voxel centres need to be less than radius
-    //m_CircCast->SetUpperThreshold(1 - itk::NumericTraits<InternalRealType>::min());
-    //m_CircCast->SetUpperThreshold(0.99);
-
+    m_CircCast->SetUpperThreshold(0);
+    m_CircCast->SetOutsideValue(1);
+    m_CircCast->SetInsideValue(0);
     m_CircCast->GraftOutput(this->GetOutput());
     m_CircCast->Update();
     this->GraftOutput(m_CircCast->GetOutput());
@@ -110,7 +109,9 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
 
     m_RectPara->SetInput(inputImage);
     m_RectCast->SetInput(m_RectPara->GetOutput());
-    m_RectCast->SetVal(1);
+    m_RectCast->SetUpperThreshold(0);
+    m_RectCast->SetOutsideValue(1);
+    m_RectCast->SetInsideValue(0);
     m_RectCast->GraftOutput(this->GetOutput());
     m_RectCast->Update();
     this->GraftOutput(m_RectCast->GetOutput());
@@ -121,7 +122,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
 
 template <typename TInputImage, typename TOutputImage>
 void
-BinaryErodeParaImageFilter<TInputImage, TOutputImage>
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
