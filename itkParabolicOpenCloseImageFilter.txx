@@ -299,19 +299,21 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
       }
     else
       {
-      // now deal with the other dimensions for first stage
-      unsigned long LineLength = region.GetSize()[m_CurrentDimension];
-      RealType image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
-      
-      doOneDimension<OutputConstIteratorType,OutputIteratorType, 
-	RealType, OutputPixelType, !doOpen>(inputIteratorStage2, outputIterator, 
-					    *progress, LineLength, m_CurrentDimension, 
-					    this->m_MagnitudeSign, 
-					    this->m_UseImageSpacing,
-					    this->m_Extreme,
-					    image_scale, 
-					    this->m_Scale[m_CurrentDimension]);
-      
+      if (m_Scale[m_CurrentDimension] > 0)
+	{
+	// now deal with the other dimensions for first stage
+	unsigned long LineLength = region.GetSize()[m_CurrentDimension];
+	RealType image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
+	
+	doOneDimension<OutputConstIteratorType,OutputIteratorType, 
+	  RealType, OutputPixelType, !doOpen>(inputIteratorStage2, outputIterator, 
+					      *progress, LineLength, m_CurrentDimension, 
+					      this->m_MagnitudeSign, 
+					      this->m_UseImageSpacing,
+					      this->m_Extreme,
+					      image_scale, 
+					      this->m_Scale[m_CurrentDimension]);
+	}
       }
     }
   else
