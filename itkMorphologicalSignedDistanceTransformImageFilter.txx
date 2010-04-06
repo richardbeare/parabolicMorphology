@@ -21,6 +21,8 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Dilate->SetScale(0.5);
   this->SetUseImageSpacing(true);
   this->SetInsideIsPositive(false);
+  m_OutsideValue = 0;
+
 }
 template <typename TInputImage, typename TOutputImage> 
 void
@@ -77,13 +79,13 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Thresh->SetUpperThreshold(m_OutsideValue);
   if (this->GetInsideIsPositive())
     {
-    m_Thresh->SetOutsideValue(-MaxDist);
-    m_Thresh->SetInsideValue(MaxDist);
+    m_Thresh->SetOutsideValue(MaxDist);
+    m_Thresh->SetInsideValue(-MaxDist);
     }
   else
     {
-    m_Thresh->SetOutsideValue(MaxDist);
-    m_Thresh->SetInsideValue(-MaxDist);
+    m_Thresh->SetOutsideValue(-MaxDist);
+    m_Thresh->SetInsideValue(MaxDist);
     }
 
   m_Thresh->SetInput(this->GetInput());
