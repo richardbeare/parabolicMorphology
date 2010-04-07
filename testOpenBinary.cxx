@@ -45,7 +45,7 @@ int main(int argc, char * argv[])
   int testrad = atoi(argv[2]);
   filter->SetInput( thresh->GetOutput() );
   filter->SetUseImageSpacing(true);
-  filter->SetCircular(false);
+  filter->SetCircular(true);
   filter->SetRadius(testrad);
 
   writeIm<IType>(filter->GetOutput(), std::string(argv[3]) + "_" + argv[2] + ".png");  

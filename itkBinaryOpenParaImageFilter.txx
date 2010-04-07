@@ -105,7 +105,7 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
     m_CircCastA->SetVal(1.0);
     
     m_CircDilate->SetInput(m_CircCastA->GetOutput());
-    m_CircDilate->Update();
+
     m_CircCastB->SetInput(m_CircDilate->GetOutput());
     m_CircCastB->SetUpperThreshold(0);
     m_CircCastB->SetOutsideValue(1);
@@ -120,10 +120,11 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       pad->SetConstant( 1 );
       pad->SetInput( inputImage );
       m_CircErode->SetInput(pad->GetOutput());
-
+      typename InputImageType::Pointer pin = pad->GetOutput();
+      std::cout << "para erode in" << pin ;
       typedef typename itk::CropImageFilter<TOutputImage, TOutputImage> CropType;
       typename CropType::Pointer crop = CropType::New();
-      crop->SetInput( m_CircCastA->GetOutput() );
+      crop->SetInput( m_CircCastB->GetOutput() );
       crop->SetUpperBoundaryCropSize( Pad );
       crop->SetLowerBoundaryCropSize( Pad );
 
@@ -203,6 +204,25 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
+  if (this->m_Circular)
+    {
+    os << "Circular opening, ";
+    }
+  else
+    {
+    os << "Rectangular opening, ";
+    }
+
+  if (this->m_SafeBorder)
+    {
+
+    os << "safe border" << std::endl;
+    }
+  else
+    {
+    os << "unsafe border" << std::endl;
+    }
+
   if (this->m_CircErode->GetUseImageSpacing())
     {
     os << "Radius in world units: " << this->GetRadius() << std::endl;
