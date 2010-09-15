@@ -120,8 +120,6 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       pad->SetConstant( 1 );
       pad->SetInput( inputImage );
       m_CircErode->SetInput(pad->GetOutput());
-      typename InputImageType::Pointer pin = pad->GetOutput();
-      std::cout << "para erode in" << pin ;
       typedef typename itk::CropImageFilter<TOutputImage, TOutputImage> CropType;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_CircCastB->GetOutput() );
