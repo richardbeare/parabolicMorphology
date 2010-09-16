@@ -43,10 +43,17 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
 	BoundsSize[s] = Bounds[s];
 	}
       }
-
     m_PadFilt->SetPadLowerBound(Bounds);
     m_PadFilt->SetPadUpperBound(Bounds);
-    m_PadFilt->SetConstant(NumericTraits<InputPixelType>::max());
+    // need to select between opening and closing here
+    if (doOpen) 
+      {
+      m_PadFilt->SetConstant(NumericTraits<InputPixelType>::max());
+      }
+    else
+      {
+      m_PadFilt->SetConstant(NumericTraits<InputPixelType>::NonpositiveMin());
+      }
     m_PadFilt->SetInput(m_StatsFilt->GetOutput());
     progress->RegisterInternalFilter(m_PadFilt, 0.1f );
     inputImage = m_PadFilt->GetOutput();
