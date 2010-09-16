@@ -67,7 +67,7 @@ ENDIF(BUILD_WRAPPERS)
 
 IF(BUILD_TESTING)
 
-FOREACH(CurrentExe "check" "testOpen" "testClose" "testSpacing" "testSharpen" "testDT" "perfDT" "perfDT3D" "mkSpot" "erodeBinary2D" "testErodeBinary" "testDilateBinary" "testOpenBinary" "testCloseBinary" "dilateBinary")
+FOREACH(CurrentExe "check" "testOpen" "testClose" "testSpacing" "testSharpen" "testDT" "perfDT" "perfDT3D" "mkSpot" "erodeBinary2D" "testErodeBinary" "testDilateBinary" "testOpenBinary" "testCloseBinary" "dilateBinary3D")
 ADD_EXECUTABLE(${CurrentExe} ${CurrentExe}.cxx)
 TARGET_LINK_LIBRARIES(${CurrentExe} ${Libraries})
 ENDFOREACH(CurrentExe)
