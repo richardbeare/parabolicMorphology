@@ -14,7 +14,8 @@ int main(int, char * argv[])
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
   
-  typedef unsigned char PType;
+  //typedef unsigned char PType;
+  typedef float PType;
   typedef itk::Image< PType, dim > IType;
 
 
@@ -29,8 +30,9 @@ int main(int, char * argv[])
   filter->SetInput( reader->GetOutput() );
   filter->SetSafeBorder(true);
   FilterType::RadiusType scale;
-  scale[0]=1;
-  scale[1]=0.5;
+  //scale[0]=1;
+  //scale[1]=0.5;
+  scale.Fill(atof(argv[3]));
   filter->SetScale(scale);
 //   itk::SimpleFilterWatcher watcher(filter, "filter");
   itk::TimeProbe NewTime;
