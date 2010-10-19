@@ -16,7 +16,7 @@ template< class TInput, class TOutput>
 class GEConst
 {
 public:
-  GEConst() {m_Val = 0.0;}
+  GEConst() {m_Val = (TInput)0.0;}
   void SetVal(const TInput i) { m_Val = i; }
 
   ~GEConst() {}

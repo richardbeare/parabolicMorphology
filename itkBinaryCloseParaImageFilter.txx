@@ -60,7 +60,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
       R[P] = 0.5*m_Radius[P] * m_Radius[P];
-      Pad[P] = round(m_Radius[P]/this->GetInput()->GetSpacing()[P] + 1);
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType) round(m_Radius[P]/this->GetInput()->GetSpacing()[P] + 1);
       //this->SetScale(0.5*m_Radius[P] * m_Radius[P]);
       }
     m_RectErode->SetScale(R);
@@ -77,7 +77,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
       R[P] = (0.5*m_Radius[P] * m_Radius[P]+1);
-      Pad[P] = m_Radius[P]+1;
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType)(m_Radius[P]+1);
       }
     //std::cout << "no image spacing " << m_Radius << R << std::endl;
     m_RectErode->SetScale(R);
