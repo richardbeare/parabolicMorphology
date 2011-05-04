@@ -7,7 +7,7 @@
 #include "itkProgressAccumulator.h"
 #include "itkCropImageFilter.h"
 #include "itkConstantPadImageFilter.h"
-#include "ioutils.h"
+
 
 namespace itk
 {
@@ -149,12 +149,6 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       crop->GraftOutput( this->GetOutput() );
       crop->Update();
       this->GraftOutput( crop->GetOutput() );
-
-      writeIm<InputImageType>(pad->GetOutput(), "/tmp/pad.nii.gz");
-      writeIm<InternalRealImageType>(m_CircErode->GetOutput(), "/tmp/erode.nii.gz");
-      writeIm<OutputImageType>(m_CircCastA->GetOutput(), "/tmp/erodethresh.nii.gz");
-      writeIm<InternalRealImageType>(m_CircDilate->GetOutput(), "/tmp/dilate.nii.gz");
-      writeIm<OutputImageType>(m_CircCastB->GetOutput(), "/tmp/dilatethresh.nii.gz");
 
       }
     else
