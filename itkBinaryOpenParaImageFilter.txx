@@ -7,7 +7,7 @@
 #include "itkProgressAccumulator.h"
 #include "itkCropImageFilter.h"
 #include "itkConstantPadImageFilter.h"
-
+#include "ioutils.h"
 
 namespace itk
 {
@@ -54,16 +54,35 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
   this->AllocateOutputs();
   typename TInputImage::SizeType Pad;
 
+  // numerical errors do seem to build up, so we need a margin on the
+  // thresholding steps.
+  ScalarRealType margin = 0.0;
+  
+  ScalarRealType mxRad = (ScalarRealType)(*std::max_element(m_Radius.Begin(), m_Radius.End()));
+  // this needs to be examined more closely
+  margin = 1.0/(pow(mxRad, TInputImage::ImageDimension) * 10); 
+  margin = std::min(margin, 0.00001);
+  std::cout << "Margin = " << margin << std::endl;
   // set up the scaling before we pass control over to superclass
   if (this->m_RectErode->GetUseImageSpacing())
     {
-    // radius is in mm
+    // radius is in mm - need to do an adjustment to make sure that we
+    // end up with an odd number of voxels for the radius
     RadiusType R;
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
-      R[P] = m_Radius[P] * m_Radius[P];
-      Pad[P] = (typename TInputImage::SizeType::SizeValueType)round(m_Radius[P]/this->GetInput()->GetSpacing()[P] + 1);
+      typename TInputImage::SpacingValueType tsp = this->GetInput()->GetSpacing()[P];
+
+      //int thisvox=(int)round(m_Radius[P]/this->GetInput()->GetSpacing()[P]);
+      //if (thisvox % 2 == 0) ++thisvox;
+      //std::cout << thisvox << std::endl;
+      //float thisRad = thisvox * this->GetInput()->GetSpacing()[P];
+      //R[P] = 0.5 * thisRad * thisRad +
+      //this->GetInput()->GetSpacing()[P];
+      R[P] = 0.5 * (m_Radius[P] * m_Radius[P] + tsp*tsp);
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType)(round(m_Radius[P]/tsp) + 1);
       }
+    std::cout << "ISp " << Pad << R << std::endl;
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);
     m_RectDilate->SetScale(R);
@@ -81,6 +100,7 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       Pad[P] = (typename TInputImage::SizeType::SizeValueType)m_Radius[P]+1;
       }
     //std::cout << "no image spacing " << m_Radius << R << std::endl;
+    std::cout << Pad << R << std::endl;
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);
     m_RectDilate->SetScale(R);
@@ -102,12 +122,12 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
     progress->RegisterInternalFilter(m_CircCastB, 0.1f);
 
     m_CircCastA->SetInput(m_CircErode->GetOutput());
-    m_CircCastA->SetVal(1.0);
+    m_CircCastA->SetVal(1.0 - margin);
     
     m_CircDilate->SetInput(m_CircCastA->GetOutput());
 
     m_CircCastB->SetInput(m_CircDilate->GetOutput());
-    m_CircCastB->SetUpperThreshold(0);
+    m_CircCastB->SetUpperThreshold(margin);
     m_CircCastB->SetOutsideValue(1);
     m_CircCastB->SetInsideValue(0);
  
@@ -129,6 +149,12 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       crop->GraftOutput( this->GetOutput() );
       crop->Update();
       this->GraftOutput( crop->GetOutput() );
+
+      writeIm<InputImageType>(pad->GetOutput(), "/tmp/pad.nii.gz");
+      writeIm<InternalRealImageType>(m_CircErode->GetOutput(), "/tmp/erode.nii.gz");
+      writeIm<OutputImageType>(m_CircCastA->GetOutput(), "/tmp/erodethresh.nii.gz");
+      writeIm<InternalRealImageType>(m_CircDilate->GetOutput(), "/tmp/dilate.nii.gz");
+      writeIm<OutputImageType>(m_CircCastB->GetOutput(), "/tmp/dilatethresh.nii.gz");
 
       }
     else
