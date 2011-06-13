@@ -30,14 +30,14 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
     {
     // erosion then dilation
     m_Extreme1 = NumericTraits<PixelType>::max();
-    m_Extreme2 = NumericTraits<PixelType>::min();
+    m_Extreme2 = NumericTraits<PixelType>::NonpositiveMin();
     m_MagnitudeSign1 = -1;
     m_MagnitudeSign2 = 1;
     } 
   else
     {
     // dilation then erosion
-    m_Extreme1 = NumericTraits<PixelType>::min();
+    m_Extreme1 = NumericTraits<PixelType>::NonpositiveMin();
     m_Extreme2 = NumericTraits<PixelType>::max();
     m_MagnitudeSign1 = 1;
     m_MagnitudeSign2 = -1;

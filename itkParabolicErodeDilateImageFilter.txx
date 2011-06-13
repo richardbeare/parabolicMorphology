@@ -28,7 +28,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 
   if (doDilate)
     {
-    m_Extreme = NumericTraits<PixelType>::min();
+//    m_Extreme = NumericTraits<PixelType>::min();
+    m_Extreme = NumericTraits<PixelType>::NonpositiveMin();
     m_MagnitudeSign = 1;
     }
   else
