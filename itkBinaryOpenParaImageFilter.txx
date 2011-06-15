@@ -56,13 +56,12 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
 
   // numerical errors do seem to build up, so we need a margin on the
   // thresholding steps.
-  ScalarRealType margin = 0.0;
+  // ScalarRealType margin = 0.0;
   
-  ScalarRealType mxRad = (ScalarRealType)(*std::max_element(m_Radius.Begin(), m_Radius.End()));
-  // this needs to be examined more closely
-  margin = 1.0/(pow(mxRad, TInputImage::ImageDimension) * 10); 
-  margin = std::min(margin, 0.00001);
-  std::cout << "Margin = " << margin << std::endl;
+  // ScalarRealType mxRad = (ScalarRealType)(*std::max_element(m_Radius.Begin(), m_Radius.End()));
+  // // this needs to be examined more closely
+  // margin = 1.0/(pow(mxRad, TInputImage::ImageDimension) * 10); 
+  // margin = std::min(margin, 0.00001);
   // set up the scaling before we pass control over to superclass
   if (this->m_RectErode->GetUseImageSpacing())
     {
@@ -79,10 +78,9 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       //float thisRad = thisvox * this->GetInput()->GetSpacing()[P];
       //R[P] = 0.5 * thisRad * thisRad +
       //this->GetInput()->GetSpacing()[P];
-      R[P] = 0.5 * (m_Radius[P] * m_Radius[P] + tsp*tsp);
+      R[P] = 0.5 * (m_Radius[P] * m_Radius[P] ) + tsp*tsp;
       Pad[P] = (typename TInputImage::SizeType::SizeValueType)(round(m_Radius[P]/tsp) + 1);
       }
-    std::cout << "ISp " << Pad << R << std::endl;
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);
     m_RectDilate->SetScale(R);
@@ -122,12 +120,13 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
     progress->RegisterInternalFilter(m_CircCastB, 0.1f);
 
     m_CircCastA->SetInput(m_CircErode->GetOutput());
-    m_CircCastA->SetVal(1.0 - margin);
+//    m_CircCastA->SetVal(1.0 - margin);
+    m_CircCastA->SetVal(1.0);
     
     m_CircDilate->SetInput(m_CircCastA->GetOutput());
 
     m_CircCastB->SetInput(m_CircDilate->GetOutput());
-    m_CircCastB->SetUpperThreshold(margin);
+    m_CircCastB->SetUpperThreshold(0.0);
     m_CircCastB->SetOutsideValue(1);
     m_CircCastB->SetInsideValue(0);
  
