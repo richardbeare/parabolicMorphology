@@ -249,8 +249,8 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 
   //const unsigned int imageDimension = inputImage->GetImageDimension();
 
-  outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
-  outputImage->Allocate();
+  // outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
+  // outputImage->Allocate();
   RegionType region = outputRegionForThread;
 
 

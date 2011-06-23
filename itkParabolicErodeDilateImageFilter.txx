@@ -208,8 +208,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   typename TOutputImage::Pointer       outputImage(   this->GetOutput()        );
 
   
-  outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
-  outputImage->Allocate();
+  // outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
+  // outputImage->Allocate();
   RegionType region = outputRegionForThread;
 
   InputConstIteratorType  inputIterator(  inputImage,  region );
