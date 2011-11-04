@@ -60,6 +60,8 @@ public:
   typedef typename TInputImage::Pointer  InputImagePointer;
   typedef typename TInputImage::ConstPointer  InputImageConstPointer;
 
+  typedef typename OutputImageType::IndexType       OutputIndexType;
+
   /** Image related typedefs. */
   itkStaticConstMacro(OutputImageDimension, unsigned int,
                       TOutputImage::ImageDimension);
@@ -110,7 +112,9 @@ protected:
   
   /** Generate Data */
   void GenerateData( void );
-  int SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion);
+  unsigned int SplitRequestedRegion(unsigned int i, unsigned int num,
+    OutputImageRegionType & splitRegion);
+
   void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, ThreadIdType threadId );
 //  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.

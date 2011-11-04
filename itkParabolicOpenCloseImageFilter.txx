@@ -49,64 +49,65 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 }
 
 template <typename TInputImage, bool doOpen, typename TOutputImage>
-int
+unsigned int
 ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
-::SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion)
+::SplitRequestedRegion(unsigned int i, unsigned int num,
+  OutputImageRegionType & splitRegion)
 {
   // Get the output pointer
-  OutputImageType * outputPtr = this->GetOutput();
-  const typename TOutputImage::SizeType& requestedRegionSize 
-    = outputPtr->GetRequestedRegion().GetSize();
-
-  int splitAxis;
-  typename TOutputImage::IndexType splitIndex;
-  typename TOutputImage::SizeType splitSize;
+  OutputImageType *outputPtr = this->GetOutput();
 
   // Initialize the splitRegion to the output requested region
   splitRegion = outputPtr->GetRequestedRegion();
-  splitIndex = splitRegion.GetIndex();
-  splitSize = splitRegion.GetSize();
+
+  const OutputSizeType & requestedRegionSize = splitRegion.GetSize();
+
+  OutputIndexType splitIndex = splitRegion.GetIndex();
+  OutputSizeType  splitSize  = splitRegion.GetSize();
 
   // split on the outermost dimension available
   // and avoid the current dimension
-  splitAxis = outputPtr->GetImageDimension() - 1;
-  while (requestedRegionSize[splitAxis] == 1 || splitAxis == (int)m_CurrentDimension)
+  int splitAxis = static_cast< int >( outputPtr->GetImageDimension() ) - 1;
+  while ( ( requestedRegionSize[splitAxis] == 1 ) ||
+          ( splitAxis == static_cast< int >( m_CurrentDimension ) ) )
     {
     --splitAxis;
-    if (splitAxis < 0)
+    if ( splitAxis < 0 )
       { // cannot split
-      itkDebugMacro("  Cannot Split");
+      itkDebugMacro("Cannot Split");
       return 1;
       }
     }
 
   // determine the actual number of pieces that will be generated
-  typename TOutputImage::SizeType::SizeValueType range = requestedRegionSize[splitAxis];
-  int valuesPerThread = (int)::ceil(range/(double)num);
-  int maxThreadIdUsed = (int)::ceil(range/(double)valuesPerThread) - 1;
+  double range = static_cast< double >( requestedRegionSize[splitAxis] );
+
+  unsigned int valuesPerThread =
+    static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( num ) ) );
+  unsigned int maxThreadIdUsed =
+    static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( valuesPerThread ) ) ) - 1;
 
   // Split the region
-  if (i < maxThreadIdUsed)
+  if ( i < maxThreadIdUsed )
     {
-    splitIndex[splitAxis] += i*valuesPerThread;
+    splitIndex[splitAxis] += i * valuesPerThread;
     splitSize[splitAxis] = valuesPerThread;
     }
-  if (i == maxThreadIdUsed)
+  if ( i == maxThreadIdUsed )
     {
-    splitIndex[splitAxis] += i*valuesPerThread;
+    splitIndex[splitAxis] += i * valuesPerThread;
     // last thread needs to process the "rest" dimension being split
-    splitSize[splitAxis] = splitSize[splitAxis] - i*valuesPerThread;
+    splitSize[splitAxis] = splitSize[splitAxis] - i * valuesPerThread;
     }
-  
-  // set the split region ivars
-  splitRegion.SetIndex( splitIndex );
-  splitRegion.SetSize( splitSize );
 
-  itkDebugMacro("  Split Piece: " << splitRegion );
+  // set the split region ivars
+  splitRegion.SetIndex(splitIndex);
+  splitRegion.SetSize(splitSize);
+
+  itkDebugMacro("Split Piece: " << splitRegion);
 
   return maxThreadIdUsed + 1;
 }
-
 
 
 template <typename TInputImage, bool doOpen,  typename TOutputImage>
@@ -157,6 +158,7 @@ void
 ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 ::GenerateData(void)
 {
+  ThreadIdType nbthreads = this->GetNumberOfThreads();
 
   typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
   typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
@@ -176,6 +178,41 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
 
+  typename ImageSource< OutputImageType >::ThreadStruct str;
+  str.Filter = this;
+
+  MultiThreader* multithreader = this->GetMultiThreader();
+  multithreader->SetNumberOfThreads( nbthreads );
+  multithreader->SetSingleMethod(this->ThreaderCallback, &str);
+
+  // multithread the execution
+
+  // multithread the execution - stage 1
+  m_Stage=1;
+
+  for( unsigned int d=0; d<ImageDimension; d++ )
+    {
+    m_CurrentDimension = d;
+    multithreader->SingleMethodExecute();
+    }
+  // swap over the parameters controlling erosion/dilation
+  m_Extreme = m_Extreme2;
+  m_MagnitudeSign = m_MagnitudeSign2;
+  
+  // multithread the execution - stage 2
+  m_Stage=2;
+  // swap over the parameters controlling erosion/dilation
+  m_Extreme = m_Extreme2;
+  m_MagnitudeSign = m_MagnitudeSign2;
+  
+  // multithread the execution - stage 2
+  m_Stage=2;
+  // swap them back
+  m_Extreme = m_Extreme1;
+  m_MagnitudeSign = m_MagnitudeSign1;
+  m_Stage=1;
+
+#if 0
   // Set up the multithreaded processing
   typename ImageSource< TOutputImage >::ThreadStruct str;
   str.Filter = this;
@@ -204,7 +241,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   m_Extreme = m_Extreme1;
   m_MagnitudeSign = m_MagnitudeSign1;
   m_Stage=1;
-  
+#endif
 }
 
 ////////////////////////////////////////////////////////////

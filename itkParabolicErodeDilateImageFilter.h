@@ -76,6 +76,7 @@ public:
   typedef typename TInputImage::SizeType    InputSizeType;
   typedef typename TOutputImage::SizeType   OutputSizeType;
 
+  typedef typename OutputImageType::IndexType       OutputIndexType;
 
   /** a type to represent the "kernel radius" */
   typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
@@ -129,12 +130,14 @@ protected:
   
   /** Generate Data */
   void GenerateData( void );
-  int SplitRequestedRegion(int i, int num, OutputImageRegionType& splitRegion);
+  unsigned int SplitRequestedRegion(unsigned int i, unsigned int num,
+    OutputImageRegionType & splitRegion);
+
   void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, ThreadIdType threadId );
 
 //  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.
-  void EnlargeOutputRequestedRegion(DataObject *output);
+  // void EnlargeOutputRequestedRegion(DataObject *output);
 
   bool m_UseImageSpacing;
   
