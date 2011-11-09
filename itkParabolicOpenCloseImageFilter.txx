@@ -201,12 +201,12 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   
   // multithread the execution - stage 2
   m_Stage=2;
-  // swap over the parameters controlling erosion/dilation
-  m_Extreme = m_Extreme2;
-  m_MagnitudeSign = m_MagnitudeSign2;
-  
-  // multithread the execution - stage 2
-  m_Stage=2;
+  for( unsigned int d=0; d<ImageDimension; d++ )
+    {
+    m_CurrentDimension = d;
+    multithreader->SingleMethodExecute();
+    }
+
   // swap them back
   m_Extreme = m_Extreme1;
   m_MagnitudeSign = m_MagnitudeSign1;
