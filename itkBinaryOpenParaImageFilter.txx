@@ -79,7 +79,7 @@ BinaryOpenParaImageFilter<TInputImage, TOutputImage >
       //R[P] = 0.5 * thisRad * thisRad +
       //this->GetInput()->GetSpacing()[P];
       R[P] = 0.5 * (m_Radius[P] * m_Radius[P] ) + tsp*tsp;
-      Pad[P] = (typename TInputImage::SizeType::SizeValueType)(round(m_Radius[P]/tsp) + 1);
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType)(round(m_Radius[P]/tsp) + 2);
       }
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);

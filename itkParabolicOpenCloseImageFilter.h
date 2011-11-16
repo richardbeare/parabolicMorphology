@@ -118,7 +118,7 @@ protected:
   void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, ThreadIdType threadId );
 //  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.
-  void EnlargeOutputRequestedRegion(DataObject *output);
+//  void EnlargeOutputRequestedRegion(DataObject *output);
   
   typedef typename std::vector<ScalarRealType> LineBufferType;
   

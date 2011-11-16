@@ -139,6 +139,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
 }
 #endif
 
+#if 0
 template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
 ParabolicOpenCloseImageFilter<TInputImage,doOpen, TOutputImage>
@@ -151,7 +152,7 @@ ParabolicOpenCloseImageFilter<TInputImage,doOpen, TOutputImage>
     out->SetRequestedRegion( out->GetLargestPossibleRegion() );
     }
 }
-
+#endif
 
 template <typename TInputImage, bool doOpen,  typename TOutputImage >
 void

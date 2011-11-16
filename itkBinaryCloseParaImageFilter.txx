@@ -7,7 +7,7 @@
 #include "itkProgressAccumulator.h"
 #include "itkCropImageFilter.h"
 #include "itkConstantPadImageFilter.h"
-
+#include "ioutils.h"
 namespace itk
 {
 
@@ -68,7 +68,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
       {
       typename TInputImage::SpacingValueType tsp = this->GetInput()->GetSpacing()[P];
       R[P] = 0.5*(m_Radius[P] * m_Radius[P] ) + tsp*tsp;
-      Pad[P] = (typename TInputImage::SizeType::SizeValueType) (round(m_Radius[P]/tsp) + 1);
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType) (round(m_Radius[P]/tsp + 1) + 1);
       }
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);
@@ -95,6 +95,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     }
 
   
+  // std::cout << "Padding " << Pad << std::endl;
 
   if (m_Circular)
     {
@@ -131,7 +132,8 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
 
       m_CircDilate->SetInput(pad->GetOutput());
 
-
+      // writeIm<InputImageType>(m_CircCastB->GetOutput(), "dil.nii.gz");
+      // writeIm<InputImageType>(m_CircCastA->GetOutput(), "ero.nii.gz");
       typedef typename itk::CropImageFilter<TOutputImage, TOutputImage> CropType;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_CircCastA->GetOutput() );
@@ -140,6 +142,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
 
       crop->GraftOutput( this->GetOutput() );
       crop->Update();
+      
       this->GraftOutput( crop->GetOutput() );
       }
     else
@@ -222,6 +225,8 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage>
     {
     os << "Radius in voxels: " << this->GetRadius() << std::endl;
     }
+  os << "Safe border: " << this->GetSafeBorder() << std::endl;
+
 }
 
 
