@@ -137,7 +137,7 @@ protected:
 
 //  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
   // Override since the filter produces the entire dataset.
-  // void EnlargeOutputRequestedRegion(DataObject *output);
+  void EnlargeOutputRequestedRegion(DataObject *output);
 
   bool m_UseImageSpacing;
   

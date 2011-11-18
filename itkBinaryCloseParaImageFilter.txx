@@ -133,7 +133,8 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
       m_CircDilate->SetInput(pad->GetOutput());
 
       // writeIm<InputImageType>(m_CircCastB->GetOutput(), "dil.nii.gz");
-      // writeIm<InputImageType>(m_CircCastA->GetOutput(), "ero.nii.gz");
+      //writeIm<InputImageType>(m_CircCastA->GetOutput(), "ero.nii.gz");
+      //m_CircCastA->UpdateOutputInformation();
       typedef typename itk::CropImageFilter<TOutputImage, TOutputImage> CropType;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_CircCastA->GetOutput() );
