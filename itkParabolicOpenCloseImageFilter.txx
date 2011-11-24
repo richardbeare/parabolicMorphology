@@ -120,7 +120,7 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   this->SetScale( s );
 }
 
-#if 0
+#if 1
 template <typename TInputImage, bool doOpen,  typename TOutputImage>
 void
 ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>

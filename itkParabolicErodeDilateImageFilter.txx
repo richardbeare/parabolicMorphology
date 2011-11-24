@@ -112,7 +112,7 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
   this->SetScale( s );
 }
 
-#if 0
+#if 1
 template <typename TInputImage, bool doDilate, typename TOutputImage>
 void
 ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
