@@ -69,14 +69,14 @@ int main(int argc, char * argv[])
   FilterType::Pointer filter = FilterType::New();
 
   filter->SetInput( thresh->GetOutput());
-  filter->SetOutsideValue(atoi(argv[3]));
+//  filter->SetOutsideValue(atoi(argv[3]));
   filter->SetUseImageSpacing(true);
   
   itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
 
   std::cout << "Parabolic  Maurer  Danielsson" << std::endl;
-
   const unsigned TESTS = 10;
+#if 1
   for (unsigned repeats = 0; repeats < TESTS; repeats++)
     {
     ParabolicT.Start();
@@ -86,12 +86,13 @@ int main(int argc, char * argv[])
     }
 
   writeIm<FType>(filter->GetOutput(), argv[5]);
-
+#endif
   typedef itk::SignedMaurerDistanceMapImageFilter<IType, FType> MaurerType;
   MaurerType::Pointer maurer = MaurerType::New();
   maurer->SetInput(thresh->GetOutput());
   maurer->SetUseImageSpacing(true);
   maurer->SetSquaredDistance(false);
+
   for (unsigned repeats = 0; repeats < TESTS; repeats++)
     {
     MaurerT.Start();
@@ -105,6 +106,7 @@ int main(int argc, char * argv[])
   DanielssonType::Pointer daniel = DanielssonType::New();
   daniel->SetInput(thresh->GetOutput());
   daniel->SetUseImageSpacing(true);
+
   for (unsigned repeats = 0; repeats < TESTS; repeats++)
     {
     DanielssonT.Start();
