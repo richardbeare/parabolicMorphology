@@ -45,7 +45,10 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   m_Extreme = m_Extreme1;
   m_MagnitudeSign = m_MagnitudeSign1;
   m_UseImageSpacing = false;
-  m_Stage=1;  // indicate whether we are on the first pass or the second
+  m_ParabolicAlgorithm = INTERSECTION;
+  m_Stage=1;  // indicate whether we are on the first pass or the
+	      // second
+
 }
 
 template <typename TInputImage, bool doOpen, typename TOutputImage>
@@ -316,7 +319,8 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					      this->m_UseImageSpacing,
 					      this->m_Extreme,
 					      image_scale, 
-					      this->m_Scale[0]);
+					      this->m_Scale[0],
+					      m_ParabolicAlgorithm);
 	}
       else 
 	{
@@ -350,7 +354,8 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					      this->m_UseImageSpacing,
 					      this->m_Extreme,
 					      image_scale, 
-					      this->m_Scale[m_CurrentDimension]);
+					      this->m_Scale[m_CurrentDimension],
+					      m_ParabolicAlgorithm);
 	}
       }
     }
@@ -370,7 +375,8 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 					   this->m_UseImageSpacing,
 					   this->m_Extreme,
 					   image_scale, 
-					   this->m_Scale[m_CurrentDimension]);
+					   this->m_Scale[m_CurrentDimension],
+					   m_ParabolicAlgorithm);
       }
     }
 }

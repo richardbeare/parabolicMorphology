@@ -94,6 +94,20 @@ public:
   itkGetConstReferenceMacro(UseImageSpacing, bool);
   itkBooleanMacro(UseImageSpacing);
 
+  enum {
+    NOCHOICE = 0,         // decices based on scale - experimental
+    CONTACTPOINT = 1, // sometimes faster at low scale
+    INTERSECTION = 2  // default
+  } ParabolicAlgorithm;
+  /** 
+   * Set/Get the method used. Choices are contact point or
+   * intersection. Intersection is the default. Contact point can be 
+   * faster at small scales.
+   */
+
+  itkSetMacro(ParabolicAlgorithm, int);
+  itkGetConstReferenceMacro(ParabolicAlgorithm, int);
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(SameDimension,
@@ -120,8 +134,8 @@ protected:
   // Override since the filter produces the entire dataset.
   void EnlargeOutputRequestedRegion(DataObject *output);
   
-  typedef typename std::vector<ScalarRealType> LineBufferType;
-  
+  int m_ParabolicAlgorithm;
+
 private:
   ParabolicOpenCloseImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
@@ -132,6 +146,7 @@ private:
   int m_CurrentDimension;
   int m_Stage;
   bool m_UseImageSpacing;
+
 };
 
 } // end namespace itk

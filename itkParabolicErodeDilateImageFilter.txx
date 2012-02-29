@@ -37,7 +37,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
     m_Extreme = NumericTraits<PixelType>::max();
     m_MagnitudeSign = -1;
     }
-  m_UseImageSpacing = false;
+  m_UseImageSpacing = false;			
+  m_ParabolicAlgorithm = INTERSECTION;
 }
 
 template <typename TInputImage, bool doDilate, typename TOutputImage>
@@ -158,7 +159,6 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage >
   //const unsigned int imageDimension = inputImage->GetImageDimension();
   outputImage->SetBufferedRegion( outputImage->GetRequestedRegion() );
   outputImage->Allocate();
-  // Set up the multithreaded processing
 
   // Set up the multithreaded processing
   typename ImageSource< OutputImageType >::ThreadStruct str;
@@ -250,7 +250,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 					     this->m_UseImageSpacing,
 					     this->m_Extreme,
 					     image_scale, 
-					     this->m_Scale[0]);
+					     this->m_Scale[0],
+					     m_ParabolicAlgorithm);
       }
     else 
       {
@@ -285,7 +286,8 @@ ParabolicErodeDilateImageFilter<TInputImage, doDilate, TOutputImage>
 					     this->m_UseImageSpacing,
 					     this->m_Extreme,
 					     image_scale,
-					     this->m_Scale[m_CurrentDimension]);
+					     this->m_Scale[m_CurrentDimension],
+					     m_ParabolicAlgorithm);
 	}
     }
 }

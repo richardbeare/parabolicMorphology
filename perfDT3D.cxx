@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
 
   iterations = atoi(argv[1]);
 
-//  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
+  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 3;
   
   typedef unsigned char PType;
@@ -76,7 +76,8 @@ int main(int argc, char * argv[])
   filter->SetInput( thresh->GetOutput());
   filter->SetOutsideValue(atoi(argv[3]));
   filter->SetUseImageSpacing(true);
-  
+  filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
+  //filter->UseContactPointOn();
   itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
 
   std::cout << "Parabolic  Maurer   Danielsson" << std::endl;
@@ -113,7 +114,7 @@ int main(int argc, char * argv[])
   DanielssonType::Pointer daniel = DanielssonType::New();
   daniel->SetInput(thresh->GetOutput());
   daniel->SetUseImageSpacing(true);
-  for (unsigned repeats = 0; repeats < TESTS; repeats++)
+  for (unsigned repeats = 0; repeats < 2; repeats++)
     {
     DanielssonT.Start();
     daniel->Modified();

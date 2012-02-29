@@ -102,7 +102,20 @@ public:
   itkBooleanMacro(SafeBorder);
   // should add the Get methods
 
-  
+  enum {
+    NOCHOICE = 0,         // decices based on scale - experimental
+    CONTACTPOINT = 1, // sometimes faster at low scale
+    INTERSECTION = 2  // default
+  } ParabolicAlgorithm;
+  /** 
+   * Set/Get the method used. Choices are contact point or
+   * intersection. Intersection is the default. Contact point can be 
+   * faster at small scales.
+   */
+
+  itkSetMacro(ParabolicAlgorithm, int);
+  itkGetConstReferenceMacro(ParabolicAlgorithm, int);
+
   /** ParabolicOpenCloseImageFilter must forward the Modified() call to its internal filters */
   virtual void Modified() const;
 
@@ -122,9 +135,11 @@ protected:
     m_CropFilt = CropFilterType::New();
     m_StatsFilt = StatsFilterType::New();
     m_SafeBorder = true;
+    m_ParabolicAlgorithm = INTERSECTION;
   }
   virtual ~ParabolicOpenCloseSafeBorderImageFilter() {};
-  
+  int m_ParabolicAlgorithm;
+
   
 private:
   ParabolicOpenCloseSafeBorderImageFilter(const Self&); //purposely not implemented
@@ -135,6 +150,8 @@ private:
   typename CropFilterType::Pointer m_CropFilt;
   typename StatsFilterType::Pointer m_StatsFilt;
   bool m_SafeBorder;
+  bool m_UseContactPoint;
+  bool m_UseIntersection;
 };
 
 } // end namespace itk

@@ -103,6 +103,20 @@ public:
   itkSetMacro(Scale, RadiusType);
   itkGetConstReferenceMacro(Scale, RadiusType);
 
+  enum {
+    NOCHOICE = 0,         // decices based on scale - experimental
+    CONTACTPOINT = 1, // sometimes faster at low scale
+    INTERSECTION = 2  // default
+  } ParabolicAlgorithm;
+  /** 
+   * Set/Get the method used. Choices are contact point or
+   * intersection. Intersection is the default. Contact point can be 
+   * faster at small scales.
+   */
+
+  itkSetMacro(ParabolicAlgorithm, int);
+  itkGetConstReferenceMacro(ParabolicAlgorithm, int);
+
   /**
    * Set/Get whether the scale refers to pixels or world units -
    * default is false
@@ -140,7 +154,8 @@ protected:
   void EnlargeOutputRequestedRegion(DataObject *output);
 
   bool m_UseImageSpacing;
-  
+  int m_ParabolicAlgorithm;
+
 private:
   ParabolicErodeDilateImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented

@@ -64,6 +64,8 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     }
 
   m_MorphFilt->SetInput(inputImage);
+  m_MorphFilt->SetParabolicAlgorithm(m_ParabolicAlgorithm);
+
   progress->RegisterInternalFilter(m_MorphFilt, 0.8f);
 
   if (this->m_SafeBorder) 

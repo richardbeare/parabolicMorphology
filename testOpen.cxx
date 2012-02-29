@@ -9,7 +9,7 @@
 #include "itkMultiThreader.h"
 
 
-int main(int, char * argv[])
+int main(int argc, char * argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
@@ -32,6 +32,9 @@ int main(int, char * argv[])
   scale[0]=1;
   scale[1]=0.5;
   filter->SetScale(scale);
+
+  filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
+
 //   itk::SimpleFilterWatcher watcher(filter, "filter");
   itk::TimeProbe NewTime;
 
@@ -50,6 +53,14 @@ int main(int, char * argv[])
   writer->Update();
   std::cout << std::setprecision(3) 
             << NewTime.GetMeanTime() << std::endl;
+
+  if (argc > 3)
+    {
+    // testing equivalence
+    filter->SetParabolicAlgorithm(FilterType::CONTACTPOINT);
+    writer->SetFileName(argv[3]);
+    writer->Update();
+    }
 
   return EXIT_SUCCESS;
 }

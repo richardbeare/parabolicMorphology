@@ -116,6 +116,22 @@ public:
     this->Modified();
   }
 
+  enum {
+    NOCHOICE = 0,         // decices based on scale - experimental
+    CONTACTPOINT = 1, // sometimes faster at low scale
+    INTERSECTION = 2  // default
+  } ParabolicAlgorithm;
+
+  /** 
+   * Set/Get the method used. Choices are contact point or
+   * intersection. Intersection is the default. Contact point can be 
+   * faster at small scales. This is very unlikely to be the case for
+   * a distance transform.
+   */
+
+  itkSetMacro(ParabolicAlgorithm, int);
+  itkGetConstReferenceMacro(ParabolicAlgorithm, int);
+
 
   const bool GetUseImageSpacing()
   {
@@ -144,7 +160,8 @@ protected:
   
   /** Generate Data */
   void GenerateData( void );
-  
+  int m_ParabolicAlgorithm;
+
   // do everything in the output image type, which should have high precision
   typedef typename itk::BinaryThresholdImageFilter<InputImageType, OutputImageType> ThreshType;
   typedef typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType> ErodeType;

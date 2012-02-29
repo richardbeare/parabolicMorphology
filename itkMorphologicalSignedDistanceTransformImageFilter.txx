@@ -22,7 +22,7 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   this->SetUseImageSpacing(true);
   this->SetInsideIsPositive(false);
   m_OutsideValue = 0;
-
+  m_ParabolicAlgorithm = INTERSECTION;
 }
 template <typename TInputImage, typename TOutputImage> 
 void
@@ -50,6 +50,9 @@ MorphologicalSignedDistanceTransformImageFilter<TInputImage, TOutputImage>
   progress->RegisterInternalFilter(m_Erode, 0.4f);
   progress->RegisterInternalFilter(m_Dilate, 0.4f);
   progress->RegisterInternalFilter(m_Helper, 0.1f);
+
+  m_Erode->SetParabolicAlgorithm(m_ParabolicAlgorithm);
+  m_Dilate->SetParabolicAlgorithm(m_ParabolicAlgorithm);
 
   this->AllocateOutputs();
   // figure out the maximum value of distance transform using the
