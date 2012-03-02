@@ -60,21 +60,21 @@ void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
 template <class LineBufferType, class IndexBufferType,
 	  class EnvBufferType, class RealType, bool doDilate>
 void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F, 
-		  IndexBufferType &v, IndexBufferType &z,
+		  IndexBufferType &v, EnvBufferType &z,
 		  const RealType magnitude)
 {
   int     k;    /* Index of rightmost parabola in lower envelope */
   /* Locations of parabolas in lower envelope */
   /* these need to be int, rather than unsigned, to make boundary
   conditions easy to test */
-//  typedef typename itk::Array<int> IndexBufferType;
 
-  // remember to pass these buffers as argmuments - task for optimizing
-//  IndexBufferType  v(LineBuf.size());
-  /* Locations of boundaries between parabolas */
-//  IndexBufferType  z(LineBuf.size());
-  int     q;
-  double  s;
+  // v stores locations of parabolas in the lower envelope
+  // z stores thr location of boundaries between parabolas
+
+  // I've gone nuts with the static casts etc, because I seemed to
+  // have strange behaviour when I didn't do this. Also managed to get
+  // rid of all the warnings by sticking to size_t and equivalents.
+  RealType  s;
   /* holds precomputed scale*f(q) + q^2 for speedup */
 //  LineBufferType F(LineBuf.size());
 
@@ -83,60 +83,71 @@ void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
   v[0] = 0;
   z[0] = NumericTraits<int>::NonpositiveMin();
   z[1] = NumericTraits<int>::max();
-  F[0] = LineBuf[0];
+  F[0] = LineBuf[0]/magnitude;
   const size_t N(LineBuf.size());
 
-  for (q=1; q<N; q++)   /* main loop */
+  for (size_t q=1; q<N; q++)   /* main loop */
     {
     if (doDilate)
       {
-      F[q] = (LineBuf[q]/magnitude) - (q*q);  /* precompute f(q) + q^2 for speedup */
+      /* precompute f(q) + q^2 for speedup */
+      F[q] = (LineBuf[q]/magnitude) - (static_cast<RealType>(q)*static_cast<RealType>(q));
       k++;
       do 
 	{
-	k--; /* remove last parabola from surface */
-	s = (F[q] - F[v[k]]) / (2 * (v[k] - q)); /* compute intersection */
+	/* remove last parabola from surface */
+	k--;
+        /* compute intersection */
+	s = (F[q] - F[v[k]]) / (2.0 * (v[k] - static_cast<RealType>(q))); 
 	} 
       while (s <= z[k]);
-      k++; /* bump k to add new parabola */      
+      /* bump k to add new parabola */      
+      k++; 
       }
     else
       {
-      F[q] = (LineBuf[q]/magnitude) + (q*q);  /* precompute f(q) + q^2 for speedup */
+      /* precompute f(q) + q^2 for speedup */
+      F[q] = (LineBuf[q]/magnitude) + 
+	(static_cast<RealType>(q) * static_cast<RealType>(q) ); 
       k++;
       do 
 	{
-	k--; /* remove last parabola from surface */
-	s = (F[q] - F[v[k]]) / (2 * (q - v[k])); /* compute intersection */
-	} 
+	/* remove last parabola from surface */
+	k--;
+	/* compute intersection */
+	s = (F[q] - F[v[k]]) / (2.0 * (static_cast<RealType>(q) - v[k]));
+	}
       while (s <= z[k]);
-      k++; /* bump k to add new parabola */
+      /* bump k to add new parabola */
+      k++;
       }
     v[k] = q;
     z[k] = s;
-    assert((k+1) <= N);
+    itkAssertInDebugAndIgnoreInReleaseMacro((size_t)(k+1) <= N);
     z[k+1] = NumericTraits<int>::max();
+
     } /* for q */
   /* now reconstruct output */
-  k = 0;
   if (doDilate)
     {
-    for (q=0; q<N; q++) 
+    k = 0;
+    for (size_t q=0; q<N; q++) 
       {
-      while (z[k+1] < q) k++;
-      assert(v[k] < N);
-      assert(v[k] >= 0);
-      LineBuf[q] = ((F[v[k]]-(q * (q - 2*v[k]))) * magnitude);
+      while (z[k+1] < static_cast<typename IndexBufferType::ValueType>(q)) k++;
+      itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) < N);
+      itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) >= 0);
+      LineBuf[q] = static_cast<RealType>((F[v[k]]-(static_cast<RealType>(q) * (static_cast<RealType>(q) - 2*v[k]))) * magnitude);
       }
     }
   else
     {
-    for (q=0; q<N; q++) 
+    k = 0;
+    for (size_t q=0; q<N; q++) 
       {
-      while (z[k+1] < q) k++;
-      assert(v[k] < N);
-      assert(v[k] >= 0);
-      LineBuf[q] = ((q * (q - 2*v[k]) + F[v[k]]) * magnitude);
+      while (z[k+1] < static_cast<typename IndexBufferType::ValueType>(q)) k++;
+      itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) < N);
+      itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) >= 0);
+      LineBuf[q] = ((static_cast<RealType>(q) * (static_cast<RealType>(q) - 2*v[k]) + F[v[k]]) * magnitude);
       }
     }
 
@@ -155,11 +166,11 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 		    const RealType Sigma, 
 		    int ParabolicAlgorithmChoice)
 {
-  enum {
+  enum ParabolicAlgorithm {
     NOCHOICE = 0,         // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  } ParabolicAlgorithm;
+  };
 
 //  typedef typename std::vector<RealType> LineBufferType;
 
@@ -200,12 +211,14 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
     outputIterator.SetDirection(direction);
     inputIterator.GoToBegin();
     outputIterator.GoToBegin();
-  
+
+    unsigned count = 0;
     while( !inputIterator.IsAtEnd() && !outputIterator.IsAtEnd() )
       {
       // process this direction
       // fetch the line into the buffer - this methodology is like
       // the gaussian filters
+
       unsigned int i=0;
       while( !inputIterator.IsAtEndOfLine() )
 	{
@@ -222,6 +235,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 	++outputIterator;
 	}
       
+      ++count;
       // now onto the next line
       inputIterator.NextLine();
       outputIterator.NextLine();
@@ -237,7 +251,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
     LineBufferType LineBuf(LineLength);
     LineBufferType Fbuf(LineLength);
     IndexBufferType Vbuf(LineLength);
-    IndexBufferType Zbuf(LineLength+1);
+    LineBufferType Zbuf(LineLength+1);
     
     inputIterator.SetDirection(direction);
     outputIterator.SetDirection(direction);
@@ -250,6 +264,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
       // process this direction
       // fetch the line into the buffer - this methodology is like
       // the gaussian filters
+
       unsigned int i=0;
       while( !inputIterator.IsAtEndOfLine() )
 	{
@@ -258,7 +273,6 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 	}
       DoLineIntAlg<LineBufferType, IndexBufferType, 
 		   LineBufferType, RealType, doDilate>(LineBuf, Fbuf, Vbuf, Zbuf, magnitudeInt);
-      ++count;
       // copy the line back
       unsigned int j=0;
       while( !outputIterator.IsAtEndOfLine() )
@@ -267,6 +281,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 	++outputIterator;
 	}
       
+      ++count;
       // now onto the next line
       inputIterator.NextLine();
       outputIterator.NextLine();

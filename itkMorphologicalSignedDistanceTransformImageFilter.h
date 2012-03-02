@@ -116,11 +116,11 @@ public:
     this->Modified();
   }
 
-  enum {
+  enum ParabolicAlgorithm {
     NOCHOICE = 0,         // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  } ParabolicAlgorithm;
+  };
 
   /** 
    * Set/Get the method used. Choices are contact point or

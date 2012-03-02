@@ -16,10 +16,15 @@ namespace itk
  * the gaussian function in linear processing. Parabolic structuring
  * elements are dimensionally decomposable and fast algorithms are
  * available for computing erosions and dilations along lines.
- * This class implements the "point of contact" algorithm, which is
- * reasonably efficient. Improved versions, that are nearly
- * independent of structuring function size, are also known but
- * haven't been implemented here.
+ * This class implements the "point of contact" algorithm and the
+ * "intersection" algorithm. The contact point algorithm is faster at
+ * small scales. The intersection algorithm was rediscovered by
+ * Felzenszwalb & Huttenlocher, but was actually described and tested
+ * by van den Boomgaard many years earlier. The intersection algorithm
+ * is faster for scales > 1, and independent of scale. It also seems
+ * to perform significantly better in the distance transform
+ * application. The intersection algorithm is also used in the IJ
+ * article on generalised distance transforms.
  * 
  * Parabolic structuring functions can be used as a fast alternative
  * to the "rolling ball" structuring element classically used in
@@ -32,6 +37,14 @@ namespace itk
  * decomposition this approach could result in inaccuracy as pixels
  * are cast back and forth between low and high precision types. Use a
  * high precision output type and cast manually if this is a problem.
+ *
+ * Boomgaard, R. van den and Dorst, L. and Makram-Ebeid, L.S. and
+ * Schavemaker, J. Quadratic structuring functions in mathematical
+ * morphology. Mathematical Morphology and its Applications to Image
+ * and Signal Processing. 
+ *
+ * Felzenszwalb, P.F. & Huttenlocher, D.P. Distance Transforms of Sampled Functions.
+ * Techreport: Cornell Computing and Information Science, 2004.
  *
  * This filter is threaded. Threading mechanism derived from
  * SignedMaurerDistanceMap extensions by Gaetan Lehman
@@ -103,11 +116,11 @@ public:
   itkSetMacro(Scale, RadiusType);
   itkGetConstReferenceMacro(Scale, RadiusType);
 
-  enum {
+  enum ParabolicAlgorithm {
     NOCHOICE = 0,         // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  } ParabolicAlgorithm;
+  };
   /** 
    * Set/Get the method used. Choices are contact point or
    * intersection. Intersection is the default. Contact point can be 

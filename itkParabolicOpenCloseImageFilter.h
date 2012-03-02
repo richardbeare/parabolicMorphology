@@ -94,11 +94,11 @@ public:
   itkGetConstReferenceMacro(UseImageSpacing, bool);
   itkBooleanMacro(UseImageSpacing);
 
-  enum {
+  enum ParabolicAlgorithm {
     NOCHOICE = 0,         // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  } ParabolicAlgorithm;
+  };
   /** 
    * Set/Get the method used. Choices are contact point or
    * intersection. Intersection is the default. Contact point can be 

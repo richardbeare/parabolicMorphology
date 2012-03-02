@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
 
   iterations = atoi(argv[1]);
 
-  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
+  //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 3;
   
   typedef unsigned char PType;
@@ -76,19 +76,28 @@ int main(int argc, char * argv[])
   filter->SetInput( thresh->GetOutput());
   filter->SetOutsideValue(atoi(argv[3]));
   filter->SetUseImageSpacing(true);
-  filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
+  filter->SetParabolicAlgorithm(FilterType::CONTACTPOINT);
   //filter->UseContactPointOn();
-  itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
+  itk::TimeProbe ParabolicCP, ParabolicInt, MaurerT, DanielssonT;
 
-  std::cout << "Parabolic  Maurer   Danielsson" << std::endl;
+  std::cout << "ParabolicCP ParabolicIntersection  Maurer   Danielsson" << std::endl;
 
   const unsigned pTESTS = 10;
   for (unsigned repeats = 0; repeats < pTESTS; repeats++)
     {
-    ParabolicT.Start();
+    ParabolicCP.Start();
     filter->Modified();
     filter->Update();
-    ParabolicT.Stop();
+    ParabolicCP.Stop();
+    }
+
+  filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
+  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
+    {
+    ParabolicInt.Start();
+    filter->Modified();
+    filter->Update();
+    ParabolicInt.Stop();
     }
 
   writeIm<FType>(filter->GetOutput(), argv[5]);
@@ -125,7 +134,8 @@ int main(int argc, char * argv[])
 
 
   std::cout << std::setprecision(3)
-	    << ParabolicT.GetMeanTime() <<"\t"
+	    << ParabolicCP.GetMeanTime() <<"\t"
+	    << ParabolicInt.GetMeanTime() <<"\t"
 	    << MaurerT.GetMeanTime() <<"\t"
 	    << DanielssonT.GetMeanTime() << std::endl;
 
