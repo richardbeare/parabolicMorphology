@@ -7,7 +7,8 @@
 #include "itkProgressAccumulator.h"
 #include "itkCropImageFilter.h"
 #include "itkConstantPadImageFilter.h"
-#include "ioutils.h"
+#include "vnl/vnl_math.h"
+
 namespace itk
 {
 
@@ -53,10 +54,10 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
   // set up the scaling before we pass control over to superclass
   typename TInputImage::SizeType Pad;
 //  ScalarRealType margin = 0.0;
-  
+
   // ScalarRealType mxRad = (ScalarRealType)(*std::max_element(m_Radius.Begin(), m_Radius.End()));
   // this needs to be examined more closely
-  // margin = 1.0/(pow(mxRad, TInputImage::ImageDimension) * 10); 
+  // margin = 1.0/(pow(mxRad, TInputImage::ImageDimension) * 10);
   // margin = std::min(margin, 0.00001);
   // std::cout << "Margin = " << margin << std::endl;
 
@@ -68,7 +69,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
       {
       typename TInputImage::SpacingValueType tsp = this->GetInput()->GetSpacing()[P];
       R[P] = 0.5*(m_Radius[P] * m_Radius[P] ) + tsp*tsp;
-      Pad[P] = (typename TInputImage::SizeType::SizeValueType) (round(m_Radius[P]/tsp + 1) + 1);
+      Pad[P] = (typename TInputImage::SizeType::SizeValueType) (vnl_math_rnd_halfinttoeven(m_Radius[P]/tsp + 1) + 1);
       }
     m_RectErode->SetScale(R);
     m_CircErode->SetScale(R);
@@ -80,7 +81,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     {
     // radius is in pixels
     RadiusType R;
-    // this gives us a little bit of a margin 
+    // this gives us a little bit of a margin
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
       R[P] = (0.5*m_Radius[P] * m_Radius[P]+1);
@@ -94,7 +95,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
 
     }
 
-  
+
   // std::cout << "Padding " << Pad << std::endl;
 
   if (m_Circular)
@@ -114,14 +115,14 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     m_CircCastB->SetUpperThreshold(0);
     m_CircCastB->SetOutsideValue(1);
     m_CircCastB->SetInsideValue(0);
-      
+
 
     m_CircErode->SetInput(m_CircCastB->GetOutput());
     m_CircCastA->SetInput(m_CircErode->GetOutput());
 //    m_CircCastA->SetVal(1.0-margin);
     m_CircCastA->SetVal(1.0);
 
-    if (m_SafeBorder) 
+    if (m_SafeBorder)
       {
       typedef typename itk::ConstantPadImageFilter<InputImageType, InputImageType> PadType;
       typename PadType::Pointer pad = PadType::New();
@@ -143,13 +144,13 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
 
       crop->GraftOutput( this->GetOutput() );
       crop->Update();
-      
+
       this->GraftOutput( crop->GetOutput() );
       }
     else
       {
- 
-      
+
+
       m_CircDilate->SetInput(inputImage);
       m_CircCastA->GraftOutput(this->GetOutput());
       m_CircCastA->Update();
@@ -173,7 +174,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
     m_RectCastB->SetUpperThreshold(0);
     m_RectCastB->SetOutsideValue(1);
     m_RectCastB->SetInsideValue(0);
-    
+
     m_RectErode->SetInput(m_RectCastB->GetOutput());
     m_RectCastA->SetInput(m_RectErode->GetOutput());
     m_RectCastA->SetVal(1);
@@ -207,7 +208,7 @@ BinaryCloseParaImageFilter<TInputImage, TOutputImage >
       m_RectCastA->Update();
       this->GraftOutput(m_RectCastA->GetOutput());
       }
-    
+
     }
 }
 
