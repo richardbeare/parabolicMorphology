@@ -31,7 +31,7 @@ namespace itk
  *
  * This filter was developed as a result of discussions with
  * M.Starring on the ITK mailing list.
- * 
+ *
  * \sa itkParabolicDilateImageFilter
  *
  * \author Richard Beare, Department of Medicine, Monash University,
@@ -86,6 +86,8 @@ public:
   void SetRadius(ScalarRealType radius);
   itkSetMacro(Radius, RadiusType);
   itkGetConstReferenceMacro(Radius, RadiusType);
+
+  virtual void Modified() const;
 
   void SetUseImageSpacing(bool g)
   {

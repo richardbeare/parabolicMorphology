@@ -61,7 +61,7 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage >
     {
     // radius is in pixels
     RadiusType R;
-    // this gives us a little bit of a margin 
+    // this gives us a little bit of a margin
     for (unsigned P=0;P<InputImageType::ImageDimension;P++)
       {
       R[P] = (0.5*m_Radius[P] * m_Radius[P]+1);
@@ -135,6 +135,17 @@ BinaryErodeParaImageFilter<TInputImage, TOutputImage>
     }
 }
 
+template <typename TInputImage, typename TOutputImage>
+void
+BinaryErodeParaImageFilter<TInputImage, TOutputImage>
+::Modified() const
+{
+  Superclass::Modified();
+  m_CircPara->Modified();
+  m_CircCast->Modified();
+  m_RectPara->Modified();
+  m_RectCast->Modified();
+}
 
 } // namespace itk
 #endif

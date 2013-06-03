@@ -31,7 +31,7 @@ namespace itk
  *
  * This filter was developed as a result of discussions with
  * M.Starring on the ITK mailing list.
- * 
+ *
  * \sa itkParabolicErodeImageFilter
  *
  * \author Richard Beare, Department of Medicine, Monash University,
@@ -102,7 +102,7 @@ public:
   /** Image related typedefs. */
 
   /* add in the traits here */
-
+  virtual void Modified() const;
 protected:
   void GenerateData( void );
 
