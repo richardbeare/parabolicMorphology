@@ -8,8 +8,8 @@ namespace itk {
 
 // contact point algorithm
 template <class LineBufferType, class RealType, bool doDilate>
-void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf, 
-	      const RealType magnitude, const RealType m_Extreme)
+void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
+              const RealType magnitude, const RealType m_Extreme)
 {
   // contact point algorithm
   long koffset = 0, newcontact=0;  // how far away the search starts.
@@ -19,17 +19,17 @@ void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
   for (long pos = 0; pos < LineLength; pos++)
     {
     RealType BaseVal = (RealType)m_Extreme; // the base value for
-					    // comparison
+                                            // comparison
     for (long krange = koffset; krange <= 0; krange++)
       {
       // difference needs to be paramaterised
       RealType T = LineBuf[pos + krange] - magnitude * krange * krange;
       // switch on template parameter - hopefully gets optimized away.
       if (doDilate ? (T >= BaseVal) : (T <= BaseVal) )
-	{
-	BaseVal = T;
-	newcontact = krange;
-	}
+        {
+        BaseVal = T;
+        newcontact = krange;
+        }
       }
     tmpLineBuf[pos] = BaseVal;
     koffset = newcontact - 1;
@@ -43,10 +43,10 @@ void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
       {
       RealType T = tmpLineBuf[pos + krange] - magnitude * krange * krange;
       if (doDilate ? (T >= BaseVal) : (T <= BaseVal))
-	{
-	BaseVal = T;
-	newcontact = krange;
-	}
+        {
+        BaseVal = T;
+        newcontact = krange;
+        }
       }
     LineBuf[pos] = BaseVal;
     koffset = newcontact + 1;
@@ -55,13 +55,13 @@ void DoLineCP(LineBufferType &LineBuf, LineBufferType &tmpLineBuf,
 
 // intersection algorithm
 // This algorithm has been described a couple of times. First by van
-// den Bookgaard and more recently by Felzenszwalb and Huttenlocher,
+// den Boomgaard and more recently by Felzenszwalb and Huttenlocher,
 // in the context of generalized distance transform
 template <class LineBufferType, class IndexBufferType,
-	  class EnvBufferType, class RealType, bool doDilate>
-void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F, 
-		  IndexBufferType &v, EnvBufferType &z,
-		  const RealType magnitude)
+          class EnvBufferType, class RealType, bool doDilate>
+void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
+                  IndexBufferType &v, EnvBufferType &z,
+                  const RealType magnitude)
 {
   int     k;    /* Index of rightmost parabola in lower envelope */
   /* Locations of parabolas in lower envelope */
@@ -93,30 +93,30 @@ void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
       /* precompute f(q) + q^2 for speedup */
       F[q] = (LineBuf[q]/magnitude) - (static_cast<RealType>(q)*static_cast<RealType>(q));
       k++;
-      do 
-	{
-	/* remove last parabola from surface */
-	k--;
+      do
+        {
+        /* remove last parabola from surface */
+        k--;
         /* compute intersection */
-	s = (F[q] - F[v[k]]) / (2.0 * (v[k] - static_cast<RealType>(q))); 
-	} 
+        s = (F[q] - F[v[k]]) / (2.0 * (v[k] - static_cast<RealType>(q)));
+        }
       while (s <= z[k]);
-      /* bump k to add new parabola */      
-      k++; 
+      /* bump k to add new parabola */
+      k++;
       }
     else
       {
       /* precompute f(q) + q^2 for speedup */
-      F[q] = (LineBuf[q]/magnitude) + 
-	(static_cast<RealType>(q) * static_cast<RealType>(q) ); 
+      F[q] = (LineBuf[q]/magnitude) +
+        (static_cast<RealType>(q) * static_cast<RealType>(q) );
       k++;
-      do 
-	{
-	/* remove last parabola from surface */
-	k--;
-	/* compute intersection */
-	s = (F[q] - F[v[k]]) / (2.0 * (static_cast<RealType>(q) - v[k]));
-	}
+      do
+        {
+        /* remove last parabola from surface */
+        k--;
+        /* compute intersection */
+        s = (F[q] - F[v[k]]) / (2.0 * (static_cast<RealType>(q) - v[k]));
+        }
       while (s <= z[k]);
       /* bump k to add new parabola */
       k++;
@@ -131,7 +131,7 @@ void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
   if (doDilate)
     {
     k = 0;
-    for (size_t q=0; q<N; q++) 
+    for (size_t q=0; q<N; q++)
       {
       while (z[k+1] < static_cast<typename IndexBufferType::ValueType>(q)) k++;
       itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) < N);
@@ -142,7 +142,7 @@ void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
   else
     {
     k = 0;
-    for (size_t q=0; q<N; q++) 
+    for (size_t q=0; q<N; q++)
       {
       while (z[k+1] < static_cast<typename IndexBufferType::ValueType>(q)) k++;
       itkAssertInDebugAndIgnoreInReleaseMacro(static_cast<size_t>(v[k]) < N);
@@ -153,18 +153,18 @@ void DoLineIntAlg(LineBufferType &LineBuf, EnvBufferType &F,
 
 }
 
-template <class TInIter, class TOutIter, class RealType, 
-	  class OutputPixelType, bool doDilate>
-void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator, 
-		    ProgressReporter &progress,
-		    const long LineLength, 
-		    const unsigned direction,
-		    const int m_MagnitudeSign,
-		    const bool m_UseImageSpacing,
-		    const RealType m_Extreme,
-		    const RealType image_scale,
-		    const RealType Sigma, 
-		    int ParabolicAlgorithmChoice)
+template <class TInIter, class TOutIter, class RealType,
+          class OutputPixelType, bool doDilate>
+void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
+                    ProgressReporter &progress,
+                    const long LineLength,
+                    const unsigned direction,
+                    const int m_MagnitudeSign,
+                    const bool m_UseImageSpacing,
+                    const RealType m_Extreme,
+                    const RealType image_scale,
+                    const RealType Sigma,
+                    int ParabolicAlgorithmChoice)
 {
   enum ParabolicAlgorithm {
     NOCHOICE = 0,         // decices based on scale - experimental
@@ -204,7 +204,7 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 //  Sigma/(iscale*iscale));
     // restructure equation to reduce numerical error
     const RealType magnitudeCP = (m_MagnitudeSign * iscale * iscale)/(2.0 * Sigma);
-    
+
     LineBufferType LineBuf(LineLength);
     LineBufferType tmpLineBuf(LineLength);
     inputIterator.SetDirection(direction);
@@ -221,20 +221,20 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 
       unsigned int i=0;
       while( !inputIterator.IsAtEndOfLine() )
-	{
-	LineBuf[i++]      = static_cast<RealType>(inputIterator.Get());
-	++inputIterator;
-	}
-      
+        {
+        LineBuf[i++]      = static_cast<RealType>(inputIterator.Get());
+        ++inputIterator;
+        }
+
       DoLineCP<LineBufferType,  RealType, doDilate>(LineBuf, tmpLineBuf, magnitudeCP, m_Extreme);
       // copy the line back
       unsigned int j=0;
       while( !outputIterator.IsAtEndOfLine() )
-	{
-	outputIterator.Set( static_cast<OutputPixelType>( LineBuf[j++] ) );
-	++outputIterator;
-	}
-      
+        {
+        outputIterator.Set( static_cast<OutputPixelType>( LineBuf[j++] ) );
+        ++outputIterator;
+        }
+
       ++count;
       // now onto the next line
       inputIterator.NextLine();
@@ -252,12 +252,12 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
     LineBufferType Fbuf(LineLength);
     IndexBufferType Vbuf(LineLength);
     LineBufferType Zbuf(LineLength+1);
-    
+
     inputIterator.SetDirection(direction);
     outputIterator.SetDirection(direction);
     inputIterator.GoToBegin();
     outputIterator.GoToBegin();
-  
+
     unsigned count = 0;
     while( !inputIterator.IsAtEnd() && !outputIterator.IsAtEnd() )
       {
@@ -267,26 +267,26 @@ void doOneDimension(TInIter &inputIterator, TOutIter &outputIterator,
 
       unsigned int i=0;
       while( !inputIterator.IsAtEndOfLine() )
-	{
-	LineBuf[i++]      = static_cast<RealType>(inputIterator.Get());
-	++inputIterator;
-	}
-      DoLineIntAlg<LineBufferType, IndexBufferType, 
-		   LineBufferType, RealType, doDilate>(LineBuf, Fbuf, Vbuf, Zbuf, magnitudeInt);
+        {
+        LineBuf[i++]      = static_cast<RealType>(inputIterator.Get());
+        ++inputIterator;
+        }
+      DoLineIntAlg<LineBufferType, IndexBufferType,
+                   LineBufferType, RealType, doDilate>(LineBuf, Fbuf, Vbuf, Zbuf, magnitudeInt);
       // copy the line back
       unsigned int j=0;
       while( !outputIterator.IsAtEndOfLine() )
-	{
-	outputIterator.Set( static_cast<OutputPixelType>( LineBuf[j++] ) );
-	++outputIterator;
-	}
-      
+        {
+        outputIterator.Set( static_cast<OutputPixelType>( LineBuf[j++] ) );
+        ++outputIterator;
+        }
+
       ++count;
       // now onto the next line
       inputIterator.NextLine();
       outputIterator.NextLine();
       progress.CompletedPixel();
-      }    
+      }
     }
 
 
