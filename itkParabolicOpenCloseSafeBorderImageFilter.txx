@@ -49,11 +49,13 @@ ParabolicOpenCloseSafeBorderImageFilter<TInputImage, doOpen, TOutputImage>
     // need to select between opening and closing here
     if (doOpen)
       {
-      m_PadFilt->SetConstant(NumericTraits<InputPixelType>::max());
+      //m_PadFilt->SetConstant(NumericTraits<InputPixelType>::max());
+      m_PadFilt->SetConstant(m_StatsFilt->GetMaximum());
       }
     else
       {
-      m_PadFilt->SetConstant(NumericTraits<InputPixelType>::NonpositiveMin());
+      //m_PadFilt->SetConstant(NumericTraits<InputPixelType>::NonpositiveMin());
+      m_PadFilt->SetConstant(m_StatsFilt->GetMinimum());
       }
     m_PadFilt->SetInput(m_StatsFilt->GetOutput());
     progress->RegisterInternalFilter(m_PadFilt, 0.1f );
