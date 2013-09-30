@@ -14,14 +14,14 @@ int main(int, char * argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
-  
+
   typedef unsigned char PType;
   typedef itk::Image< PType, dim > IType;
 
   typedef itk::ImageFileReader< IType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
-  
+
   typedef itk::ParabolicErodeImageFilter< IType, IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
@@ -49,8 +49,8 @@ int main(int, char * argv[])
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName( argv[2] );
   writer->Update();
-  std::cout << std::setprecision(3) 
-            << NewTime.GetMeanTime() << std::endl;
+  std::cout << std::setprecision(3)
+            << NewTime.GetMean() << std::endl;
 
   return 0;
 }

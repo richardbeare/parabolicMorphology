@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
 
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 3;
-  
+
   typedef unsigned char PType;
   typedef itk::Image< PType, dim > IType;
   typedef itk::Image< float, dim > FType;
@@ -134,12 +134,12 @@ int main(int argc, char * argv[])
 
 
   std::cout << std::setprecision(3)
-	    << ParabolicCP.GetMeanTime() <<"\t"
-	    << ParabolicInt.GetMeanTime() <<"\t"
-	    << MaurerT.GetMeanTime() <<"\t"
-	    << DanielssonT.GetMeanTime() << std::endl;
+            << ParabolicCP.GetMean() <<"\t"
+            << ParabolicInt.GetMean() <<"\t"
+            << MaurerT.GetMean() <<"\t"
+            << DanielssonT.GetMean() << std::endl;
 
-  
+
 
   return EXIT_SUCCESS;
 }

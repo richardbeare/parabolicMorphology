@@ -13,7 +13,7 @@ int main(int argc, char * argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
-  
+
   typedef unsigned char PType;
   typedef itk::Image< PType, dim > IType;
 
@@ -21,7 +21,7 @@ int main(int argc, char * argv[])
   typedef itk::ImageFileReader< IType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
-  
+
   typedef itk::ParabolicOpenImageFilter< IType,IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
@@ -51,8 +51,8 @@ int main(int argc, char * argv[])
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName( argv[2] );
   writer->Update();
-  std::cout << std::setprecision(3) 
-            << NewTime.GetMeanTime() << std::endl;
+  std::cout << std::setprecision(3)
+            << NewTime.GetMean() << std::endl;
 
   if (argc > 3)
     {
