@@ -156,7 +156,7 @@ private:
 
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkParabolicOpenCloseSafeBorderImageFilter.txx"
+#include "itkParabolicOpenCloseSafeBorderImageFilter.hxx"
 #endif
 
 #endif

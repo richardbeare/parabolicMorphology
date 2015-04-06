@@ -156,7 +156,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkBinaryCloseParaImageFilter.txx"
+#include "itkBinaryCloseParaImageFilter.hxx"
 #endif
 
 

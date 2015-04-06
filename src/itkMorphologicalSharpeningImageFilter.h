@@ -157,7 +157,7 @@ private:
 
 } // namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMorphologicalSharpeningImageFilter.txx"
+#include "itkMorphologicalSharpeningImageFilter.hxx"
 #endif
 
 

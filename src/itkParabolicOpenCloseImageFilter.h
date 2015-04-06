@@ -152,7 +152,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkParabolicOpenCloseImageFilter.txx"
+#include "itkParabolicOpenCloseImageFilter.hxx"
 #endif
 
 
