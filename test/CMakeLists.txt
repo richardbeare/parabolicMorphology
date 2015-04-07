@@ -44,14 +44,14 @@ itk_add_test(NAME itkParaDilateTest2D_1
 itkParaDilateTest ${INPUT_IMAGE} outDInta.png outDCPa.png )
 
 ## small scale
-itk_add_test(NAME itkParaErodeTest2D_2 
+itk_add_test(NAME itkParaDilateTest2D_2 
   COMMAND ParabolicMorphologyTestDriver 
   --compare outDIntb.png outDCPb.png
   --compare outDIntb.png ${CMAKE_CURRENT_SOURCE_DIR}/baseline/outDCPb.png
 itkParaDilateTest ${INPUT_IMAGE} outDIntb.png outDCPb.png 0.2)
 
 ## large scale
-itk_add_test(NAME itkParaErodeTest2D_3 
+itk_add_test(NAME itkParaDilateTest2D_3 
   COMMAND ParabolicMorphologyTestDriver 
   --compare outDIntc.png outDCPc.png
   --compare outDIntc.png ${CMAKE_CURRENT_SOURCE_DIR}/baseline/outDCPc.png
