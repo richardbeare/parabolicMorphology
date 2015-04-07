@@ -164,14 +164,14 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
 {
   ThreadIdType nbthreads = this->GetNumberOfThreads();
 
-  typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
-  typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
+  //  typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
+  //  typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
 
   // for stages after the first
-  typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
+  //typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
 
 
-  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
+  //  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
   typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
   typename TOutputImage::Pointer       outputImage(   this->GetOutput()   );
