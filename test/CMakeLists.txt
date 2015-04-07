@@ -63,4 +63,4 @@ itk_add_test(NAME itkParaOpenTest2D_1
   COMMAND ParabolicMorphologyTestDriver 
   --compare openCP.png openInt.png
   --compare openInt.png ${CMAKE_CURRENT_SOURCE_DIR}/baseline/openInt.png
-itkParaDOpenTest ${INPUT_IMAGE} openInt.png openCP.png)
+itkParaOpenTest ${INPUT_IMAGE} openInt.png openCP.png)
