@@ -5,7 +5,7 @@ itk_module( ParabolicMorphology
   DEPENDS
   ITKIOImageBase
   TEST_DEPENDS
-  ITKFiltering
+  ITKGroupFiltering
   ITKTestKernel
   EXCLUDE_FROM_DEFAULT
   DESCRIPTION
