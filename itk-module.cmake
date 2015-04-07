@@ -3,8 +3,9 @@ Parabolic functions can be used to build fast distance transforms, and
 binary morphology using spheres." )
 itk_module( ParabolicMorphology
   DEPENDS
-  ITKIOImageBase 
+  ITKIOImageBase
   TEST_DEPENDS
+  ITKFiltering
   ITKTestKernel
   EXCLUDE_FROM_DEFAULT
   DESCRIPTION
