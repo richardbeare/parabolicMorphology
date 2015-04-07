@@ -90,7 +90,7 @@ public:
   }
 
 
-  const bool GetUseImageSpacing()
+  const bool &GetUseImageSpacing()
   {
     return m_Erode->GetUseImageSpacing();
   }
