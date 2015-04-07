@@ -2,7 +2,7 @@ itk_module_test()
 set(ParabolicMorphologyTests
 itkParaErodeTest.cxx
 itkParaDilateTest.cxx
-#itkParaOpenTest.cxx
+itkParaOpenTest.cxx
 #itkParaSpacingTest.cxx
 #itkParaSharpenTest.cxx
 #itkParaDTTest.cxx
@@ -56,3 +56,11 @@ itk_add_test(NAME itkParaDilateTest2D_3
   --compare outDIntc.png outDCPc.png
   --compare outDIntc.png ${CMAKE_CURRENT_SOURCE_DIR}/baseline/outDCPc.png
 itkParaDilateTest ${INPUT_IMAGE} outDIntc.png outDCPc.png 5)
+
+
+## Opening
+itk_add_test(NAME itkParaOpenTest2D_1 
+  COMMAND ParabolicMorphologyTestDriver 
+  --compare openCP.png openInt.png
+  --compare openInt.png ${CMAKE_CURRENT_SOURCE_DIR}/baseline/openInt.png
+itkParaDOpenTest ${INPUT_IMAGE} openInt.png openCP.png)
