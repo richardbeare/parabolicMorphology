@@ -18,5 +18,5 @@ CreateTestDriver(ParabolicMorphology "${ParabolicMorphology-Test_LIBRARIES}" "${
 itk_add_test(NAME itkParaErodeTest1 
   COMMAND ParabolicMorphologyTestDriver 
   --compare outEInta.png outECPa.png
-#  --compare outEInta.png baseline/outEInta.png
+  --compare outEInta.png baseline/outECPa.png
 itkParaErodeTest ${INPUT_IMAGE} outEInta.png outECPa.png )
