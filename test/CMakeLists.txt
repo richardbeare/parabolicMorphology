@@ -5,7 +5,7 @@ itkParaDilateTest.cxx
 itkParaOpenTest.cxx
 itkParaSpacingTest.cxx
 itkParaSharpenTest.cxx
-#itkParaDTTest.cxx
+itkParaDTTest.cxx
 )
 
 SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
@@ -89,3 +89,14 @@ itk_add_test(NAME itkParaSharpenTest2D_100
   COMMAND ParabolicMorphologyTestDriver 
   --compare  sharp100.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/sharp100.mha
 itkParaSharpenTest 100 sharp100.mha)
+
+## distance transform 
+itk_add_test(NAME itkParaDTTest2D_0
+  COMMAND ParabolicMorphologyTestDriver 
+  --compare dist1.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist1.mha
+itkParaDTTest ${INPUT_IMAGE} 0 dist1.mha)
+
+itk_add_test(NAME itkParaDTTest2D_255
+  COMMAND ParabolicMorphologyTestDriver 
+  --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist255.mha
+itkParaDTTest ${INPUT_IMAGE} 255 dist255.mha)
