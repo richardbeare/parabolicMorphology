@@ -9,6 +9,7 @@ itk_module( ParabolicMorphology
   ITKImageGrid
   ITKTestKernel
   ITKMathematicalMorphology
+  ITKSmoothing
   EXCLUDE_FROM_DEFAULT
   DESCRIPTION
   "${DOCUMENTATION}"
