@@ -51,7 +51,7 @@ int itkParaDTTest(int argc, char * argv[])
   thresh->SetUpperThreshold(atoi(argv[2]));
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(255);
-  writeIm<IType>(thresh->GetOutput(), argv[3]);
+
   // now to apply the distance transform
   typedef itk::MorphologicalDistanceTransformImageFilter< IType, FType > FilterType;
 
