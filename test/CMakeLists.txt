@@ -94,9 +94,9 @@ itkParaSharpenTest 100 sharp100.mha)
 itk_add_test(NAME itkParaDTTest2D_0
   COMMAND ParabolicMorphologyTestDriver 
   --compare dist1.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist1.mha
-itkParaDTTest ${INPUT_IMAGE} 0 dist1.mha)
+itkParaDTTest ${INPUT_IMAGE} 100 0 dist1.mha)
 
 itk_add_test(NAME itkParaDTTest2D_255
   COMMAND ParabolicMorphologyTestDriver 
   --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist255.mha
-itkParaDTTest ${INPUT_IMAGE} 255 dist255.mha)
+itkParaDTTest ${INPUT_IMAGE} 100 255 dist255.mha)
