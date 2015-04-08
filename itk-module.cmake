@@ -8,6 +8,7 @@ itk_module( ParabolicMorphology
   TEST_DEPENDS
   ITKImageGrid
   ITKTestKernel
+  ITKMathematicalMorphology
   EXCLUDE_FROM_DEFAULT
   DESCRIPTION
   "${DOCUMENTATION}"
