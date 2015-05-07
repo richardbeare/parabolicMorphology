@@ -70,6 +70,7 @@ itk_add_test(NAME itkParaSpacingTest2D_1
   --compare  osp1.png osp2.png
 itkParaSpacingTest ${INPUT_IMAGE} osp1.png osp2.png)
 
+## sharpening
 itk_add_test(NAME itkParaSharpenTest2D_1 
   COMMAND ParabolicMorphologyTestDriver 
   --compare  sharp1.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/sharp1.mha
@@ -100,3 +101,9 @@ itk_add_test(NAME itkParaDTTest2D_255
   COMMAND ParabolicMorphologyTestDriver 
   --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist255.mha
 itkParaDTTest ${INPUT_IMAGE} 100 255 dist255.mha)
+
+## Binary morphology
+itk_add_test(NAME itkBinaryDilatePara2D_10
+  COMMAND ParabolicMorphologyTestDriver 
+  --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist255.mha
+itkBinaryDilateParaTest ${INPUT_IMAGE} 100 10 dilatebinary10.mha)
