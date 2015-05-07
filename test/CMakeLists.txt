@@ -106,5 +106,5 @@ itkParaDTTest ${INPUT_IMAGE} 100 255 dist255.mha)
 ## Binary morphology
 itk_add_test(NAME itkBinaryDilatePara2D_10
   COMMAND ParabolicMorphologyTestDriver 
-  --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dist255.mha
+  --compare dist255.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/dilatebinary10.mha
 itkBinaryDilateParaTest ${INPUT_IMAGE} 150 10 dilatebinary10.mha)
