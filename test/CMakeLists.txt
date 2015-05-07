@@ -8,6 +8,7 @@ itkParaSharpenTest.cxx
 itkParaDTTest.cxx
 itkBinaryDilateParaTest.cxx
 itkBinaryErodeParaTest.cxx
+itkBinaryOpenParaTest.cxx
 )
 
 SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
@@ -114,3 +115,8 @@ itk_add_test(NAME itkBinaryErodePara2D_10
   COMMAND ParabolicMorphologyTestDriver 
   --compare erodebinary10.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/erodebinary10.mha
 itkBinaryErodeParaTest ${INPUT_IMAGE} 120 10 erodebinary10.mha)
+
+itk_add_test(NAME itkBinaryOpenPara2D_10
+  COMMAND ParabolicMorphologyTestDriver 
+  --compare openbinary10.mha ${CMAKE_CURRENT_SOURCE_DIR}/baseline/openbinary10.mha
+itkBinaryOpenParaTest ${INPUT_IMAGE} 150 10 openbinary10.mha)
