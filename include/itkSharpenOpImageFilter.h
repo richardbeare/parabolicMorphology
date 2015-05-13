@@ -18,7 +18,13 @@ namespace itk
  * In reality the input and output types of this filter are expected
  * to be the same.
  *
-* \author Richard Beare, Department of Medicine, Monash University,
+ * Core methods described in the InsightJournal article:
+ * "Morphology with parabolic structuring elements"
+ *
+ * http://hdl.handle.net/1926/1370
+ * \ingroup ParabolicMorphology
+ *
+ * \author Richard Beare, Department of Medicine, Monash University,
  * Australia.  <Richard.Beare@monash.edu>
  *
  */
