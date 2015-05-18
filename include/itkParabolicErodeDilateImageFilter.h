@@ -199,6 +199,7 @@ private:
   void operator=(const Self &);                  //purposely not implemented
 
   RadiusType m_Scale;
+
   typename TInputImage::PixelType m_Extreme;
 
   int m_MagnitudeSign;
