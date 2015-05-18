@@ -18,16 +18,14 @@
 #include "itkTimeProbe.h"
 #include "itkMultiThreader.h"
 
-
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
-
   int iterations = 1;
 
-  if (argc != 8)
+  if ( argc != 8 )
     {
     std::cerr << "Usage: " << argv[0] << " inputimage threshold outsideval outim1 outim2 outim3" << std::endl;
-    return (EXIT_FAILURE);
+    return ( EXIT_FAILURE );
     }
 
   iterations = atoi(argv[1]);
@@ -35,13 +33,13 @@ int main(int argc, char * argv[])
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 3;
 
-  typedef unsigned char PType;
+  typedef unsigned char            PType;
   typedef itk::Image< PType, dim > IType;
   typedef itk::Image< float, dim > FType;
 
-  IType::Pointer inputOrig = readIm<IType>(argv[1]);
+  IType::Pointer inputOrig = readIm< IType >(argv[1]);
 
-  typedef itk::ChangeInformationImageFilter<IType> ChangeType;
+  typedef itk::ChangeInformationImageFilter< IType > ChangeType;
   ChangeType::Pointer changer = ChangeType::New();
   changer->SetInput(inputOrig);
   ChangeType::SpacingType newspacing;
@@ -57,24 +55,23 @@ int main(int argc, char * argv[])
   IType::Pointer input = changer->GetOutput();
 
   // threshold the input to create a mask
-  typedef itk::BinaryThresholdImageFilter<IType, IType> ThreshType;
+  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
-  thresh->SetUpperThreshold(atoi(argv[2]));
+  thresh->SetUpperThreshold( atoi(argv[2]) );
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(255);
-  writeIm<IType>(thresh->GetOutput(), argv[4]);
+  writeIm< IType >(thresh->GetOutput(), argv[4]);
   // now to apply the signed distance transform
   std::cout << "Finished loading etc" << std::endl;
-
 
   typedef itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( thresh->GetOutput());
-  filter->SetOutsideValue(atoi(argv[3]));
+  filter->SetInput( thresh->GetOutput() );
+  filter->SetOutsideValue( atoi(argv[3]) );
   filter->SetUseImageSpacing(true);
   filter->SetParabolicAlgorithm(FilterType::CONTACTPOINT);
   //filter->UseContactPointOn();
@@ -83,7 +80,7 @@ int main(int argc, char * argv[])
   std::cout << "ParabolicCP ParabolicIntersection  Maurer   Danielsson" << std::endl;
 
   const unsigned pTESTS = 10;
-  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
+  for ( unsigned repeats = 0; repeats < pTESTS; repeats++ )
     {
     ParabolicCP.Start();
     filter->Modified();
@@ -92,7 +89,7 @@ int main(int argc, char * argv[])
     }
 
   filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
-  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
+  for ( unsigned repeats = 0; repeats < pTESTS; repeats++ )
     {
     ParabolicInt.Start();
     filter->Modified();
@@ -100,47 +97,42 @@ int main(int argc, char * argv[])
     ParabolicInt.Stop();
     }
 
-  writeIm<FType>(filter->GetOutput(), argv[5]);
+  writeIm< FType >(filter->GetOutput(), argv[5]);
 
-  typedef itk::SignedMaurerDistanceMapImageFilter<IType, FType> MaurerType;
+  typedef itk::SignedMaurerDistanceMapImageFilter< IType, FType > MaurerType;
   MaurerType::Pointer maurer = MaurerType::New();
-  maurer->SetInput(thresh->GetOutput());
+  maurer->SetInput( thresh->GetOutput() );
   maurer->SetUseImageSpacing(true);
   maurer->SetSquaredDistance(false);
-  for (unsigned repeats = 0; repeats < pTESTS; repeats++)
+  for ( unsigned repeats = 0; repeats < pTESTS; repeats++ )
     {
     MaurerT.Start();
     maurer->Modified();
     maurer->Update();
     MaurerT.Stop();
     }
-  writeIm<FType>(maurer->GetOutput(), argv[6]);
-
+  writeIm< FType >(maurer->GetOutput(), argv[6]);
 
   const unsigned TESTS = 10;
 
-  typedef itk::DanielssonDistanceMapImageFilter<IType, FType> DanielssonType;
+  typedef itk::DanielssonDistanceMapImageFilter< IType, FType > DanielssonType;
   DanielssonType::Pointer daniel = DanielssonType::New();
-  daniel->SetInput(thresh->GetOutput());
+  daniel->SetInput( thresh->GetOutput() );
   daniel->SetUseImageSpacing(true);
-  for (unsigned repeats = 0; repeats < 2; repeats++)
+  for ( unsigned repeats = 0; repeats < 2; repeats++ )
     {
     DanielssonT.Start();
     daniel->Modified();
     daniel->Update();
     DanielssonT.Stop();
     }
-  writeIm<FType>(daniel->GetDistanceMap(), argv[7]);
-
+  writeIm< FType >(daniel->GetDistanceMap(), argv[7]);
 
   std::cout << std::setprecision(3)
-            << ParabolicCP.GetMean() <<"\t"
-            << ParabolicInt.GetMean() <<"\t"
-            << MaurerT.GetMean() <<"\t"
+            << ParabolicCP.GetMean() << "\t"
+            << ParabolicInt.GetMean() << "\t"
+            << MaurerT.GetMean() << "\t"
             << DanielssonT.GetMean() << std::endl;
-
-
 
   return EXIT_SUCCESS;
 }
-

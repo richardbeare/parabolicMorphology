@@ -8,29 +8,27 @@
 #include "itkTimeProbe.h"
 #include "itkMultiThreader.h"
 
-
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
 
-  typedef unsigned char PType;
+  typedef unsigned char            PType;
   typedef itk::Image< PType, dim > IType;
-
 
   typedef itk::ImageFileReader< IType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
 
-  typedef itk::ParabolicOpenImageFilter< IType,IType > FilterType;
+  typedef itk::ParabolicOpenImageFilter< IType, IType > FilterType;
 
   FilterType::Pointer filter = FilterType::New();
 
   filter->SetInput( reader->GetOutput() );
   filter->SetSafeBorder(true);
   FilterType::RadiusType scale;
-  scale[0]=1;
-  scale[1]=0.5;
+  scale[0] = 1;
+  scale[1] = 0.5;
   filter->SetScale(scale);
 
   filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
@@ -38,7 +36,7 @@ int main(int argc, char * argv[])
 //   itk::SimpleFilterWatcher watcher(filter, "filter");
   itk::TimeProbe NewTime;
 
-  for (unsigned i = 0; i < 1; i++)
+  for ( unsigned i = 0; i < 1; i++ )
     {
     filter->Modified();
     NewTime.Start();
@@ -49,12 +47,12 @@ int main(int argc, char * argv[])
   typedef itk::ImageFileWriter< IType > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
-  writer->SetFileName( argv[2] );
+  writer->SetFileName(argv[2]);
   writer->Update();
   std::cout << std::setprecision(3)
             << NewTime.GetMean() << std::endl;
 
-  if (argc > 3)
+  if ( argc > 3 )
     {
     // testing equivalence
     filter->SetParabolicAlgorithm(FilterType::CONTACTPOINT);
@@ -64,4 +62,3 @@ int main(int argc, char * argv[])
 
   return EXIT_SUCCESS;
 }
-
