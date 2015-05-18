@@ -1,5 +1,5 @@
-#ifndef __itkMorphologicalSignedDistanceTransformImageFilter_h
-#define __itkMorphologicalSignedDistanceTransformImageFilter_h
+#ifndef itkMorphologicalSignedDistanceTransformImageFilter_h
+#define itkMorphologicalSignedDistanceTransformImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkProgressReporter.h"
@@ -15,7 +15,7 @@ namespace itk
  * \class MorphologicalSignedDistanceTransformImageFilter
  * \brief Signed distance transform of a mask using parabolic morphological
  * methods
- * 
+ *
  * Morphological erosions using a parabolic structuring element can be
  * used to compute a distance transform of a mask by setting the
  * "Outside" value to 0 and the "inside" value to +infinity (or beyond
@@ -27,10 +27,10 @@ namespace itk
  * The output pixel type needs to support values as large as the
  * square of the largest value of the distance - just use float to be
  * safe.
- * 
+ *
  * The inside is considered to have negative distances. Use
  * InsideIsPositive(bool) to change.
- * 
+ *
  * There are also OutsideValue methods which can be used in similar
  * ways.
  *
@@ -50,18 +50,17 @@ namespace itk
  *
 **/
 
-
-template <typename TInputImage, typename TOutputImage= TInputImage>
+template< typename TInputImage, typename TOutputImage = TInputImage >
 class ITK_EXPORT MorphologicalSignedDistanceTransformImageFilter:
-    public ImageToImageFilter<TInputImage,
-			      TOutputImage>
+  public ImageToImageFilter< TInputImage,
+                             TOutputImage >
 {
 public:
   /** Standard class typedefs. */
   typedef MorphologicalSignedDistanceTransformImageFilter Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -69,19 +68,18 @@ public:
   /** Runtime information support. */
   itkTypeMacro(MorphologicalSignedDistanceTransformImageFilter, ImageToImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                InputPixelType;
-  typedef typename NumericTraits<InputPixelType>::RealType    RealType;
-  typedef typename NumericTraits<InputPixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                              InputImageType;
+  typedef TOutputImage                                             OutputImageType;
+  typedef typename TInputImage::PixelType                          InputPixelType;
+  typedef typename NumericTraits< InputPixelType >::RealType       RealType;
+  typedef typename NumericTraits< InputPixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                         OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
- 
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
+
   /** Image related typedefs. */
   itkStaticConstMacro(OutputImageDimension, unsigned int,
                       TOutputImage::ImageDimension);
@@ -91,7 +89,7 @@ public:
                       TInputImage::ImageDimension);
 
   /** a type to represent the "kernel radius" */
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   virtual void Modified() const;
 
@@ -100,22 +98,22 @@ public:
   the nearest voxel with value "OutsideValue" */
   itkSetMacro(OutsideValue, InputPixelType);
   itkGetConstReferenceMacro(OutsideValue, InputPixelType);
-  
+
   /** Set On/Off whether spacing is used. */
-  itkBooleanMacro( UseImageSpacing );
+  itkBooleanMacro(UseImageSpacing);
 
   /** Set if the inside represents positive values in the signed distance
    *  map. By convention ON pixels are treated as inside pixels.           */
-  itkSetMacro( InsideIsPositive, bool );
+  itkSetMacro(InsideIsPositive, bool);
 
   /** Get if the inside represents positive values in the signed distance map.
    *  See GetInsideIsPositive()  */
-  itkGetConstReferenceMacro( InsideIsPositive, bool );
+  itkGetConstReferenceMacro(InsideIsPositive, bool);
 
-    /** Set if the inside represents positive values in the signed distance
-     * map. By convention ON pixels are treated as inside pixels. Default is
-     * true.                             */
-  itkBooleanMacro( InsideIsPositive );
+  /** Set if the inside represents positive values in the signed distance
+   * map. By convention ON pixels are treated as inside pixels. Default is
+   * true.                             */
+  itkBooleanMacro(InsideIsPositive);
   /** Is the transform in world or voxel units - default is world */
   void SetUseImageSpacing(bool uis)
   {
@@ -125,14 +123,14 @@ public:
   }
 
   enum ParabolicAlgorithm {
-    NOCHOICE = 0,         // decices based on scale - experimental
+    NOCHOICE = 0,     // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  };
+    };
 
-  /** 
+  /**
    * Set/Get the method used. Choices are contact point or
-   * intersection. Intersection is the default. Contact point can be 
+   * intersection. Intersection is the default. Contact point can be
    * faster at small scales. This is very unlikely to be the case for
    * a distance transform.
    */
@@ -140,58 +138,53 @@ public:
   itkSetMacro(ParabolicAlgorithm, int);
   itkGetConstReferenceMacro(ParabolicAlgorithm, int);
 
-
-  const bool &GetUseImageSpacing()
+  const bool & GetUseImageSpacing()
   {
     return m_Erode->GetUseImageSpacing();
   }
 
-
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(SameDimension,
-                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),itkGetStaticConstMacro(OutputImageDimension)>));
+  itkConceptMacro( SameDimension,
+                   ( Concept::SameDimension< itkGetStaticConstMacro(InputImageDimension),
+                                             itkGetStaticConstMacro(OutputImageDimension) > ) );
 
-  itkConceptMacro(Comparable,
-		  (Concept::Comparable<InputPixelType>));
+  itkConceptMacro( Comparable,
+                   ( Concept::Comparable< InputPixelType > ) );
 
   /** End concept checking */
 #endif
-
-
-
 protected:
   MorphologicalSignedDistanceTransformImageFilter();
-  virtual ~MorphologicalSignedDistanceTransformImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
-  
+  virtual ~MorphologicalSignedDistanceTransformImageFilter() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
+
   /** Generate Data */
-  void GenerateData( void );
+  void GenerateData(void);
+
   int m_ParabolicAlgorithm;
 
   // do everything in the output image type, which should have high precision
-  typedef typename itk::BinaryThresholdImageFilter<InputImageType, OutputImageType> ThreshType;
-  typedef typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType> ErodeType;
-  typedef typename itk::ParabolicDilateImageFilter<OutputImageType, OutputImageType> DilateType;
-  typedef typename itk::MorphSDTHelperImageFilter<OutputImageType, OutputImageType> HelperType;
-
+  typedef typename itk::BinaryThresholdImageFilter< InputImageType, OutputImageType >  ThreshType;
+  typedef typename itk::ParabolicErodeImageFilter< OutputImageType, OutputImageType >  ErodeType;
+  typedef typename itk::ParabolicDilateImageFilter< OutputImageType, OutputImageType > DilateType;
+  typedef typename itk::MorphSDTHelperImageFilter< OutputImageType, OutputImageType >  HelperType;
 private:
-  MorphologicalSignedDistanceTransformImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  MorphologicalSignedDistanceTransformImageFilter(const Self &); //purposely not
+                                                                 // implemented
+  void operator=(const Self &);                                  //purposely not
+                                                                 // implemented
 
-  InputPixelType m_OutsideValue;
-  bool m_InsideIsPositive;
-  typename ErodeType::Pointer m_Erode;
+  InputPixelType               m_OutsideValue;
+  bool                         m_InsideIsPositive;
+  typename ErodeType::Pointer  m_Erode;
   typename DilateType::Pointer m_Dilate;
   typename ThreshType::Pointer m_Thresh;
   typename HelperType::Pointer m_Helper;
 };
-
 } // namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMorphologicalSignedDistanceTransformImageFilter.hxx"
 #endif
-
 
 #endif

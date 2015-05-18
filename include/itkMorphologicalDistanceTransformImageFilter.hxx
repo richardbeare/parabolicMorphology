@@ -1,17 +1,17 @@
-#ifndef __itkMorphologicalDistanceTransformImageFilter_hxx
-#define __itkMorphologicalDistanceTransformImageFilter_hxx
+#ifndef itkMorphologicalDistanceTransformImageFilter_hxx
+#define itkMorphologicalDistanceTransformImageFilter_hxx
 
 #include "itkMorphologicalDistanceTransformImageFilter.h"
 #include "itkProgressAccumulator.h"
 
-namespace itk 
+namespace itk
 {
-template <typename TInputImage, typename TOutputImage> 
-MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
+template< typename TInputImage, typename TOutputImage >
+MorphologicalDistanceTransformImageFilter< TInputImage, TOutputImage >
 ::MorphologicalDistanceTransformImageFilter()
 {
-  this->SetNumberOfRequiredOutputs( 1 );
-  this->SetNumberOfRequiredInputs( 1 );
+  this->SetNumberOfRequiredOutputs(1);
+  this->SetNumberOfRequiredInputs(1);
 
   m_Erode = ErodeType::New();
   m_Thresh = ThreshType::New();
@@ -22,25 +22,24 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_SqrDist = false;
 }
 
-template <typename TInputImage, typename TOutputImage> 
+template< typename TInputImage, typename TOutputImage >
 void
-MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
+MorphologicalDistanceTransformImageFilter< TInputImage, TOutputImage >
 ::Modified() const
 {
   Superclass::Modified();
   m_Erode->Modified();
   m_Thresh->Modified();
   m_Sqrt->Modified();
-  
 }
 
-template <typename TInputImage, typename TOutputImage> 
+template< typename TInputImage, typename TOutputImage >
 void
-MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
+MorphologicalDistanceTransformImageFilter< TInputImage, TOutputImage >
 ::GenerateData(void)
 {
-
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
+
   progress->SetMiniPipelineFilter(this);
   // these values are guesses at present - need to profile to get a
   // real idea
@@ -53,25 +52,25 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   double MaxDist = 0.0;
   typename TOutputImage::SpacingType sp = this->GetOutput()->GetSpacing();
   typename TOutputImage::SizeType sz = this->GetOutput()->GetLargestPossibleRegion().GetSize();
-  if (this->GetUseImageSpacing()) 
+  if ( this->GetUseImageSpacing() )
     {
-    for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
+    for ( unsigned k = 0; k < TOutputImage::ImageDimension; k++ )
       {
-      double thisdim = (sz[k] * sp[k]);
-      MaxDist += thisdim*thisdim;
+      double thisdim = ( sz[k] * sp[k] );
+      MaxDist += thisdim * thisdim;
       }
     }
   else
     {
-    for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
+    for ( unsigned k = 0; k < TOutputImage::ImageDimension; k++ )
       {
       double thisdim = sz[k];
-      MaxDist += thisdim*thisdim;
+      MaxDist += thisdim * thisdim;
       }
     }
 
 //   double Wt = 0.0;
-//   if (this->GetUseImageSpacing()) 
+//   if (this->GetUseImageSpacing())
 //     {
 //     for (unsigned k = 0; k < TOutputImage::ImageDimension; k++)
 //       {
@@ -93,35 +92,33 @@ MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
   m_Thresh->SetOutsideValue(MaxDist);
   m_Thresh->SetInsideValue(0);
 
-  m_Thresh->SetInput(this->GetInput());
-  m_Erode->SetInput(m_Thresh->GetOutput());
-  
-  if (m_SqrDist)
+  m_Thresh->SetInput( this->GetInput() );
+  m_Erode->SetInput( m_Thresh->GetOutput() );
+
+  if ( m_SqrDist )
     {
-    m_Erode->GraftOutput(this->GetOutput());
+    m_Erode->GraftOutput( this->GetOutput() );
     m_Erode->Update();
-    this->GraftOutput(m_Erode->GetOutput());
+    this->GraftOutput( m_Erode->GetOutput() );
     }
   else
     {
-    m_Sqrt->SetInput(m_Erode->GetOutput());
-    m_Sqrt->GraftOutput(this->GetOutput());
+    m_Sqrt->SetInput( m_Erode->GetOutput() );
+    m_Sqrt->GraftOutput( this->GetOutput() );
     m_Sqrt->Update();
-    this->GraftOutput(m_Sqrt->GetOutput());
+    this->GraftOutput( m_Sqrt->GetOutput() );
     }
-  
 }
-template <typename TInputImage, typename TOutputImage> 
+
+template< typename TInputImage, typename TOutputImage >
 void
-MorphologicalDistanceTransformImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+MorphologicalDistanceTransformImageFilter< TInputImage, TOutputImage >
+::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf(os, indent);
   os << "Outside Value = " << (OutputPixelType)m_OutsideValue << std::endl;
   os << "ImageScale = " << m_Erode->GetUseImageSpacing() << std::endl;
-
 }
-
 } //namespace itk
 
 #endif

@@ -1,12 +1,11 @@
-#ifndef __itkBinaryErodeParaImageFilter_h
-#define __itkBinaryErodeParaImageFilter_h
+#ifndef itkBinaryErodeParaImageFilter_h
+#define itkBinaryErodeParaImageFilter_h
 
 #include "itkParabolicErodeImageFilter.h"
 #include "itkGreaterEqualValImageFilter.h"
 
 namespace itk
 {
-
 /**
  * \class BinaryErodeParaImageFilter
  * \brief Class for binary morphological erosion operation.
@@ -48,20 +47,18 @@ namespace itk
  * Australia.  <Richard.Beare@monash.edu>
 **/
 
-
-template <typename TInputImage,
-          typename TOutputImage= TInputImage >
+template< typename TInputImage,
+          typename TOutputImage = TInputImage >
 class ITK_EXPORT BinaryErodeParaImageFilter:
-    public ImageToImageFilter<TInputImage,TOutputImage>
+  public ImageToImageFilter< TInputImage, TOutputImage >
 
 {
-
 public:
   /** Standard class typedefs. */
-  typedef BinaryErodeParaImageFilter  Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef BinaryErodeParaImageFilter                      Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -69,31 +66,31 @@ public:
   /** Runtime information support. */
   itkTypeMacro(BinaryErodeParaImageFilter, ImageToImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                PixelType;
-  typedef typename NumericTraits<PixelType>::RealType    RealType;
-  typedef typename NumericTraits<PixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                         InputImageType;
+  typedef TOutputImage                                        OutputImageType;
+  typedef typename TInputImage::PixelType                     PixelType;
+  typedef typename NumericTraits< PixelType >::RealType       RealType;
+  typedef typename NumericTraits< PixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                    OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
 
-  typedef typename NumericTraits< PixelType >::FloatType   InternalRealType;
+  typedef typename NumericTraits< PixelType >::FloatType InternalRealType;
   // perhaps a bit dodgy, change to int if you want to do enormous
   // binary operations
-  typedef  short     InternalIntType;
+  typedef  short InternalIntType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
                       TInputImage::ImageDimension);
 
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   void SetRadius(ScalarRealType radius);
+
   itkSetMacro(Radius, RadiusType);
   itkGetConstReferenceMacro(Radius, RadiusType);
 
@@ -102,6 +99,7 @@ public:
     m_RectPara->SetUseImageSpacing(g);
     m_CircPara->SetUseImageSpacing(g);
   }
+
   /**
    * Set/Get whether the erosion is circular/rectangular -
    * default is true (circular)
@@ -113,37 +111,37 @@ public:
 
   /* add in the traits here */
   virtual void Modified() const;
+
 protected:
-  void GenerateData( void );
+  void GenerateData(void);
 
   BinaryErodeParaImageFilter();
-  virtual ~BinaryErodeParaImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  virtual ~BinaryErodeParaImageFilter() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-  typedef typename itk::Image<InternalRealType, InputImageType::ImageDimension> InternalRealImageType;
-  typedef typename itk::Image<InternalIntType, InputImageType::ImageDimension> InternalIntImageType;
-  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalRealImageType> CircParabolicType;
-  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalIntImageType> RectParabolicType;
-  typedef typename itk::GreaterEqualValImageFilter<InternalRealImageType, OutputImageType> CCastType;
-  typedef typename itk::GreaterEqualValImageFilter<InternalIntImageType, OutputImageType> RCastType;
+  typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
+  typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
+  typedef typename itk::ParabolicErodeImageFilter< TInputImage, InternalRealImageType >      CircParabolicType;
+  typedef typename itk::ParabolicErodeImageFilter< TInputImage, InternalIntImageType >       RectParabolicType;
+  typedef typename itk::GreaterEqualValImageFilter< InternalRealImageType, OutputImageType > CCastType;
+  typedef typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >  RCastType;
 private:
-  BinaryErodeParaImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  BinaryErodeParaImageFilter(const Self &); //purposely not implemented
+  void operator=(const Self &);             //purposely not implemented
+
   RadiusType m_Radius;
-  bool m_Circular;
+  bool       m_Circular;
+
   typename CircParabolicType::Pointer m_CircPara;
-  typename CCastType::Pointer m_CircCast;
+  typename CCastType::Pointer         m_CircCast;
 
   typename RectParabolicType::Pointer m_RectPara;
-  typename RCastType::Pointer m_RectCast;
-
+  typename RCastType::Pointer         m_RectCast;
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkBinaryErodeParaImageFilter.hxx"
 #endif
-
 
 #endif //__itkBinaryErodeParaImageFilter_h

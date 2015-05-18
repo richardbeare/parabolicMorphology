@@ -1,9 +1,8 @@
-#ifndef __itkGreaterEqualValImageFilter_h
-#define __itkGreaterEqualValImageFilter_h
+#ifndef itkGreaterEqualValImageFilter_h
+#define itkGreaterEqualValImageFilter_h
 #include <itkUnaryFunctorImageFilter.h>
 namespace itk
 {
-
 /** \class GreaterEqualValImageFilter
  * \brief Computes the absolute difference between an image and a
  * constant. Can be done with ShiftScale and AbsIamgeFilters.
@@ -12,48 +11,55 @@ namespace itk
  *
  */
 
-
-namespace Functor {
-
-template< class TInput, class TOutput>
+namespace Functor
+{
+template< class TInput, class TOutput >
 class GEConst
 {
 public:
-  GEConst() {m_Val = (TInput)0.0;}
+  GEConst() { m_Val = (TInput)0.0; }
   void SetVal(const TInput i) { m_Val = i; }
 
   ~GEConst() {}
-  bool operator!=( const GEConst & ) const
+  bool operator!=(const GEConst &) const
   {
     return false;
   }
-  bool operator==( const GEConst & other ) const
+
+  bool operator==(const GEConst & other) const
   {
-    return !(*this != other);
+    return !( *this != other );
   }
-  inline TOutput operator()( const TInput & A )
-  { 
-    return static_cast<TOutput>(A >= m_Val);
+
+  inline TOutput operator()(const TInput & A)
+  {
+    return static_cast< TOutput >( A >= m_Val );
   }
+
 private:
   TInput m_Val;
 };
 }
 
-template <class TInputImage, class TOutputImage>
-class ITK_EXPORT GreaterEqualValImageFilter :
-    public
-  UnaryFunctorImageFilter<TInputImage,TOutputImage,
-                        Functor::GEConst<
-  typename TInputImage::PixelType,
-  typename TOutputImage::PixelType>   >
+template< class TInputImage, class TOutputImage >
+class ITK_EXPORT GreaterEqualValImageFilter:
+  public
+  UnaryFunctorImageFilter< TInputImage, TOutputImage,
+                           Functor::GEConst<
+                             typename TInputImage::PixelType,
+                             typename TOutputImage::PixelType >   >
 {
 public:
   /** Standard class typedefs. */
-  typedef GreaterEqualValImageFilter  Self;
-  typedef UnaryFunctorImageFilter<TInputImage,TOutputImage, Functor::GEConst< typename TInputImage::PixelType,  typename TOutputImage::PixelType> >  Superclass;
-  typedef SmartPointer<Self>   Pointer;
-  typedef SmartPointer<const Self>  ConstPointer;
+  typedef GreaterEqualValImageFilter
+                                                                                          Self;
+  typedef UnaryFunctorImageFilter< TInputImage, TOutputImage,
+                                   Functor::GEConst< typename TInputImage::PixelType,
+                                                     typename TOutputImage::PixelType > > Superclass;
+  typedef SmartPointer< Self >
+                                                                                          Pointer;
+  typedef SmartPointer< const Self >
+                                                                                          ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -64,28 +70,21 @@ public:
     this->Modified();
   }
 
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(InputConvertibleToDoubleCheck,
-    (Concept::Convertible<typename TInputImage::PixelType, double>));
-  itkConceptMacro(DoubleConvertibleToOutputCheck,
-    (Concept::Convertible<double, typename TOutputImage::PixelType>));
+  itkConceptMacro( InputConvertibleToDoubleCheck,
+                   ( Concept::Convertible< typename TInputImage::PixelType, double > ) );
+  itkConceptMacro( DoubleConvertibleToOutputCheck,
+                   ( Concept::Convertible< double, typename TOutputImage::PixelType > ) );
   /** End concept checking */
 #endif
-
 protected:
   GreaterEqualValImageFilter() {}
   virtual ~GreaterEqualValImageFilter() {}
-
 private:
-  GreaterEqualValImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
-
+  GreaterEqualValImageFilter(const Self &); //purposely not implemented
+  void operator=(const Self &);             //purposely not implemented
 };
-
 } // end namespace itk
 
-
 #endif
-

@@ -1,5 +1,5 @@
-#ifndef __itkParabolicCloseImageFilter_h
-#define __itkParabolicCloseImageFilter_h
+#ifndef itkParabolicCloseImageFilter_h
+#define itkParabolicCloseImageFilter_h
 
 #include "itkParabolicOpenCloseSafeBorderImageFilter.h"
 #include "itkNumericTraits.h"
@@ -20,7 +20,7 @@ namespace itk
  *
  * http://hdl.handle.net/1926/1370
  *
- * \sa itkParabolicOpenCloseImageFilter 
+ * \sa itkParabolicOpenCloseImageFilter
  *
  *
  * \ingroup ParabolicMorphology
@@ -29,19 +29,18 @@ namespace itk
  * Australia.  <Richard.Beare@monash.edu>
 **/
 
-template <typename TInputImage,
-          typename TOutputImage= TInputImage >
+template< typename TInputImage,
+          typename TOutputImage = TInputImage >
 class ITK_EXPORT ParabolicCloseImageFilter:
-    public ParabolicOpenCloseSafeBorderImageFilter<TInputImage, false,
-					   TOutputImage>
+  public ParabolicOpenCloseSafeBorderImageFilter< TInputImage, false,
+                                                  TOutputImage >
 {
-
 public:
   /** Standard class typedefs. */
-  typedef ParabolicCloseImageFilter  Self;
-  typedef ParabolicOpenCloseSafeBorderImageFilter<TInputImage, false, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef ParabolicCloseImageFilter                                                   Self;
+  typedef ParabolicOpenCloseSafeBorderImageFilter< TInputImage, false, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                                                        Pointer;
+  typedef SmartPointer< const Self >                                                  ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -49,21 +48,20 @@ public:
   /** Runtime information support. */
   itkTypeMacro(ParabolicCloseImageFilter, ParabolicOpenCloseSafeBorderImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                PixelType;
-  typedef typename NumericTraits<PixelType>::RealType    RealType;
-  typedef typename NumericTraits<PixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                         InputImageType;
+  typedef TOutputImage                                        OutputImageType;
+  typedef typename TInputImage::PixelType                     PixelType;
+  typedef typename NumericTraits< PixelType >::RealType       RealType;
+  typedef typename NumericTraits< PixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                    OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
 
   /** a type to represent the "kernel radius" */
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -71,20 +69,14 @@ public:
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
-
-
 protected:
-  ParabolicCloseImageFilter(){};
-  virtual ~ParabolicCloseImageFilter() {};
+  ParabolicCloseImageFilter(){}
+  virtual ~ParabolicCloseImageFilter() {}
 //   void PrintSelf(std::ostream& os, Indent indent) const;
-  
 private:
-  ParabolicCloseImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
-
-  
+  ParabolicCloseImageFilter(const Self &); //purposely not implemented
+  void operator=(const Self &);            //purposely not implemented
 };
-
 } // end namespace itk
 
 #endif

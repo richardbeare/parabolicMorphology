@@ -1,5 +1,5 @@
-#ifndef __itkParabolicOpenCloseSafeBorderImageFilter_h
-#define __itkParabolicOpenCloseSafeBorderImageFilter_h
+#ifndef itkParabolicOpenCloseSafeBorderImageFilter_h
+#define itkParabolicOpenCloseSafeBorderImageFilter_h
 
 #include "itkParabolicOpenCloseImageFilter.h"
 #include "itkCropImageFilter.h"
@@ -12,20 +12,19 @@
 
 namespace itk
 {
-template <typename TInputImage,
-	  bool doOpen,
-          typename TOutputImage= TInputImage >
+template< typename TInputImage,
+          bool doOpen,
+          typename TOutputImage = TInputImage >
 class ITK_EXPORT ParabolicOpenCloseSafeBorderImageFilter:
-    public ImageToImageFilter<TInputImage,
-			      TOutputImage>
+  public ImageToImageFilter< TInputImage,
+                             TOutputImage >
 {
-
 public:
   /** Standard class typedefs. */
-  typedef ParabolicOpenCloseSafeBorderImageFilter  Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef ParabolicOpenCloseSafeBorderImageFilter         Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -33,21 +32,20 @@ public:
   /** Runtime information support. */
   itkTypeMacro(ParabolicOpenCloseSafeBorderImageFilter, ImageToImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                InputPixelType;
-  typedef typename NumericTraits<InputPixelType>::RealType    RealType;
-  typedef typename NumericTraits<InputPixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                              InputImageType;
+  typedef TOutputImage                                             OutputImageType;
+  typedef typename TInputImage::PixelType                          InputPixelType;
+  typedef typename NumericTraits< InputPixelType >::RealType       RealType;
+  typedef typename NumericTraits< InputPixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                         OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
 
   /** a type to represent the "kernel radius" */
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -60,42 +58,45 @@ public:
   void SetScale(ScalarRealType scale)
   {
     RadiusType s = this->GetScale();
+
     this->m_MorphFilt->SetScale(scale);
-    if( s != this->GetScale() )
+    if ( s != this->GetScale() )
       {
       this->Modified();
       }
   }
+
   // different scale for each direction
   void SetScale(RadiusType scale)
   {
-    if( scale != this->GetScale() )
+    if ( scale != this->GetScale() )
       {
       this->m_MorphFilt->SetScale(scale);
       this->Modified();
       }
   }
+
   //
   const RadiusType & GetScale() const
   {
-    return(this->m_MorphFilt->GetScale());
+    return ( this->m_MorphFilt->GetScale() );
   }
-  
 
   void SetUseImageSpacing(bool B)
   {
-    if( B != this->GetUseImageSpacing() )
+    if ( B != this->GetUseImageSpacing() )
       {
       this->m_MorphFilt->SetUseImageSpacing(B);
       this->Modified();
       }
   }
+
   bool GetUseImageSpacing() const
   {
-    return(this->m_MorphFilt->GetUseImageSpacing());
+    return ( this->m_MorphFilt->GetUseImageSpacing() );
   }
+
   itkBooleanMacro(UseImageSpacing);
-  
 
   itkSetMacro(SafeBorder, bool);
   itkGetConstReferenceMacro(SafeBorder, bool);
@@ -103,30 +104,32 @@ public:
   // should add the Get methods
 
   enum ParabolicAlgorithm {
-    NOCHOICE = 0,         // decices based on scale - experimental
+    NOCHOICE = 0,     // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  };
-  /** 
+    };
+  /**
    * Set/Get the method used. Choices are contact point or
-   * intersection. Intersection is the default. Contact point can be 
+   * intersection. Intersection is the default. Contact point can be
    * faster at small scales.
    */
 
   itkSetMacro(ParabolicAlgorithm, int);
   itkGetConstReferenceMacro(ParabolicAlgorithm, int);
 
-  /** ParabolicOpenCloseImageFilter must forward the Modified() call to its internal filters */
+  /** ParabolicOpenCloseImageFilter must forward the Modified() call to its
+    internal filters */
   virtual void Modified() const;
 
 protected:
   void GenerateData();
-  void PrintSelf(std::ostream& os, Indent indent) const;
 
-  typedef ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage> MorphFilterType;
-  typedef ConstantPadImageFilter<TInputImage, TInputImage> PadFilterType;
-  typedef CropImageFilter<TOutputImage, TOutputImage> CropFilterType;
-  typedef StatisticsImageFilter<InputImageType> StatsFilterType;
+  void PrintSelf(std::ostream & os, Indent indent) const;
+
+  typedef ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage > MorphFilterType;
+  typedef ConstantPadImageFilter< TInputImage, TInputImage >                 PadFilterType;
+  typedef CropImageFilter< TOutputImage, TOutputImage >                      CropFilterType;
+  typedef StatisticsImageFilter< InputImageType >                            StatsFilterType;
 
   ParabolicOpenCloseSafeBorderImageFilter()
   {
@@ -137,27 +140,27 @@ protected:
     m_SafeBorder = true;
     m_ParabolicAlgorithm = INTERSECTION;
   }
-  virtual ~ParabolicOpenCloseSafeBorderImageFilter() {};
-  int m_ParabolicAlgorithm;
 
-  
+  virtual ~ParabolicOpenCloseSafeBorderImageFilter() {}
+  int m_ParabolicAlgorithm;
 private:
-  ParabolicOpenCloseSafeBorderImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  ParabolicOpenCloseSafeBorderImageFilter(const Self &); //purposely not
+                                                         // implemented
+  void operator=(const Self &);                          //purposely not
+                                                         // implemented
 
   typename MorphFilterType::Pointer m_MorphFilt;
-  typename PadFilterType::Pointer m_PadFilt;
-  typename CropFilterType::Pointer m_CropFilt;
+  typename PadFilterType::Pointer   m_PadFilt;
+  typename CropFilterType::Pointer  m_CropFilt;
   typename StatsFilterType::Pointer m_StatsFilt;
+
   bool m_SafeBorder;
   bool m_UseContactPoint;
   bool m_UseIntersection;
 };
-
 } // end namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkParabolicOpenCloseSafeBorderImageFilter.hxx"
 #endif
 
 #endif
-

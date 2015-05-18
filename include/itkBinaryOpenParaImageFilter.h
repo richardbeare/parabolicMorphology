@@ -1,5 +1,5 @@
-#ifndef __itkBinaryOpenParaImageFilter_h
-#define __itkBinaryOpenParaImageFilter_h
+#ifndef itkBinaryOpenParaImageFilter_h
+#define itkBinaryOpenParaImageFilter_h
 
 #include "itkParabolicErodeImageFilter.h"
 #include "itkParabolicDilateImageFilter.h"
@@ -8,7 +8,6 @@
 
 namespace itk
 {
-
 /**
  * \class BinaryOpenParaImageFilter
  * \brief Class for binary morphological opening operation.
@@ -49,20 +48,18 @@ namespace itk
  * Australia.  <Richard.Beare@monash.edu>
 **/
 
-
-template <typename TInputImage,
-          typename TOutputImage= TInputImage >
+template< typename TInputImage,
+          typename TOutputImage = TInputImage >
 class ITK_EXPORT BinaryOpenParaImageFilter:
-    public ImageToImageFilter<TInputImage,TOutputImage>
+  public ImageToImageFilter< TInputImage, TOutputImage >
 
 {
-
 public:
   /** Standard class typedefs. */
-  typedef BinaryOpenParaImageFilter  Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef BinaryOpenParaImageFilter                       Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -70,31 +67,31 @@ public:
   /** Runtime information support. */
   itkTypeMacro(BinaryOpenParaImageFilter, ImageToImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                PixelType;
-  typedef typename NumericTraits<PixelType>::RealType    RealType;
-  typedef typename NumericTraits<PixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                         InputImageType;
+  typedef TOutputImage                                        OutputImageType;
+  typedef typename TInputImage::PixelType                     PixelType;
+  typedef typename NumericTraits< PixelType >::RealType       RealType;
+  typedef typename NumericTraits< PixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                    OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
 
-  typedef typename NumericTraits< PixelType >::FloatType   InternalRealType;
+  typedef typename NumericTraits< PixelType >::FloatType InternalRealType;
   // perhaps a bit dodgy, change to int if you want to do enormous
   // binary operations
-  typedef  short     InternalIntType;
+  typedef  short InternalIntType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
                       TInputImage::ImageDimension);
 
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   void SetRadius(ScalarRealType radius);
+
   itkSetMacro(Radius, RadiusType);
   itkGetConstReferenceMacro(Radius, RadiusType);
 
@@ -105,6 +102,7 @@ public:
     m_CircErode->SetUseImageSpacing(g);
     m_CircDilate->SetUseImageSpacing(g);
   }
+
   /**
    * Set/Get whether the erosion is circular/rectangular -
    * default is true (circular)
@@ -113,8 +111,8 @@ public:
   itkGetConstReferenceMacro(Circular, bool);
   itkBooleanMacro(Circular);
 
- /** A safe border is added to input image to avoid borders effects
-   * and remove it once the closing is done */
+  /** A safe border is added to input image to avoid borders effects
+    * and remove it once the closing is done */
   itkSetMacro(SafeBorder, bool);
   itkGetConstReferenceMacro(SafeBorder, bool);
   itkBooleanMacro(SafeBorder);
@@ -122,51 +120,49 @@ public:
   /** Image related typedefs. */
 
   /* add in the traits here */
-
 protected:
-  void GenerateData( void );
+  void GenerateData(void);
 
   BinaryOpenParaImageFilter();
-  virtual ~BinaryOpenParaImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  virtual ~BinaryOpenParaImageFilter() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-  typedef typename itk::Image<InternalRealType, InputImageType::ImageDimension> InternalRealImageType;
-  typedef typename itk::Image<InternalIntType, InputImageType::ImageDimension> InternalIntImageType;
-  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalRealImageType> CircErodeType;
-  typedef typename itk::ParabolicErodeImageFilter<TInputImage, InternalIntImageType> RectErodeType;
-  typedef typename itk::ParabolicDilateImageFilter<OutputImageType, InternalRealImageType> CircDilateType;
-  typedef typename itk::ParabolicDilateImageFilter<OutputImageType, InternalRealImageType> RectDilateType;
+  typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
+  typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
+  typedef typename itk::ParabolicErodeImageFilter< TInputImage, InternalRealImageType >      CircErodeType;
+  typedef typename itk::ParabolicErodeImageFilter< TInputImage, InternalIntImageType >       RectErodeType;
+  typedef typename itk::ParabolicDilateImageFilter< OutputImageType, InternalRealImageType > CircDilateType;
+  typedef typename itk::ParabolicDilateImageFilter< OutputImageType, InternalRealImageType > RectDilateType;
 
-  typedef typename itk::GreaterEqualValImageFilter<InternalRealImageType, OutputImageType> CCastTypeA;
-  typedef typename itk::BinaryThresholdImageFilter<InternalRealImageType, OutputImageType> CCastTypeB;
+  typedef typename itk::GreaterEqualValImageFilter< InternalRealImageType, OutputImageType > CCastTypeA;
+  typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > CCastTypeB;
 
-  typedef typename itk::GreaterEqualValImageFilter<InternalIntImageType, OutputImageType> RCastTypeA;
-  typedef typename itk::BinaryThresholdImageFilter<InternalRealImageType, OutputImageType> RCastTypeB;
-  
+  typedef typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >  RCastTypeA;
+  typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > RCastTypeB;
 private:
-  BinaryOpenParaImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
-  RadiusType m_Radius;
-  bool m_Circular;
-  bool m_SafeBorder;
+  BinaryOpenParaImageFilter(const Self &); //purposely not implemented
+  void operator=(const Self &);            //purposely not implemented
 
-  typename CircErodeType::Pointer m_CircErode;
+  RadiusType m_Radius;
+  bool       m_Circular;
+  bool       m_SafeBorder;
+
+  typename CircErodeType::Pointer  m_CircErode;
   typename CircDilateType::Pointer m_CircDilate;
+
   typename CCastTypeA::Pointer m_CircCastA;
   typename CCastTypeB::Pointer m_CircCastB;
 
-  typename RectErodeType::Pointer m_RectErode;
+  typename RectErodeType::Pointer  m_RectErode;
   typename RectDilateType::Pointer m_RectDilate;
+
   typename RCastTypeA::Pointer m_RectCastA;
   typename RCastTypeB::Pointer m_RectCastB;
-
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkBinaryOpenParaImageFilter.hxx"
 #endif
-
 
 #endif //__itkBinaryOpenParaImageFilter_h

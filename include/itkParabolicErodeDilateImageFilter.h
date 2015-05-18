@@ -1,5 +1,5 @@
-#ifndef __itkParabolicErodeDilateImageFilter_h
-#define __itkParabolicErodeDilateImageFilter_h
+#ifndef itkParabolicErodeDilateImageFilter_h
+#define itkParabolicErodeDilateImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkNumericTraits.h"
@@ -25,12 +25,12 @@ namespace itk
  * to perform significantly better in the distance transform
  * application. The intersection algorithm is also used in the IJ
  * article on generalised distance transforms.
- * 
+ *
  * Parabolic structuring functions can be used as a fast alternative
  * to the "rolling ball" structuring element classically used in
  * background estimation, for example in ImageJ, have applications in
  * image sharpening and distance transform computation.
- * 
+ *
  * This class uses an internal buffer of RealType pixels for each
  * line. This line is cast to the output pixel type when written back
  * to the output image. Since the filter uses dimensional
@@ -41,7 +41,7 @@ namespace itk
  * Boomgaard, R. van den and Dorst, L. and Makram-Ebeid, L.S. and
  * Schavemaker, J. Quadratic structuring functions in mathematical
  * morphology. Mathematical Morphology and its Applications to Image
- * and Signal Processing. 
+ * and Signal Processing.
  *
  * Felzenszwalb, P.F. & Huttenlocher, D.P. Distance Transforms of Sampled Functions.
  * Techreport: Cornell Computing and Information Science, 2004.
@@ -62,20 +62,18 @@ namespace itk
  *
 **/
 
-
-template <typename TInputImage,
-	  bool doDilate,
-          typename TOutputImage= TInputImage >
+template< typename TInputImage,
+          bool doDilate,
+          typename TOutputImage = TInputImage >
 class ITK_EXPORT ParabolicErodeDilateImageFilter:
-    public ImageToImageFilter<TInputImage,TOutputImage>
+  public ImageToImageFilter< TInputImage, TOutputImage >
 {
-
 public:
   /** Standard class typedefs. */
-  typedef ParabolicErodeDilateImageFilter  Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef ParabolicErodeDilateImageFilter                 Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -84,23 +82,23 @@ public:
   itkTypeMacro(ParabolicErodeDilateImageFilter, ImageToImageFilter);
 
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                PixelType;
-  typedef typename NumericTraits<PixelType>::RealType    RealType;
-  typedef typename NumericTraits<PixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                         InputImageType;
+  typedef TOutputImage                                        OutputImageType;
+  typedef typename TInputImage::PixelType                     PixelType;
+  typedef typename NumericTraits< PixelType >::RealType       RealType;
+  typedef typename NumericTraits< PixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                    OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
-  typedef typename TInputImage::SizeType    InputSizeType;
-  typedef typename TOutputImage::SizeType   OutputSizeType;
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
+  typedef typename TInputImage::SizeType     InputSizeType;
+  typedef typename TOutputImage::SizeType    OutputSizeType;
 
-  typedef typename OutputImageType::IndexType       OutputIndexType;
+  typedef typename OutputImageType::IndexType OutputIndexType;
 
   /** a type to represent the "kernel radius" */
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   /** Image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -110,28 +108,29 @@ public:
   itkStaticConstMacro(InputImageDimension, unsigned int,
                       TInputImage::ImageDimension);
 
-
   typedef typename OutputImageType::RegionType OutputImageRegionType;
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
 
-  typedef typename NumericTraits< PixelType >::FloatType   InternalRealType;
-  //typedef typename Image<InternalRealType, itkGetStaticConstMacro(ImageDimension) >   RealImageType;
+  typedef typename NumericTraits< PixelType >::FloatType InternalRealType;
+  //typedef typename Image<InternalRealType,
+  // itkGetStaticConstMacro(ImageDimension) >   RealImageType;
 
   // set all of the scales the same
   void SetScale(ScalarRealType scale);
+
   itkSetMacro(Scale, RadiusType);
   itkGetConstReferenceMacro(Scale, RadiusType);
 
   enum ParabolicAlgorithm {
-    NOCHOICE = 0,         // decices based on scale - experimental
+    NOCHOICE = 0,     // decices based on scale - experimental
     CONTACTPOINT = 1, // sometimes faster at low scale
     INTERSECTION = 2  // default
-  };
-  /** 
+    };
+  /**
    * Set/Get the method used. Choices are contact point or
-   * intersection. Intersection is the default. Contact point can be 
+   * intersection. Intersection is the default. Contact point can be
    * faster at small scales.
    */
 
@@ -146,52 +145,52 @@ public:
   itkGetConstReferenceMacro(UseImageSpacing, bool);
   itkBooleanMacro(UseImageSpacing);
   /** Image related typedefs. */
- 
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(SameDimension,
-                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),itkGetStaticConstMacro(OutputImageDimension)>));
+  itkConceptMacro( SameDimension,
+                   ( Concept::SameDimension< itkGetStaticConstMacro(InputImageDimension),
+                                             itkGetStaticConstMacro(OutputImageDimension) > ) );
 
-  itkConceptMacro(Comparable,
-		  (Concept::Comparable<PixelType>));
+  itkConceptMacro( Comparable,
+                   ( Concept::Comparable< PixelType > ) );
 
   /** End concept checking */
 #endif
-
 protected:
   ParabolicErodeDilateImageFilter();
-  virtual ~ParabolicErodeDilateImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
-  
+  virtual ~ParabolicErodeDilateImageFilter() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
+
   /** Generate Data */
-  void GenerateData( void );
+  void GenerateData(void);
+
   unsigned int SplitRequestedRegion(unsigned int i, unsigned int num,
-    OutputImageRegionType & splitRegion);
+                                    OutputImageRegionType & splitRegion);
 
-  void ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, ThreadIdType threadId );
+  void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId);
 
-  void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
+  void GenerateInputRequestedRegion() throw( InvalidRequestedRegionError );
+
   // Override since the filter produces the entire dataset.
   void EnlargeOutputRequestedRegion(DataObject *output);
 
   bool m_UseImageSpacing;
-  int m_ParabolicAlgorithm;
-
+  int  m_ParabolicAlgorithm;
 private:
-  ParabolicErodeDilateImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  ParabolicErodeDilateImageFilter(const Self &); //purposely not implemented
+  void operator=(const Self &);                  //purposely not implemented
+
   RadiusType m_Scale;
   typename TInputImage::PixelType m_Extreme;
 
   int m_MagnitudeSign;
   int m_CurrentDimension;
 };
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkParabolicErodeDilateImageFilter.hxx"
 #endif
-
 
 #endif

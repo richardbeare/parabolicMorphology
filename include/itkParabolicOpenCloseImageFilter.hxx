@@ -1,5 +1,5 @@
-#ifndef __itkParabolicOpenCloseImageFilter_hxx
-#define __itkParabolicOpenCloseImageFilter_hxx
+#ifndef itkParabolicOpenCloseImageFilter_hxx
+#define itkParabolicOpenCloseImageFilter_hxx
 
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
@@ -18,27 +18,26 @@
 
 namespace itk
 {
-
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 ::ParabolicOpenCloseImageFilter()
 {
-  this->SetNumberOfRequiredOutputs( 1 );
-  this->SetNumberOfRequiredInputs( 1 );
+  this->SetNumberOfRequiredOutputs(1);
+  this->SetNumberOfRequiredInputs(1);
 // needs to be selected according to erosion/dilation
-  if (doOpen)
+  if ( doOpen )
     {
     // erosion then dilation
-    m_Extreme1 = NumericTraits<PixelType>::max();
-    m_Extreme2 = NumericTraits<PixelType>::NonpositiveMin();
+    m_Extreme1 = NumericTraits< PixelType >::max();
+    m_Extreme2 = NumericTraits< PixelType >::NonpositiveMin();
     m_MagnitudeSign1 = -1;
     m_MagnitudeSign2 = 1;
-    } 
+    }
   else
     {
     // dilation then erosion
-    m_Extreme1 = NumericTraits<PixelType>::NonpositiveMin();
-    m_Extreme2 = NumericTraits<PixelType>::max();
+    m_Extreme1 = NumericTraits< PixelType >::NonpositiveMin();
+    m_Extreme2 = NumericTraits< PixelType >::max();
     m_MagnitudeSign1 = 1;
     m_MagnitudeSign2 = -1;
     }
@@ -46,16 +45,15 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   m_MagnitudeSign = m_MagnitudeSign1;
   m_UseImageSpacing = false;
   m_ParabolicAlgorithm = INTERSECTION;
-  m_Stage=1;  // indicate whether we are on the first pass or the
-	      // second
-
+  m_Stage = 1;  // indicate whether we are on the first pass or the
+  // second
 }
 
-template <typename TInputImage, bool doOpen, typename TOutputImage>
+template< typename TInputImage, bool doOpen, typename TOutputImage >
 unsigned int
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 ::SplitRequestedRegion(unsigned int i, unsigned int num,
-  OutputImageRegionType & splitRegion)
+                       OutputImageRegionType & splitRegion)
 {
   // Get the output pointer
   OutputImageType *outputPtr = this->GetOutput();
@@ -71,8 +69,8 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   // split on the outermost dimension available
   // and avoid the current dimension
   int splitAxis = static_cast< int >( outputPtr->GetImageDimension() ) - 1;
-  while ( ( requestedRegionSize[splitAxis] == 1 ) ||
-          ( splitAxis == static_cast< int >( m_CurrentDimension ) ) )
+  while ( ( requestedRegionSize[splitAxis] == 1 )
+          || ( splitAxis == static_cast< int >( m_CurrentDimension ) ) )
     {
     --splitAxis;
     if ( splitAxis < 0 )
@@ -112,70 +110,72 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
   return maxThreadIdUsed + 1;
 }
 
-
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
-::SetScale( ScalarRealType scale )
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
+::SetScale(ScalarRealType scale)
 {
   RadiusType s;
+
   s.Fill(scale);
-  this->SetScale( s );
+  this->SetScale(s);
 }
 
 #if 1
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
-::GenerateInputRequestedRegion() throw(InvalidRequestedRegionError)
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
+::GenerateInputRequestedRegion() throw( InvalidRequestedRegionError )
 {
   // call the superclass' implementation of this method. this should
   // copy the output requested region to the input requested region
   Superclass::GenerateInputRequestedRegion();
 
   // This filter needs all of the input
-  InputImagePointer image = const_cast<InputImageType *>( this->GetInput() );
-  if( image )
+  InputImagePointer image = const_cast< InputImageType * >( this->GetInput() );
+  if ( image )
     {
     image->SetRequestedRegion( this->GetInput()->GetLargestPossibleRegion() );
     }
 }
+
 #endif
 
 #if 1
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage,doOpen, TOutputImage>
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 ::EnlargeOutputRequestedRegion(DataObject *output)
 {
-  TOutputImage *out = dynamic_cast<TOutputImage*>(output);
+  TOutputImage *out = dynamic_cast< TOutputImage * >( output );
 
-  if (out)
+  if ( out )
     {
     out->SetRequestedRegion( out->GetLargestPossibleRegion() );
     }
 }
+
 #endif
 
-template <typename TInputImage, bool doOpen,  typename TOutputImage >
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 ::GenerateData(void)
 {
   ThreadIdType nbthreads = this->GetNumberOfThreads();
 
-  //  typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
+  //  typedef ImageLinearConstIteratorWithIndex< TInputImage  >
+  //  InputConstIteratorType;
   //  typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
 
   // for stages after the first
-  //typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
-
+  //typedef ImageLinearConstIteratorWithIndex< TOutputImage  >
+  //  OutputConstIteratorType;
 
   //  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
-  typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
-  typename TOutputImage::Pointer       outputImage(   this->GetOutput()   );
-
+  typename TInputImage::ConstPointer inputImage( this->GetInput () );
+  typename TOutputImage::Pointer     outputImage( this->GetOutput() );
 
   //const unsigned int imageDimension = inputImage->GetImageDimension();
 
@@ -185,16 +185,16 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   typename ImageSource< OutputImageType >::ThreadStruct str;
   str.Filter = this;
 
-  MultiThreader* multithreader = this->GetMultiThreader();
-  multithreader->SetNumberOfThreads( nbthreads );
+  MultiThreader *multithreader = this->GetMultiThreader();
+  multithreader->SetNumberOfThreads(nbthreads);
   multithreader->SetSingleMethod(this->ThreaderCallback, &str);
 
   // multithread the execution
 
   // multithread the execution - stage 1
-  m_Stage=1;
+  m_Stage = 1;
 
-  for( unsigned int d=0; d<ImageDimension; d++ )
+  for ( unsigned int d = 0; d < ImageDimension; d++ )
     {
     m_CurrentDimension = d;
     multithreader->SingleMethodExecute();
@@ -202,10 +202,10 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // swap over the parameters controlling erosion/dilation
   m_Extreme = m_Extreme2;
   m_MagnitudeSign = m_MagnitudeSign2;
-  
+
   // multithread the execution - stage 2
-  m_Stage=2;
-  for( unsigned int d=0; d<ImageDimension; d++ )
+  m_Stage = 2;
+  for ( unsigned int d = 0; d < ImageDimension; d++ )
     {
     m_CurrentDimension = d;
     multithreader->SingleMethodExecute();
@@ -214,18 +214,18 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // swap them back
   m_Extreme = m_Extreme1;
   m_MagnitudeSign = m_MagnitudeSign1;
-  m_Stage=1;
+  m_Stage = 1;
 
 #if 0
   // Set up the multithreaded processing
   typename ImageSource< TOutputImage >::ThreadStruct str;
   str.Filter = this;
-  this->GetMultiThreader()->SetNumberOfThreads(this->GetNumberOfThreads());
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(this->ThreaderCallback, &str);
 
   // multithread the execution - stage 1
-  m_Stage=1;
-  for( unsigned int d=0; d<ImageDimension; d++ )
+  m_Stage = 1;
+  for ( unsigned int d = 0; d < ImageDimension; d++ )
     {
     m_CurrentDimension = d;
     this->GetMultiThreader()->SingleMethodExecute();
@@ -233,10 +233,10 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // swap over the parameters controlling erosion/dilation
   m_Extreme = m_Extreme2;
   m_MagnitudeSign = m_MagnitudeSign2;
-  
+
   // multithread the execution - stage 2
-  m_Stage=2;
-  for( unsigned int d=0; d<ImageDimension; d++ )
+  m_Stage = 2;
+  for ( unsigned int d = 0; d < ImageDimension; d++ )
     {
     m_CurrentDimension = d;
     this->GetMultiThreader()->SingleMethodExecute();
@@ -244,49 +244,51 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // swap them back
   m_Extreme = m_Extreme1;
   m_MagnitudeSign = m_MagnitudeSign1;
-  m_Stage=1;
+  m_Stage = 1;
 #endif
 }
 
 ////////////////////////////////////////////////////////////
 
-template <typename TInputImage, bool doOpen,  typename TOutputImage >
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
-::ThreadedGenerateData(const OutputImageRegionType& outputRegionForThread, ThreadIdType threadId)
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
+::ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId)
 {
   // compute the number of rows first, so we can setup a progress reporter
   typename std::vector< unsigned int > NumberOfRows;
-  InputSizeType   size   = outputRegionForThread.GetSize();
+  InputSizeType size   = outputRegionForThread.GetSize();
 
-  for (unsigned int i = 0; i < InputImageDimension; i++)
+  for ( unsigned int i = 0; i < InputImageDimension; i++ )
     {
-    NumberOfRows.push_back( 1 );
-    for (unsigned int d = 0; d < InputImageDimension; d++)
+    NumberOfRows.push_back(1);
+    for ( unsigned int d = 0; d < InputImageDimension; d++ )
       {
-      if( d != i )
+      if ( d != i )
         {
-        NumberOfRows[i] *= size[ d ];
+        NumberOfRows[i] *= size[d];
         }
       }
     }
-  float progressPerDimension = 1.0/ImageDimension;
+  float progressPerDimension = 1.0 / ImageDimension;
 
-  ProgressReporter * progress = new ProgressReporter(this, threadId, NumberOfRows[m_CurrentDimension], 30, m_CurrentDimension * progressPerDimension, progressPerDimension);
+  ProgressReporter *progress = new ProgressReporter(this,
+                                                    threadId,
+                                                    NumberOfRows[m_CurrentDimension],
+                                                    30,
+                                                    m_CurrentDimension * progressPerDimension,
+                                                    progressPerDimension);
 
-
-  typedef ImageLinearConstIteratorWithIndex< TInputImage  >  InputConstIteratorType;
-  typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
+  typedef ImageLinearConstIteratorWithIndex< TInputImage  > InputConstIteratorType;
+  typedef ImageLinearIteratorWithIndex< TOutputImage >      OutputIteratorType;
 
   // for stages after the first
-  typedef ImageLinearConstIteratorWithIndex< TOutputImage  >  OutputConstIteratorType;
-
+  typedef ImageLinearConstIteratorWithIndex< TOutputImage  > OutputConstIteratorType;
 
   typedef ImageRegion< TInputImage::ImageDimension > RegionType;
 
-  typename TInputImage::ConstPointer   inputImage(    this->GetInput ()   );
-  typename TOutputImage::Pointer       outputImage(   this->GetOutput()   );
-
+  typename TInputImage::ConstPointer inputImage( this->GetInput () );
+  typename TOutputImage::Pointer     outputImage( this->GetOutput() );
 
   //const unsigned int imageDimension = inputImage->GetImageDimension();
 
@@ -294,101 +296,98 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage >
   // outputImage->Allocate();
   RegionType region = outputRegionForThread;
 
+  InputConstIteratorType  inputIterator(inputImage,  region);
+  OutputIteratorType      outputIterator(outputImage, region);
+  OutputConstIteratorType inputIteratorStage2(outputImage, region);
 
-  InputConstIteratorType  inputIterator(  inputImage,  region );
-  OutputIteratorType      outputIterator( outputImage, region );
-  OutputConstIteratorType inputIteratorStage2( outputImage, region );
-
-  if (m_Stage == 1)
+  if ( m_Stage == 1 )
     {
     // deal with the first dimension - this should be copied to the
     // output if the scale is 0
-    if (m_CurrentDimension == 0)
+    if ( m_CurrentDimension == 0 )
       {
-      if (m_Scale[0] > 0)
-	{
-	// Perform as normal
+      if ( m_Scale[0] > 0 )
+        {
+        // Perform as normal
 //     RealType magnitude = 1.0/(2.0 * m_Scale[0]);
-	unsigned long LineLength = region.GetSize()[0];
-	RealType image_scale = this->GetInput()->GetSpacing()[0];
-	
-	doOneDimension<InputConstIteratorType,OutputIteratorType, 
-	  RealType, OutputPixelType, !doOpen>(inputIterator, outputIterator, 
-					      *progress, LineLength, 0, 
-					      this->m_MagnitudeSign, 
-					      this->m_UseImageSpacing,
-					      this->m_Extreme,
-					      image_scale, 
-					      this->m_Scale[0],
-					      m_ParabolicAlgorithm);
-	}
-      else 
-	{
-	// copy to output
-	typedef ImageRegionConstIterator<TInputImage> InItType;
-	typedef ImageRegionIterator<TOutputImage> OutItType;
-	
-	InItType InIt(inputImage, region);
-	OutItType OutIt(outputImage, region);
-	while (!InIt.IsAtEnd())
-	  {
-	  OutIt.Set(static_cast<OutputPixelType>(InIt.Get()));
-	  ++InIt;
-	  ++OutIt;
-	  }
-	
-	}
+        unsigned long LineLength = region.GetSize()[0];
+        RealType      image_scale = this->GetInput()->GetSpacing()[0];
+
+        doOneDimension< InputConstIteratorType, OutputIteratorType,
+                        RealType, OutputPixelType, !doOpen >(inputIterator, outputIterator,
+                                                             *progress, LineLength, 0,
+                                                             this->m_MagnitudeSign,
+                                                             this->m_UseImageSpacing,
+                                                             this->m_Extreme,
+                                                             image_scale,
+                                                             this->m_Scale[0],
+                                                             m_ParabolicAlgorithm);
+        }
+      else
+        {
+        // copy to output
+        typedef ImageRegionConstIterator< TInputImage > InItType;
+        typedef ImageRegionIterator< TOutputImage >     OutItType;
+
+        InItType  InIt(inputImage, region);
+        OutItType OutIt(outputImage, region);
+        while ( !InIt.IsAtEnd() )
+          {
+          OutIt.Set( static_cast< OutputPixelType >( InIt.Get() ) );
+          ++InIt;
+          ++OutIt;
+          }
+        }
       }
     else
       {
-      if (m_Scale[m_CurrentDimension] > 0)
-	{
-	// now deal with the other dimensions for first stage
-	unsigned long LineLength = region.GetSize()[m_CurrentDimension];
-	RealType image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
-	
-	doOneDimension<OutputConstIteratorType,OutputIteratorType, 
-	  RealType, OutputPixelType, !doOpen>(inputIteratorStage2, outputIterator, 
-					      *progress, LineLength, m_CurrentDimension, 
-					      this->m_MagnitudeSign, 
-					      this->m_UseImageSpacing,
-					      this->m_Extreme,
-					      image_scale, 
-					      this->m_Scale[m_CurrentDimension],
-					      m_ParabolicAlgorithm);
-	}
+      if ( m_Scale[m_CurrentDimension] > 0 )
+        {
+        // now deal with the other dimensions for first stage
+        unsigned long LineLength = region.GetSize()[m_CurrentDimension];
+        RealType      image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
+
+        doOneDimension< OutputConstIteratorType, OutputIteratorType,
+                        RealType, OutputPixelType, !doOpen >(inputIteratorStage2, outputIterator,
+                                                             *progress, LineLength, m_CurrentDimension,
+                                                             this->m_MagnitudeSign,
+                                                             this->m_UseImageSpacing,
+                                                             this->m_Extreme,
+                                                             image_scale,
+                                                             this->m_Scale[m_CurrentDimension],
+                                                             m_ParabolicAlgorithm);
+        }
       }
     }
   else
     {
     // deal with the other dimensions for second stage
-    if (m_Scale[m_CurrentDimension] > 0)
+    if ( m_Scale[m_CurrentDimension] > 0 )
       {
       //RealType magnitude = 1.0/(2.0 * m_Scale[dd]);
       unsigned long LineLength = region.GetSize()[m_CurrentDimension];
-      RealType image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
-      
-      doOneDimension<OutputConstIteratorType,OutputIteratorType,
- 	RealType, OutputPixelType, doOpen>(inputIteratorStage2, outputIterator, 
-					   *progress, LineLength, m_CurrentDimension, 
-					   this->m_MagnitudeSign, 
-					   this->m_UseImageSpacing,
-					   this->m_Extreme,
-					   image_scale, 
-					   this->m_Scale[m_CurrentDimension],
-					   m_ParabolicAlgorithm);
+      RealType      image_scale = this->GetInput()->GetSpacing()[m_CurrentDimension];
+
+      doOneDimension< OutputConstIteratorType, OutputIteratorType,
+                      RealType, OutputPixelType, doOpen >(inputIteratorStage2, outputIterator,
+                                                          *progress, LineLength, m_CurrentDimension,
+                                                          this->m_MagnitudeSign,
+                                                          this->m_UseImageSpacing,
+                                                          this->m_Extreme,
+                                                          image_scale,
+                                                          this->m_Scale[m_CurrentDimension],
+                                                          m_ParabolicAlgorithm);
       }
     }
 }
 
-
-template <typename TInputImage, bool doOpen,  typename TOutputImage>
+template< typename TInputImage, bool doOpen,  typename TOutputImage >
 void
-ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
+::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf(os,indent);
-  if (m_UseImageSpacing)
+  Superclass::PrintSelf(os, indent);
+  if ( m_UseImageSpacing )
     {
     os << "Scale in world units: " << m_Scale << std::endl;
     }
@@ -397,7 +396,5 @@ ParabolicOpenCloseImageFilter<TInputImage, doOpen, TOutputImage>
     os << "Scale in voxels: " << m_Scale << std::endl;
     }
 }
-
-
 } // namespace itk
 #endif

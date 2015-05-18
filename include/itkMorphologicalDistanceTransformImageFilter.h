@@ -1,5 +1,5 @@
-#ifndef __itkMorphologicalDistanceTransformImageFilter_h
-#define __itkMorphologicalDistanceTransformImageFilter_h
+#ifndef itkMorphologicalDistanceTransformImageFilter_h
+#define itkMorphologicalDistanceTransformImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkProgressReporter.h"
@@ -14,7 +14,7 @@ namespace itk
  * \class MorphologicalDistanceTransformImageFilter
  * \brief Distance transform of a mask using parabolic morphological
  * methods
- * 
+ *
  * Morphological erosions using a parabolic structuring element can be
  * used to compute a distance transform of a mask by setting the
  * "Outside" value to 0 and the "inside" value to +infinity. The
@@ -25,7 +25,7 @@ namespace itk
  * The output pixel type needs to support values as large as the
  * square of the largest value of the distance - just use float to be
  * safe.
- * 
+ *
  * Core methods described in the InsightJournal article:
  * "Morphology with parabolic structuring elements"
  *
@@ -38,18 +38,17 @@ namespace itk
  *
 **/
 
-
-template <typename TInputImage, typename TOutputImage= TInputImage>
+template< typename TInputImage, typename TOutputImage = TInputImage >
 class ITK_EXPORT MorphologicalDistanceTransformImageFilter:
-    public ImageToImageFilter<TInputImage,
-			      TOutputImage>
+  public ImageToImageFilter< TInputImage,
+                             TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef MorphologicalDistanceTransformImageFilter Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef MorphologicalDistanceTransformImageFilter       Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -57,19 +56,18 @@ public:
   /** Runtime information support. */
   itkTypeMacro(MorphologicalDistanceTransformImageFilter, ImageToImageFilter);
 
-
   /** Pixel Type of the input image */
-  typedef TInputImage                                    InputImageType;
-  typedef TOutputImage                                   OutputImageType;
-  typedef typename TInputImage::PixelType                InputPixelType;
-  typedef typename NumericTraits<InputPixelType>::RealType    RealType;
-  typedef typename NumericTraits<InputPixelType>::ScalarRealType ScalarRealType;
-  typedef typename TOutputImage::PixelType  OutputPixelType;
+  typedef TInputImage                                              InputImageType;
+  typedef TOutputImage                                             OutputImageType;
+  typedef typename TInputImage::PixelType                          InputPixelType;
+  typedef typename NumericTraits< InputPixelType >::RealType       RealType;
+  typedef typename NumericTraits< InputPixelType >::ScalarRealType ScalarRealType;
+  typedef typename TOutputImage::PixelType                         OutputPixelType;
 
   /** Smart pointer typedef support.  */
-  typedef typename TInputImage::Pointer  InputImagePointer;
-  typedef typename TInputImage::ConstPointer  InputImageConstPointer;
- 
+  typedef typename TInputImage::Pointer      InputImagePointer;
+  typedef typename TInputImage::ConstPointer InputImageConstPointer;
+
   /** Image related typedefs. */
   itkStaticConstMacro(OutputImageDimension, unsigned int,
                       TOutputImage::ImageDimension);
@@ -79,7 +77,7 @@ public:
                       TInputImage::ImageDimension);
 
   /** a type to represent the "kernel radius" */
-  typedef typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension> RadiusType;
+  typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
   virtual void Modified() const;
 
   /** this describes the input mask - default value 0 - we compute the
@@ -88,16 +86,13 @@ public:
   itkSetMacro(OutsideValue, InputPixelType);
   itkGetConstReferenceMacro(OutsideValue, InputPixelType);
 
-  
-  
   /** Is the transform in world or voxel units - default is world */
   void SetUseImageSpacing(bool uis)
   {
     m_Erode->SetUseImageSpacing(uis);
   }
 
-
-  const bool &GetUseImageSpacing()
+  const bool & GetUseImageSpacing()
   {
     return m_Erode->GetUseImageSpacing();
   }
@@ -106,48 +101,44 @@ public:
   itkGetConstReferenceMacro(SqrDist, bool);
   itkBooleanMacro(SqrDist);
 
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(SameDimension,
-                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),itkGetStaticConstMacro(OutputImageDimension)>));
+  itkConceptMacro( SameDimension,
+                   ( Concept::SameDimension< itkGetStaticConstMacro(InputImageDimension),
+                                             itkGetStaticConstMacro(OutputImageDimension) > ) );
 
-  itkConceptMacro(Comparable,
-		  (Concept::Comparable<InputPixelType>));
+  itkConceptMacro( Comparable,
+                   ( Concept::Comparable< InputPixelType > ) );
 
   /** End concept checking */
 #endif
-
-
-
 protected:
   MorphologicalDistanceTransformImageFilter();
-  virtual ~MorphologicalDistanceTransformImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
-  
+  virtual ~MorphologicalDistanceTransformImageFilter() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
+
   /** Generate Data */
-  void GenerateData( void );
-  
+  void GenerateData(void);
+
   // do everything in the output image type, which should have high precision
-  typedef typename itk::BinaryThresholdImageFilter<InputImageType, OutputImageType> ThreshType;
-  typedef typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType> ErodeType;
-  typedef typename itk::SqrtImageFilter<OutputImageType, OutputImageType> SqrtType;
-
+  typedef typename itk::BinaryThresholdImageFilter< InputImageType, OutputImageType > ThreshType;
+  typedef typename itk::ParabolicErodeImageFilter< OutputImageType, OutputImageType > ErodeType;
+  typedef typename itk::SqrtImageFilter< OutputImageType, OutputImageType >           SqrtType;
 private:
-  MorphologicalDistanceTransformImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  MorphologicalDistanceTransformImageFilter(const Self &); //purposely not
+                                                           // implemented
+  void operator=(const Self &);                            //purposely not
+                                                           // implemented
 
-  InputPixelType m_OutsideValue;
-  typename ErodeType::Pointer m_Erode;
+  InputPixelType               m_OutsideValue;
+  typename ErodeType::Pointer  m_Erode;
   typename ThreshType::Pointer m_Thresh;
-  typename SqrtType::Pointer m_Sqrt;
-  bool m_SqrDist;
+  typename SqrtType::Pointer   m_Sqrt;
+  bool                         m_SqrDist;
 };
-
 } // namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMorphologicalDistanceTransformImageFilter.hxx"
 #endif
-
 
 #endif
