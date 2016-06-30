@@ -126,8 +126,7 @@ protected:
   MorphSDTHelperImageFilter() {}
   virtual ~MorphSDTHelperImageFilter() {}
 private:
-  MorphSDTHelperImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);            //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(MorphSDTHelperImageFilter);
 };
 } // end namespace itk
 

@@ -163,8 +163,7 @@ protected:
   typedef typename itk::SharpenOpImageFilter< OutputImageType, OutputImageType, OutputImageType,
                                               OutputImageType > SharpenOpType;
 private:
-  MorphologicalSharpeningImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);                     //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalSharpeningImageFilter);
 
   int m_Iterations;
 
