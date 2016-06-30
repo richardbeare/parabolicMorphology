@@ -110,8 +110,7 @@ protected:
   SharpenOpImageFilter() {}
   virtual ~SharpenOpImageFilter() {}
 private:
-  SharpenOpImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);       //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
 };
 } // end namespace itk
 

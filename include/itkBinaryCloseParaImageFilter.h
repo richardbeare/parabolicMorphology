@@ -157,8 +157,7 @@ protected:
   typedef typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >  RCastTypeA;
   typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > RCastTypeB;
 private:
-  BinaryCloseParaImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);             //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryCloseParaImageFilter);
 
   RadiusType m_Radius;
   bool       m_Circular;
