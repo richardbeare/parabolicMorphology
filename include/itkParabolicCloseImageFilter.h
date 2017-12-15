@@ -91,8 +91,7 @@ protected:
   virtual ~ParabolicCloseImageFilter() {}
 //   void PrintSelf(std::ostream& os, Indent indent) const;
 private:
-  ParabolicCloseImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);            //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicCloseImageFilter);
 };
 } // end namespace itk
 

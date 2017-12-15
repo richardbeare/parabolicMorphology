@@ -110,7 +110,7 @@ public:
   itkSetMacro(Radius, RadiusType);
   itkGetConstReferenceMacro(Radius, RadiusType);
 
-  virtual void Modified() const;
+  virtual void Modified() const ITK_OVERRIDE;
 
   void SetUseImageSpacing(bool g)
   {
@@ -129,11 +129,11 @@ public:
 
   /* add in the traits here */
 protected:
-  void GenerateData(void);
+  void GenerateData(void) ITK_OVERRIDE;
 
   BinaryDilateParaImageFilter();
   virtual ~BinaryDilateParaImageFilter() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
   typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
@@ -142,8 +142,7 @@ protected:
   typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > CCastType;
   typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > RCastType;
 private:
-  BinaryDilateParaImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);              //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryDilateParaImageFilter);
 
   RadiusType m_Radius;
   bool       m_Circular;

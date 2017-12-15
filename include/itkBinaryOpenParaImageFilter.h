@@ -138,11 +138,11 @@ public:
 
   /* add in the traits here */
 protected:
-  void GenerateData(void);
+  void GenerateData(void) ITK_OVERRIDE;
 
   BinaryOpenParaImageFilter();
   virtual ~BinaryOpenParaImageFilter() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
   typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
@@ -157,8 +157,7 @@ protected:
   typedef typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >  RCastTypeA;
   typedef typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType > RCastTypeB;
 private:
-  BinaryOpenParaImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);            //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryOpenParaImageFilter);
 
   RadiusType m_Radius;
   bool       m_Circular;
