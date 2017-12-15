@@ -127,14 +127,14 @@ public:
   /** Image related typedefs. */
 
   /* add in the traits here */
-  virtual void Modified() const;
+  virtual void Modified() const ITK_OVERRIDE;
 
 protected:
-  void GenerateData(void);
+  void GenerateData(void) ITK_OVERRIDE;
 
   BinaryErodeParaImageFilter();
   virtual ~BinaryErodeParaImageFilter() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
   typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
