@@ -138,11 +138,11 @@ public:
 
   /* add in the traits here */
 protected:
-  void GenerateData(void);
+  void GenerateData(void) ITK_OVERRIDE;
 
   BinaryCloseParaImageFilter();
   virtual ~BinaryCloseParaImageFilter() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   typedef typename itk::Image< InternalRealType, InputImageType::ImageDimension >            InternalRealImageType;
   typedef typename itk::Image< InternalIntType, InputImageType::ImageDimension >             InternalIntImageType;
