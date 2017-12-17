@@ -144,7 +144,7 @@ public:
 #endif
 protected:
   ParabolicOpenCloseImageFilter();
-  virtual ~ParabolicOpenCloseImageFilter() {}
+  ~ParabolicOpenCloseImageFilter() ITK_OVERRIDE {}
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   /** Generate Data */
@@ -155,7 +155,7 @@ protected:
 
   void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId) ITK_OVERRIDE;
 
-  virtual void GenerateInputRequestedRegion() throw( InvalidRequestedRegionError ) ITK_OVERRIDE;
+  void GenerateInputRequestedRegion() throw( InvalidRequestedRegionError ) ITK_OVERRIDE;
 
   // Override since the filter produces the entire dataset.
   void EnlargeOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;

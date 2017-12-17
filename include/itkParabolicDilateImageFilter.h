@@ -83,7 +83,7 @@ public:
                       TInputImage::ImageDimension);
 protected:
   ParabolicDilateImageFilter(){}
-  virtual ~ParabolicDilateImageFilter() {}
+  ~ParabolicDilateImageFilter() ITK_OVERRIDE {}
 //   void PrintSelf(std::ostream& os, Indent indent) const;
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicDilateImageFilter);

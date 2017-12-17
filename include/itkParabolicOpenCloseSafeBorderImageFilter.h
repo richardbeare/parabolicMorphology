@@ -136,7 +136,7 @@ public:
 
   /** ParabolicOpenCloseImageFilter must forward the Modified() call to its
     internal filters */
-  virtual void Modified() const ITK_OVERRIDE;
+  void Modified() const ITK_OVERRIDE;
 
 protected:
   void GenerateData() ITK_OVERRIDE;
@@ -158,7 +158,7 @@ protected:
     m_ParabolicAlgorithm = INTERSECTION;
   }
 
-  virtual ~ParabolicOpenCloseSafeBorderImageFilter() {}
+  ~ParabolicOpenCloseSafeBorderImageFilter() ITK_OVERRIDE {}
   int m_ParabolicAlgorithm;
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenCloseSafeBorderImageFilter);
