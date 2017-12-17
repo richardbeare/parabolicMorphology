@@ -149,11 +149,11 @@ public:
 #endif
 protected:
   MorphologicalSharpeningImageFilter();
-  ~MorphologicalSharpeningImageFilter() ITK_OVERRIDE {}
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  ~MorphologicalSharpeningImageFilter() override {}
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate Data */
-  void GenerateData(void) ITK_OVERRIDE;
+  void GenerateData(void) override;
 
   // do everything in the output image type, which should have high precision
   typedef typename itk::ParabolicErodeImageFilter< OutputImageType, OutputImageType >  ErodeType;

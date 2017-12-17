@@ -108,7 +108,7 @@ public:
                TernaryFunctorImageFilter);
 protected:
   SharpenOpImageFilter() {}
-  ~SharpenOpImageFilter() ITK_OVERRIDE {}
+  ~SharpenOpImageFilter() override {}
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
 };
