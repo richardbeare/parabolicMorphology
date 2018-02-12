@@ -89,10 +89,9 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
     }
 
   // determine the actual number of pieces that will be generated
-  double range = static_cast< double >( requestedRegionSize[splitAxis] );
+  auto range = static_cast< double >( requestedRegionSize[splitAxis] );
 
-  unsigned int valuesPerThread =
-    static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( num ) ) );
+  auto valuesPerThread = static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( num ) ) );
   unsigned int maxThreadIdUsed =
     static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( valuesPerThread ) ) ) - 1;
 
@@ -154,7 +153,7 @@ void
 ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
 ::EnlargeOutputRequestedRegion(DataObject *output)
 {
-  TOutputImage *out = dynamic_cast< TOutputImage * >( output );
+  auto *out = dynamic_cast< TOutputImage * >( output );
 
   if ( out )
     {
@@ -216,12 +215,12 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
     }
   float progressPerDimension = 1.0 / ImageDimension;
 
-  ProgressReporter *progress = new ProgressReporter(this,
-                                                    threadId,
-                                                    NumberOfRows[m_CurrentDimension],
-                                                    30,
-                                                    m_CurrentDimension * progressPerDimension,
-                                                    progressPerDimension);
+  auto *progress = new ProgressReporter(this,
+                                        threadId,
+                                        NumberOfRows[m_CurrentDimension],
+                                        30,
+                                        m_CurrentDimension * progressPerDimension,
+                                        progressPerDimension);
 
   typedef ImageLinearConstIteratorWithIndex< TInputImage  > InputConstIteratorType;
   typedef ImageLinearIteratorWithIndex< TOutputImage >      OutputIteratorType;
