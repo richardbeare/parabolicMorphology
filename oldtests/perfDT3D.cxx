@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   iterations = atoi(argv[1]);
 
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 3;
+  constexpr int dim = 3;
 
   using PType = unsigned char;
   using IType = itk::Image< PType, dim >;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
   std::cout << "ParabolicCP ParabolicIntersection  Maurer   Danielsson" << std::endl;
 
-  const unsigned pTESTS = 10;
+  constexpr unsigned pTESTS  = 10;
   for ( unsigned repeats = 0; repeats < pTESTS; repeats++ )
     {
     ParabolicCP.Start();
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
     }
   writeIm< FType >(maurer->GetOutput(), argv[6]);
 
-  const unsigned TESTS = 10;
+  constexpr unsigned TESTS  = 10;
 
   using DanielssonType = itk::DanielssonDistanceMapImageFilter< IType, FType >;
   DanielssonType::Pointer daniel = DanielssonType::New();

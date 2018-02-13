@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   iterations = atoi(argv[1]);
 
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
   using PType = unsigned char;
   using IType = itk::Image< PType, dim >;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   itk::TimeProbe ParabolicT, MaurerT, DanielssonT;
 
   std::cout << "Parabolic  Maurer  Danielsson" << std::endl;
-  const unsigned TESTS = 10;
+  constexpr unsigned TESTS  = 10;
 #if 1
   for ( unsigned repeats = 0; repeats < TESTS; repeats++ )
     {
