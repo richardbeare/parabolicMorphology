@@ -145,14 +145,14 @@ BinaryOpenParaImageFilter< TInputImage, TOutputImage >
 
     if ( m_SafeBorder )
       {
-      typedef typename itk::ConstantPadImageFilter< InputImageType, InputImageType > PadType;
+      using PadType = typename itk::ConstantPadImageFilter< InputImageType, InputImageType >;
       typename PadType::Pointer pad = PadType::New();
       pad->SetPadLowerBound(Pad);
       pad->SetPadUpperBound(Pad);
       pad->SetConstant(1);
       pad->SetInput(inputImage);
       m_CircErode->SetInput( pad->GetOutput() );
-      typedef typename itk::CropImageFilter< TOutputImage, TOutputImage > CropType;
+      using CropType = typename itk::CropImageFilter< TOutputImage, TOutputImage >;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_CircCastB->GetOutput() );
       crop->SetUpperBoundaryCropSize(Pad);
@@ -195,7 +195,7 @@ BinaryOpenParaImageFilter< TInputImage, TOutputImage >
 
     if ( m_SafeBorder )
       {
-      typedef typename itk::ConstantPadImageFilter< InputImageType, InputImageType > PadType;
+      using PadType = typename itk::ConstantPadImageFilter< InputImageType, InputImageType >;
       typename PadType::Pointer pad = PadType::New();
       pad->SetPadLowerBound(Pad);
       pad->SetPadUpperBound(Pad);
@@ -203,7 +203,7 @@ BinaryOpenParaImageFilter< TInputImage, TOutputImage >
       pad->SetInput(inputImage);
       m_RectErode->SetInput( pad->GetOutput() );
 
-      typedef typename itk::CropImageFilter< TOutputImage, TOutputImage > CropType;
+      using CropType = typename itk::CropImageFilter< TOutputImage, TOutputImage >;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_RectCastB->GetOutput() );
       crop->SetUpperBoundaryCropSize(Pad);

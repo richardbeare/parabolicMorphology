@@ -222,13 +222,13 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
                                         m_CurrentDimension * progressPerDimension,
                                         progressPerDimension);
 
-  typedef ImageLinearConstIteratorWithIndex< TInputImage  > InputConstIteratorType;
-  typedef ImageLinearIteratorWithIndex< TOutputImage >      OutputIteratorType;
+  using InputConstIteratorType = ImageLinearConstIteratorWithIndex< TInputImage  >;
+  using OutputIteratorType = ImageLinearIteratorWithIndex< TOutputImage >;
 
   // for stages after the first
-  typedef ImageLinearConstIteratorWithIndex< TOutputImage  > OutputConstIteratorType;
+  using OutputConstIteratorType = ImageLinearConstIteratorWithIndex< TOutputImage  >;
 
-  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
+  using RegionType = ImageRegion< TInputImage::ImageDimension >;
 
   typename TInputImage::ConstPointer inputImage( this->GetInput () );
   typename TOutputImage::Pointer     outputImage( this->GetOutput() );
@@ -274,8 +274,8 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
     else
       {
       // copy to output
-      typedef ImageRegionConstIterator< TInputImage > InItType;
-      typedef ImageRegionIterator< TOutputImage >     OutItType;
+      using InItType = ImageRegionConstIterator< TInputImage >;
+      using OutItType = ImageRegionIterator< TOutputImage >;
 
       InItType  InIt(inputImage, region);
       OutItType OutIt(outputImage, region);

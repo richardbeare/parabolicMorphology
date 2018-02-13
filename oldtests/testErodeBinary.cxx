@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
   // create an image to test the erosion shape:
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
   image->FillBuffer(1);
   image->SetPixel(ind, 0);
 
-  typedef itk::BinaryErodeParaImageFilter< IType, IType > FilterType;
+  using FilterType = itk::BinaryErodeParaImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
   int                 testrad = atoi(argv[1]);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   writeIm< IType >(filter->GetOutput(), std::string(argv[2]) + "_" + argv[1] + ".png");
 
   // traditional erosion for comparison
-  typedef itk::BinaryBallStructuringElement< PType, dim > SEType;
+  using SEType = itk::BinaryBallStructuringElement< PType, dim >;
   SEType             SE;
   SEType::RadiusType SErad;
   SErad.Fill(testrad);
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
   SE.SetRadius(SErad);
   SE.CreateStructuringElement();
 
-  typedef itk::BinaryErodeImageFilter< IType, IType, SEType > OldBinErodeType;
+  using OldBinErodeType = itk::BinaryErodeImageFilter< IType, IType, SEType >;
   OldBinErodeType::Pointer olderode = OldBinErodeType::New();
   olderode->SetInput(image);
   olderode->SetKernel(SE);

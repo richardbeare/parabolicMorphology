@@ -32,13 +32,13 @@ int main(int argc, char *argv[])
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
   IType::Pointer inputOrig = readIm< IType >(argv[1]);
 
-  typedef itk::ChangeInformationImageFilter< IType > ChangeType;
+  using ChangeType = itk::ChangeInformationImageFilter< IType >;
   ChangeType::Pointer changer = ChangeType::New();
   changer->SetInput(inputOrig);
   ChangeType::SpacingType newspacing;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
   IType::Pointer input = changer->GetOutput();
 
   // threshold the input to create a mask
-  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
+  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   thresh->SetOutsideValue(255);
   writeIm< IType >(thresh->GetOutput(), argv[4]);
   // now to apply the signed distance transform
-  typedef itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType > FilterType;
+  using FilterType = itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
   writeIm< FType >(filter->GetOutput(), argv[5]);
 #endif
-  typedef itk::SignedMaurerDistanceMapImageFilter< IType, FType > MaurerType;
+  using MaurerType = itk::SignedMaurerDistanceMapImageFilter< IType, FType >;
   MaurerType::Pointer maurer = MaurerType::New();
   maurer->SetInput( thresh->GetOutput() );
   maurer->SetUseImageSpacing(true);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     }
   writeIm< FType >(maurer->GetOutput(), argv[6]);
 
-  typedef itk::SignedDanielssonDistanceMapImageFilter< IType, FType > DanielssonType;
+  using DanielssonType = itk::SignedDanielssonDistanceMapImageFilter< IType, FType >;
   DanielssonType::Pointer daniel = DanielssonType::New();
   daniel->SetInput( thresh->GetOutput() );
   daniel->SetUseImageSpacing(true);

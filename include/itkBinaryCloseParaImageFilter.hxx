@@ -137,7 +137,7 @@ BinaryCloseParaImageFilter< TInputImage, TOutputImage >
 
     if ( m_SafeBorder )
       {
-      typedef typename itk::ConstantPadImageFilter< InputImageType, InputImageType > PadType;
+      using PadType = typename itk::ConstantPadImageFilter< InputImageType, InputImageType >;
       typename PadType::Pointer pad = PadType::New();
       pad->SetPadLowerBound(Pad);
       pad->SetPadUpperBound(Pad);
@@ -149,7 +149,7 @@ BinaryCloseParaImageFilter< TInputImage, TOutputImage >
       // writeIm<InputImageType>(m_CircCastB->GetOutput(), "dil.nii.gz");
       //writeIm<InputImageType>(m_CircCastA->GetOutput(), "ero.nii.gz");
       //m_CircCastA->UpdateOutputInformation();
-      typedef typename itk::CropImageFilter< TOutputImage, TOutputImage > CropType;
+      using CropType = typename itk::CropImageFilter< TOutputImage, TOutputImage >;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_CircCastA->GetOutput() );
       crop->SetUpperBoundaryCropSize(Pad);
@@ -192,7 +192,7 @@ BinaryCloseParaImageFilter< TInputImage, TOutputImage >
 
     if ( m_SafeBorder )
       {
-      typedef typename itk::ConstantPadImageFilter< InputImageType, InputImageType > PadType;
+      using PadType = typename itk::ConstantPadImageFilter< InputImageType, InputImageType >;
       typename PadType::Pointer pad = PadType::New();
       pad->SetPadLowerBound(Pad);
       pad->SetPadUpperBound(Pad);
@@ -201,7 +201,7 @@ BinaryCloseParaImageFilter< TInputImage, TOutputImage >
 
       m_RectDilate->SetInput( pad->GetOutput() );
 
-      typedef typename itk::CropImageFilter< TOutputImage, TOutputImage > CropType;
+      using CropType = typename itk::CropImageFilter< TOutputImage, TOutputImage >;
       typename CropType::Pointer crop = CropType::New();
       crop->SetInput( m_RectCastA->GetOutput() );
       crop->SetUpperBoundaryCropSize(Pad);
