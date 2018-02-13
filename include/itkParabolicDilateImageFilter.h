@@ -79,8 +79,7 @@ public:
   typedef typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension > RadiusType;
 
   /** Image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 protected:
   ParabolicDilateImageFilter(){}
   ~ParabolicDilateImageFilter() override {}
