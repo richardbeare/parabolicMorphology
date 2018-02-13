@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
   iterations = atoi(argv[1]);
 
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
   using PType = unsigned char;
   using IType = itk::Image< PType, dim >;
