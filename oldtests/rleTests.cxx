@@ -23,8 +23,8 @@ void genRLE(std::vector< IndexType > fgSet, std::vector< IndexType > bgSet, int 
 {
   // fgSet must be sorted correctly
 
-  typedef typename std::vector< IndexType >   IndVecType;
-  typedef typename IndVecType::const_iterator ItType;
+  using IndVecType = typename std::vector< IndexType >;
+  using ItType = typename IndVecType::const_iterator;
 
   IndVecType startpoints, endpoints;
 
@@ -42,18 +42,18 @@ void genRLE(std::vector< IndexType > fgSet, std::vector< IndexType > bgSet, int 
 template< class PixType, int dim >
 void doAllRLE(std::string input, std::string output)
 {
-  typedef typename itk::Image< PixType, dim > ImType;
-  typedef typename ImType::Pointer            PImType;
-  typedef typename ImType::IndexType          IndexType;
+  using ImType = typename itk::Image< PixType, dim >;
+  using PImType = typename ImType::Pointer;
+  using IndexType = typename ImType::IndexType;
 
   // probably a long int
-  typedef typename ImType::OffsetValueType SingleIndexType;
+  using SingleIndexType = typename ImType::OffsetValueType;
 
   PImType inIm = readIm< ImType >(input);
 
-  typedef typename std::vector< IndexType > IndexSetType;
+  using IndexSetType = typename std::vector< IndexType >;
 
-  typedef typename std::set< SingleIndexType > SISetType;
+  using SISetType = typename std::set< SingleIndexType >;
 
   // fgSet could be a vector because we definitely only insert once
   // bgSet needs to be a set
@@ -62,8 +62,8 @@ void doAllRLE(std::string input, std::string output)
 
   SISetType bgSISet;
 
-  typedef typename itk::ImageRegionConstIterator< ImType >        itRegType;
-  typedef typename itk::ConstShapedNeighborhoodIterator< ImType > itShapedType;
+  using itRegType = typename itk::ImageRegionConstIterator< ImType >;
+  using itShapedType = typename itk::ConstShapedNeighborhoodIterator< ImType >;
 
   itk::Size< dim > radius;
   radius.Fill(1);

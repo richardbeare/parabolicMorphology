@@ -11,7 +11,7 @@ template <typename TImage>
 void extractProfile(typename TImage::Pointer Im, typename TImage::IndexType first, 
 		    typename TImage::IndexType last, std::string outputfile)
 {
-  typedef typename itk::LineConstIterator<TImage> ItType;
+  using ItType = typename itk::LineConstIterator<TImage>;
 
   ItType it(Im, first, last);
 

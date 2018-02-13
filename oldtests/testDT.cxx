@@ -27,14 +27,14 @@ int main(int argc, char *argv[])
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
   IType::Pointer input = readIm< IType >(argv[1]);
 
   // threshold the input to create a mask
-  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
+  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
   thresh->SetOutsideValue(255);
   writeIm< IType >(thresh->GetOutput(), argv[4]);
   // now to apply the distance transform
-  typedef itk::MorphologicalDistanceTransformImageFilter< IType, FType > FilterType;
+  using FilterType = itk::MorphologicalDistanceTransformImageFilter< IType, FType >;
 
   FilterType::Pointer filter = FilterType::New();
 

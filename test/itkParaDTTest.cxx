@@ -39,11 +39,11 @@ int itkParaDTTest(int argc, char *argv[])
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   const int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
@@ -59,7 +59,7 @@ int itkParaDTTest(int argc, char *argv[])
   IType::Pointer input = reader->GetOutput();
 
   // threshold the input to create a mask
-  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
+  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
@@ -68,7 +68,7 @@ int itkParaDTTest(int argc, char *argv[])
   thresh->SetOutsideValue(255);
 
   // now to apply the distance transform
-  typedef itk::MorphologicalDistanceTransformImageFilter< IType, FType > FilterType;
+  using FilterType = itk::MorphologicalDistanceTransformImageFilter< IType, FType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -84,7 +84,7 @@ int itkParaDTTest(int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  typedef itk::ImageFileWriter< FType > WriterType;
+  using WriterType = itk::ImageFileWriter< FType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[4]);
