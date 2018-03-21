@@ -12,16 +12,16 @@
 int main(int, char *argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
 
-  typedef itk::ParabolicErodeImageFilter< IType, IType > FilterType;
+  using FilterType = itk::ParabolicErodeImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -43,7 +43,7 @@ int main(int, char *argv[])
     NewTime.Stop();
     }
 
-  typedef itk::ImageFileWriter< IType > WriterType;
+  using WriterType = itk::ImageFileWriter< IType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[2]);

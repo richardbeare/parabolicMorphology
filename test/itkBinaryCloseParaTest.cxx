@@ -35,12 +35,12 @@ int itkBinaryCloseParaTest(int argc, char *argv[])
     }
 
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
@@ -53,7 +53,7 @@ int itkBinaryCloseParaTest(int argc, char *argv[])
     return EXIT_FAILURE;
     }
   // threshold the input to create a mask
-  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
+  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput( reader->GetOutput() );
 
@@ -61,7 +61,7 @@ int itkBinaryCloseParaTest(int argc, char *argv[])
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
   // now to apply the erosion
-  typedef itk::BinaryCloseParaImageFilter< IType, IType > FilterType;
+  using FilterType = itk::BinaryCloseParaImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -69,7 +69,7 @@ int itkBinaryCloseParaTest(int argc, char *argv[])
   filter->SetUseImageSpacing(true);
   filter->SetRadius( atof(argv[3]) );
 
-  typedef itk::ImageFileWriter< IType > WriterType;
+  using WriterType = itk::ImageFileWriter< IType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[4]);

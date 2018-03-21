@@ -11,17 +11,17 @@
 int main(int, char *argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  //typedef unsigned char PType;
-  typedef float                    PType;
-  typedef itk::Image< PType, dim > IType;
+  //using PType = unsigned char;
+  using PType = float;
+  using IType = itk::Image< PType, dim >;
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
 
-  typedef itk::ParabolicCloseImageFilter< IType, IType > FilterType;
+  using FilterType = itk::ParabolicCloseImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -43,7 +43,7 @@ int main(int, char *argv[])
     NewTime.Stop();
     }
 
-  typedef itk::ImageFileWriter< IType > WriterType;
+  using WriterType = itk::ImageFileWriter< IType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[2]);

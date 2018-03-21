@@ -31,10 +31,10 @@
 int itkParaDilateTest(int argc, char *argv[])
 {
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
 
   float scale(1.0);
   if ( argc > 4 )
@@ -42,7 +42,7 @@ int itkParaDilateTest(int argc, char *argv[])
     scale = atof(argv[4]);
     }
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
@@ -55,7 +55,7 @@ int itkParaDilateTest(int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  typedef itk::ParabolicDilateImageFilter< IType, IType > FilterType;
+  using FilterType = itk::ParabolicDilateImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -74,7 +74,7 @@ int itkParaDilateTest(int argc, char *argv[])
     return EXIT_FAILURE;
     }
 
-  typedef itk::ImageFileWriter< IType > WriterType;
+  using WriterType = itk::ImageFileWriter< IType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[2]);

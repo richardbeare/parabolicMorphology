@@ -28,13 +28,13 @@ int main(int argc, char *argv[])
   iterations = atoi(argv[1]);
 
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
-  typedef itk::ImageFileWriter< IType > WriterType;
+  using WriterType = itk::ImageFileWriter< IType >;
   WriterType::Pointer writer = WriterType::New();
 
   // create the input image - we will blur a dot, threshold then blur again
@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
   input->FillBuffer(0);
   input->SetPixel(index, 255);
 
-  typedef itk::BinaryBallStructuringElement< PType, dim >         SRType;
-  typedef itk::GrayscaleDilateImageFilter< IType, IType, SRType > DilateType;
+  using SRType = itk::BinaryBallStructuringElement< PType, dim >;
+  using DilateType = itk::GrayscaleDilateImageFilter< IType, IType, SRType >;
   DilateType::Pointer smallDilate = DilateType::New();
   SRType              smallkernel;
   SRType::RadiusType  smallrad = smallkernel.GetRadius();
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   smallkernel.CreateStructuringElement();
   smallDilate->SetKernel(smallkernel);
 
-  typedef itk::SmoothingRecursiveGaussianImageFilter< IType, IType > SmootherType;
+  using SmootherType = itk::SmoothingRecursiveGaussianImageFilter< IType, IType >;
 
   SmootherType::Pointer smoother = SmootherType::New();
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
   // now to apply the sharpening
 
-  typedef itk::MorphologicalSharpeningImageFilter< IType, FType > FilterType;
+  using FilterType = itk::MorphologicalSharpeningImageFilter< IType, FType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   filter->SetIterations(iterations);
   filter->Update();
 
-  typedef itk::ImageFileWriter< FType > FlWriterType;
+  using FlWriterType = itk::ImageFileWriter< FType >;
   FlWriterType::Pointer flwriter = FlWriterType::New();
 
   flwriter->SetInput( filter->GetOutput() );

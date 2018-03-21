@@ -2,10 +2,10 @@
 
 int main(int argc, char *argv[])
 {
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
 
   // create the input image - we will blur a dot, threshold then blur again
   IType::Pointer     input = IType::New();

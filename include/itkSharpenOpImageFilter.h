@@ -89,16 +89,16 @@ class ITK_EXPORT SharpenOpImageFilter:
                                                typename TOutputImage::PixelType >   >
 {
 public:
-  /** Standard class typedefs. */
-  typedef SharpenOpImageFilter Self;
-  typedef TernaryFunctorImageFilter< TInputImage1, TInputImage2,
+  /** Standard class type alias. */
+  using Self = SharpenOpImageFilter;
+  using Superclass = TernaryFunctorImageFilter< TInputImage1, TInputImage2,
                                      TInputImage3, TOutputImage,
                                      Function::SharpM< typename TInputImage1::PixelType,
                                                        typename TInputImage2::PixelType,
                                                        typename TInputImage3::PixelType,
-                                                       typename TOutputImage::PixelType >   >  Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+                                                       typename TOutputImage::PixelType >   >;
+  using Pointer = SmartPointer< Self >;
+  using ConstPointer = SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -108,10 +108,9 @@ public:
                TernaryFunctorImageFilter);
 protected:
   SharpenOpImageFilter() {}
-  virtual ~SharpenOpImageFilter() {}
+  ~SharpenOpImageFilter() override {}
 private:
-  SharpenOpImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);       //purposely not implemented
+  ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
 };
 } // end namespace itk
 

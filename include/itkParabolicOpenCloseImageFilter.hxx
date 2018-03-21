@@ -98,9 +98,9 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
     }
 
   // determine the actual number of pieces that will be generated
-  double range = static_cast< double >( requestedRegionSize[splitAxis] );
+  auto range = static_cast< double >( requestedRegionSize[splitAxis] );
 
-  unsigned int valuesPerThread =
+  auto valuesPerThread =
     static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( num ) ) );
   unsigned int maxThreadIdUsed =
     static_cast< unsigned int >( vcl_ceil( range / static_cast< double >( valuesPerThread ) ) ) - 1;
@@ -164,7 +164,7 @@ void
 ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 ::EnlargeOutputRequestedRegion(DataObject *output)
 {
-  TOutputImage *out = dynamic_cast< TOutputImage * >( output );
+  auto *out = dynamic_cast< TOutputImage * >( output );
 
   if ( out )
     {
@@ -181,15 +181,13 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
 {
   ThreadIdType nbthreads = this->GetNumberOfThreads();
 
-  //  typedef ImageLinearConstIteratorWithIndex< TInputImage  >
-  //  InputConstIteratorType;
-  //  typedef ImageLinearIteratorWithIndex< TOutputImage >  OutputIteratorType;
+  //  using InputConstIteratorType = ImageLinearConstIteratorWithIndex< TInputImage  > ;
+  //  using OutputIteratorType = ImageLinearIteratorWithIndex< TOutputImage >;
 
   // for stages after the first
-  //typedef ImageLinearConstIteratorWithIndex< TOutputImage  >
-  //  OutputConstIteratorType;
+  //using OutputConstIteratorType = ImageLinearConstIteratorWithIndex< TOutputImage  > ;
 
-  //  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
+  //  using RegionType = ImageRegion< TInputImage::ImageDimension >;
 
   typename TInputImage::ConstPointer inputImage( this->GetInput () );
   typename TOutputImage::Pointer     outputImage( this->GetOutput() );
@@ -202,7 +200,7 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
   typename ImageSource< OutputImageType >::ThreadStruct str;
   str.Filter = this;
 
-  MultiThreader *multithreader = this->GetMultiThreader();
+  ProcessObject::MultiThreaderType *multithreader = this->GetMultiThreader();
   multithreader->SetNumberOfThreads(nbthreads);
   multithreader->SetSingleMethod(this->ThreaderCallback, &str);
 
@@ -289,20 +287,20 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
     }
   float progressPerDimension = 1.0 / ImageDimension;
 
-  ProgressReporter *progress = new ProgressReporter(this,
-                                                    threadId,
-                                                    NumberOfRows[m_CurrentDimension],
-                                                    30,
-                                                    m_CurrentDimension * progressPerDimension,
-                                                    progressPerDimension);
+  auto *progress = new ProgressReporter(this,
+                                        threadId,
+                                        NumberOfRows[m_CurrentDimension],
+                                        30,
+                                        m_CurrentDimension * progressPerDimension,
+                                        progressPerDimension);
 
-  typedef ImageLinearConstIteratorWithIndex< TInputImage  > InputConstIteratorType;
-  typedef ImageLinearIteratorWithIndex< TOutputImage >      OutputIteratorType;
+  using InputConstIteratorType = ImageLinearConstIteratorWithIndex< TInputImage  >;
+  using OutputIteratorType = ImageLinearIteratorWithIndex< TOutputImage >;
 
   // for stages after the first
-  typedef ImageLinearConstIteratorWithIndex< TOutputImage  > OutputConstIteratorType;
+  using OutputConstIteratorType = ImageLinearConstIteratorWithIndex< TOutputImage  >;
 
-  typedef ImageRegion< TInputImage::ImageDimension > RegionType;
+  using RegionType = ImageRegion< TInputImage::ImageDimension >;
 
   typename TInputImage::ConstPointer inputImage( this->GetInput () );
   typename TOutputImage::Pointer     outputImage( this->GetOutput() );
@@ -343,8 +341,8 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
       else
         {
         // copy to output
-        typedef ImageRegionConstIterator< TInputImage > InItType;
-        typedef ImageRegionIterator< TOutputImage >     OutItType;
+        using InItType = ImageRegionConstIterator< TInputImage >;
+        using OutItType = ImageRegionIterator< TOutputImage >;
 
         InItType  InIt(inputImage, region);
         OutItType OutIt(outputImage, region);

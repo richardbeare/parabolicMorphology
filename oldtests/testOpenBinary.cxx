@@ -19,22 +19,22 @@ int main(int argc, char *argv[])
     }
 
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 2;
+  constexpr int dim = 2;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
-  typedef itk::Image< float, dim > FType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
+  using FType = itk::Image< float, dim >;
 
   IType::Pointer input = readIm< IType >(argv[1]);
 
-  typedef itk::BinaryThresholdImageFilter< IType, IType > ThreshType;
+  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
   thresh->SetUpperThreshold( atoi(argv[4]) );
 
-  typedef itk::BinaryOpenParaImageFilter< IType, IType > FilterType;
+  using FilterType = itk::BinaryOpenParaImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
   int                 testrad = atoi(argv[2]);

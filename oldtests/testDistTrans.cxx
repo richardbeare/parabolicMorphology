@@ -18,19 +18,19 @@
 int main(int argc, char *argv[])
 {
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
-  const int dim = 3;
+  constexpr int dim = 3;
 
-  typedef unsigned char            PType;
-  typedef itk::Image< PType, dim > IType;
+  using PType = unsigned char;
+  using IType = itk::Image< PType, dim >;
 
-  typedef itk::Image< float, dim > FType;
+  using FType = itk::Image< float, dim >;
 
-  typedef itk::ImageFileReader< IType > ReaderType;
+  using ReaderType = itk::ImageFileReader< IType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  typedef itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType > FilterType;
+  using FilterType = itk::MorphologicalSignedDistanceTransformImageFilter< IType, FType >;
 
   FilterType::Pointer filter = FilterType::New();
 
@@ -38,13 +38,13 @@ int main(int argc, char *argv[])
   filter->SetOutsideValue( atoi(argv[3]) );
   filter->SetUseImageSpacing(true);
 
-  typedef itk::ImageFileWriter< FType > WriterType;
+  using WriterType = itk::ImageFileWriter< FType >;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput( filter->GetOutput() );
   writer->SetFileName(argv[2]);
   writer->Update();
 
-  typedef itk::SignedMaurerDistanceMapImageFilter< IType, FType > MaurerType;
+  using MaurerType = itk::SignedMaurerDistanceMapImageFilter< IType, FType >;
   MaurerType::Pointer maurer = MaurerType::New();
   maurer->SetInput( reader->GetOutput() );
   maurer->SetUseImageSpacing(true);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   writer->SetFileName(argv[3]);
   writer->Update();
 
-  typedef itk::SubtractImageFilter< FType, FType, FType > SubType;
+  using SubType = itk::SubtractImageFilter< FType, FType, FType >;
   SubType::Pointer sub = SubType::New();
   sub->SetInput( filter->GetOutput() );
   sub->SetInput2( maurer->GetOutput() );
