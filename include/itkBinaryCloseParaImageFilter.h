@@ -72,6 +72,8 @@ class ITK_EXPORT BinaryCloseParaImageFilter:
 
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryCloseParaImageFilter);
+
   /** Standard class type alias. */
   using Self = BinaryCloseParaImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -156,8 +158,6 @@ protected:
   using RCastTypeA = typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >;
   using RCastTypeB = typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType >;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryCloseParaImageFilter);
-
   RadiusType m_Radius;
   bool       m_Circular;
   bool       m_SafeBorder;

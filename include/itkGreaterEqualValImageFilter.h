@@ -67,6 +67,8 @@ class ITK_EXPORT GreaterEqualValImageFilter:
                              typename TOutputImage::PixelType >   >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(GreaterEqualValImageFilter);
+
   /** Standard class type alias. */
   using Self = GreaterEqualValImageFilter;
   using Superclass = UnaryFunctorImageFilter< TInputImage, TOutputImage,
@@ -95,8 +97,6 @@ public:
 protected:
   GreaterEqualValImageFilter() {}
   ~GreaterEqualValImageFilter() override {}
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(GreaterEqualValImageFilter);
 };
 } // end namespace itk
 

@@ -56,6 +56,8 @@ class ITK_EXPORT ParabolicOpenCloseImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenCloseImageFilter);
+
   /** Standard class type alias. */
   using Self = ParabolicOpenCloseImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -159,8 +161,6 @@ protected:
 
   int m_ParabolicAlgorithm;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenCloseImageFilter);
-
   RadiusType m_Scale;
 
   typename TInputImage::PixelType m_Extreme;

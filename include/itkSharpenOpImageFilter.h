@@ -89,6 +89,8 @@ class ITK_EXPORT SharpenOpImageFilter:
                                                typename TOutputImage::PixelType >   >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
+
   /** Standard class type alias. */
   using Self = SharpenOpImageFilter;
   using Superclass = TernaryFunctorImageFilter< TInputImage1, TInputImage2,
@@ -109,8 +111,6 @@ public:
 protected:
   SharpenOpImageFilter() {}
   ~SharpenOpImageFilter() override {}
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
 };
 } // end namespace itk
 

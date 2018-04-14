@@ -83,6 +83,8 @@ class ITK_EXPORT MorphSDTHelperImageFilter:
                                typename TOutputImage::PixelType >   >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(MorphSDTHelperImageFilter);
+
   /** Standard class type alias. */
   using Self = MorphSDTHelperImageFilter;
   using Superclass = TernaryFunctorImageFilter< TInputImage1, TInputImage2, TInputImage3, TOutputImage,
@@ -125,8 +127,6 @@ public:
 protected:
   MorphSDTHelperImageFilter() {}
   virtual ~MorphSDTHelperImageFilter() {}
-private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(MorphSDTHelperImageFilter);
 };
 } // end namespace itk
 
