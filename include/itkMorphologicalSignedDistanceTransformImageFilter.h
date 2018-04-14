@@ -73,6 +73,8 @@ class ITK_EXPORT MorphologicalSignedDistanceTransformImageFilter:
                              TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalSignedDistanceTransformImageFilter);
+
   /** Standard class type alias. */
   using Self = MorphologicalSignedDistanceTransformImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -184,8 +186,6 @@ protected:
   using DilateType = typename itk::ParabolicDilateImageFilter< OutputImageType, OutputImageType >;
   using HelperType = typename itk::MorphSDTHelperImageFilter< OutputImageType, OutputImageType >;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalSignedDistanceTransformImageFilter);
-
   InputPixelType               m_OutsideValue;
   bool                         m_InsideIsPositive;
   typename ErodeType::Pointer  m_Erode;

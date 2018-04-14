@@ -61,6 +61,8 @@ class ITK_EXPORT MorphologicalDistanceTransformImageFilter:
                              TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalDistanceTransformImageFilter);
+
   /** Standard class type alias. */
   using Self = MorphologicalDistanceTransformImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -139,8 +141,6 @@ protected:
   using ErodeType = typename itk::ParabolicErodeImageFilter< OutputImageType, OutputImageType >;
   using SqrtType = typename itk::SqrtImageFilter< OutputImageType, OutputImageType >;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalDistanceTransformImageFilter);
-
   InputPixelType               m_OutsideValue;
   typename ErodeType::Pointer  m_Erode;
   typename ThreshType::Pointer m_Thresh;

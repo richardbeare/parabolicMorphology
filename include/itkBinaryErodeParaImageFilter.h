@@ -71,6 +71,8 @@ class ITK_EXPORT BinaryErodeParaImageFilter:
 
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryErodeParaImageFilter);
+
   /** Standard class type alias. */
   using Self = BinaryErodeParaImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -142,8 +144,6 @@ protected:
   using CCastType = typename itk::GreaterEqualValImageFilter< InternalRealImageType, OutputImageType >;
   using RCastType = typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryErodeParaImageFilter);
-
   RadiusType m_Radius;
   bool       m_Circular;
 

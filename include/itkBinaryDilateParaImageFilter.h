@@ -70,6 +70,8 @@ class ITK_EXPORT BinaryDilateParaImageFilter:
 
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryDilateParaImageFilter);
+
   /** Standard class type alias. */
   using Self = BinaryDilateParaImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -141,8 +143,6 @@ protected:
   using CCastType = typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType >;
   using RCastType = typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType >;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(BinaryDilateParaImageFilter);
-
   RadiusType m_Radius;
   bool       m_Circular;
 

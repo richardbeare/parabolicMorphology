@@ -37,6 +37,8 @@ class ITK_EXPORT ParabolicOpenCloseSafeBorderImageFilter:
                              TOutputImage >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenCloseSafeBorderImageFilter);
+
   /** Standard class type alias. */
   using Self = ParabolicOpenCloseSafeBorderImageFilter;
   using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
@@ -160,8 +162,6 @@ protected:
   ~ParabolicOpenCloseSafeBorderImageFilter() override {}
   int m_ParabolicAlgorithm;
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenCloseSafeBorderImageFilter);
-
   typename MorphFilterType::Pointer m_MorphFilt;
   typename PadFilterType::Pointer   m_PadFilt;
   typename CropFilterType::Pointer  m_CropFilt;
