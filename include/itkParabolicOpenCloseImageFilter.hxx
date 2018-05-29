@@ -64,6 +64,8 @@ ParabolicOpenCloseImageFilter< TInputImage, doOpen, TOutputImage >
   m_ParabolicAlgorithm = INTERSECTION;
   m_Stage = 1;  // indicate whether we are on the first pass or the
   // second
+
+  this->DynamicMultiThreadingOn();
 }
 
 template< typename TInputImage, bool doOpen, typename TOutputImage >

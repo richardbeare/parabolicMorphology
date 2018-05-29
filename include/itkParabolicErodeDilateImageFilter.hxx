@@ -55,6 +55,8 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
     }
   m_UseImageSpacing = false;
   m_ParabolicAlgorithm = INTERSECTION;
+
+  this->DynamicMultiThreadingOn();
 }
 
 template< typename TInputImage, bool doDilate, typename TOutputImage >
