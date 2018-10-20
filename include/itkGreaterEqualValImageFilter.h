@@ -30,7 +30,7 @@ namespace itk
 
 namespace Functor
 {
-template< class TInput, class TOutput >
+template< typename TInput, typename TOutput >
 class GEConst
 {
 public:
@@ -58,7 +58,7 @@ private:
 };
 }
 
-template< class TInputImage, class TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 class ITK_EXPORT GreaterEqualValImageFilter:
   public
   UnaryFunctorImageFilter< TInputImage, TOutputImage,

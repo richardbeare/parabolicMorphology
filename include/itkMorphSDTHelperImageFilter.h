@@ -34,7 +34,7 @@ namespace itk
  */
 namespace Function
 {
-template< class TInput1, class TInput2 = TInput1, class TInput3 = TInput1, class TOutput = TInput1 >
+template< typename TInput1, typename TInput2 = TInput1, typename TInput3 = TInput1, typename TOutput = TInput1 >
 class MorphSDTHelper
 {
 public:
@@ -71,8 +71,8 @@ private:
 };
 }
 
-template< class TInputImage1, class TInputImage2 = TInputImage1, class TInputImage3 = TInputImage1,
-          class TOutputImage = TInputImage1 >
+template< typename TInputImage1, typename TInputImage2 = TInputImage1, typename TInputImage3 = TInputImage1,
+          typename TOutputImage = TInputImage1 >
 class ITK_EXPORT MorphSDTHelperImageFilter:
   public
   TernaryFunctorImageFilter< TInputImage1, TInputImage2, TInputImage3, TOutputImage,
