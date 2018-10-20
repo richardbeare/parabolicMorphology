@@ -184,7 +184,7 @@ ParabolicErodeDilateImageFilter< TInputImage, doDilate, TOutputImage >
   str.Filter = this;
 
   ProcessObject::MultiThreaderType *multithreader = this->GetMultiThreader();
-  multithreader->SetNumberOfThreads(nbthreads);
+  multithreader->SetNumberOfWorkUnits(nbthreads);
   multithreader->SetSingleMethod(this->ThreaderCallback, &str);
 
   // multithread the execution
