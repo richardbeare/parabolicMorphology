@@ -24,13 +24,13 @@
 
 #include "itkParabolicErodeImageFilter.h"
 #include "itkTimeProbe.h"
-#include "itkMultiThreader.h"
+#include "itkMultiThreaderBase.h"
 
 // sanity check of the image spacing option
 
 int itkParaErodeTest(int argc, char *argv[])
 {
-  itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads( 1 );
   constexpr int dim = 2;
 
   using PType = unsigned char;
