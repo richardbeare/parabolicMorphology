@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
   FilterType::Pointer filter = FilterType::New();
 
   filter->SetInput( reader->GetOutput() );
-  filter->SetOutsideValue( atoi(argv[3]) );
+  filter->SetOutsideValue( std::stoi(argv[3]) );
   filter->SetUseImageSpacing(true);
 
   using WriterType = itk::ImageFileWriter< FType >;

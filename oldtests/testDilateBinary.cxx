@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   using FilterType = itk::BinaryDilateParaImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
-  int                 testrad = atoi(argv[1]);
+  int                 testrad = std::stoi(argv[1]);
   filter->SetInput(image);
   filter->SetUseImageSpacing(false);
   filter->SetRadius(testrad);

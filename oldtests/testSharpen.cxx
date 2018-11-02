@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     return ( EXIT_FAILURE );
     }
 
-  iterations = atoi(argv[1]);
+  iterations = std::stoi(argv[1]);
 
   //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;

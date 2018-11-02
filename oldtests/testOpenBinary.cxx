@@ -32,12 +32,12 @@ int main(int argc, char *argv[])
   thresh->SetInput(input);
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
-  thresh->SetUpperThreshold( atoi(argv[4]) );
+  thresh->SetUpperThreshold( std::stoi(argv[4]) );
 
   using FilterType = itk::BinaryOpenParaImageFilter< IType, IType >;
 
   FilterType::Pointer filter = FilterType::New();
-  int                 testrad = atoi(argv[2]);
+  int                 testrad = std::stoi(argv[2]);
   filter->SetInput( thresh->GetOutput() );
   filter->SetUseImageSpacing(true);
   filter->SetCircular(true);

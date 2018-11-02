@@ -30,7 +30,7 @@ int main(int, char *argv[])
   FilterType::RadiusType scale;
   //scale[0]=1;
   //scale[1]=0.5;
-  scale.Fill( atof(argv[3]) );
+  scale.Fill( std::stod(argv[3]) );
   filter->SetScale(scale);
 //   itk::SimpleFilterWatcher watcher(filter, "filter");
   itk::TimeProbe NewTime;

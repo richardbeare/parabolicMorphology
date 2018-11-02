@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(inputOrig);
 
-  thresh->SetUpperThreshold( atoi(argv[2]) );
+  thresh->SetUpperThreshold( std::stoi(argv[2]) );
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
   writeIm< IType >(thresh->GetOutput(), argv[4]);

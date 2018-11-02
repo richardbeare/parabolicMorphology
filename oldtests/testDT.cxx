@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     return ( EXIT_FAILURE );
     }
 
-  iterations = atoi(argv[1]);
+  iterations = std::stoi(argv[1]);
 
   itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
-  thresh->SetUpperThreshold( atoi(argv[2]) );
+  thresh->SetUpperThreshold( std::stoi(argv[2]) );
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(255);
   writeIm< IType >(thresh->GetOutput(), argv[4]);
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   FilterType::Pointer filter = FilterType::New();
 
   filter->SetInput( thresh->GetOutput() );
-  filter->SetOutsideValue( atoi(argv[3]) );
+  filter->SetOutsideValue( std::stoi(argv[3]) );
   filter->Update();
 
   writeIm< FType >(filter->GetOutput(), argv[5]);
