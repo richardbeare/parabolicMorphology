@@ -20,12 +20,12 @@ setup(
     package_dir={'itk': 'itk'},
     download_url=r'https://github.com/InsightSoftwareConsortium/ITKParabolicMorphology',
     description=r'ITK classes for mathematical morphology using parabolic structuring functions',
-    long_description='ITKParabolicMorphology provides mathematical'
-                     'morphological erosion and dilation filters using'
+    long_description='itk-parabolicmorphology provides mathematical '
+                     'morphological erosion and dilation filters using '
                      'parabolic structuring functions.\n'
                      'Please refer to:\n'
-                     'R. Beare, “Morphology with parabolic structuring elements.”,'
-                     'Insight Journal, January-June 2008, http://hdl.handle.net/1926/1370',
+                     'R. Beare, "Morphology with parabolic structuring elements.", '
+                     'Insight Journal, January-June 2008, http://hdl.handle.net/1926/1370.',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
