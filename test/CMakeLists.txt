@@ -12,7 +12,7 @@ itkBinaryOpenParaTest.cxx
 itkBinaryCloseParaTest.cxx
 )
 
-SET(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
+set(INPUT_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/images/cthead1.png)
 
 set(ITK_TEST_DRIVER itkTestDriver)
 
