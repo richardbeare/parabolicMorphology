@@ -1,11 +1,12 @@
 #include "ioutils.h"
 
-int main(int argc, char *argv[])
+int
+main(int argc, char * argv[])
 {
   constexpr int dim = 2;
 
   using PType = unsigned char;
-  using IType = itk::Image< PType, dim >;
+  using IType = itk::Image<PType, dim>;
 
   // create the input image - we will blur a dot, threshold then blur again
   IType::Pointer     input = IType::New();
@@ -26,6 +27,6 @@ int main(int argc, char *argv[])
 
   input->FillBuffer(255);
   input->SetPixel(index, 0);
-  writeIm< IType >(input, argv[1]);
+  writeIm<IType>(input, argv[1]);
   return EXIT_SUCCESS;
 }

@@ -8,8 +8,11 @@
 // image transects
 
 template <typename TImage>
-void extractProfile(typename TImage::Pointer Im, typename TImage::IndexType first, 
-		    typename TImage::IndexType last, std::string outputfile)
+void
+extractProfile(typename TImage::Pointer   Im,
+               typename TImage::IndexType first,
+               typename TImage::IndexType last,
+               std::string                outputfile)
 {
   using ItType = typename itk::LineConstIterator<TImage>;
 
@@ -19,12 +22,11 @@ void extractProfile(typename TImage::Pointer Im, typename TImage::IndexType firs
   outfile.open(outputfile.c_str());
   unsigned pos = 0;
   for (it.GoToBegin(); !it.IsAtEnd(); ++it, ++pos)
-    {
+  {
     // write out the pixel value
     outfile << pos << "\t" << (float)it.Get() << std::endl;
-    }
+  }
   outfile.close();
-
 }
 
 #endif

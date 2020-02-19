@@ -63,19 +63,17 @@ namespace itk
  *
 **/
 
-template< typename TInputImage, typename TOutputImage = TInputImage >
-class ITK_EXPORT MorphologicalSharpeningImageFilter:
-  public ImageToImageFilter< TInputImage,
-                             TOutputImage >
+template <typename TInputImage, typename TOutputImage = TInputImage>
+class ITK_EXPORT MorphologicalSharpeningImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(MorphologicalSharpeningImageFilter);
 
   /** Standard class type alias. */
   using Self = MorphologicalSharpeningImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -87,8 +85,8 @@ public:
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
   using InputPixelType = typename TInputImage::PixelType;
-  using RealType = typename NumericTraits< InputPixelType >::RealType;
-  using ScalarRealType = typename NumericTraits< InputPixelType >::ScalarRealType;
+  using RealType = typename NumericTraits<InputPixelType>::RealType;
+  using ScalarRealType = typename NumericTraits<InputPixelType>::ScalarRealType;
   using OutputPixelType = typename TOutputImage::PixelType;
 
   /** Smart pointer type alias support.  */
@@ -101,66 +99,73 @@ public:
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** a type to represent the "kernel radius" */
-  using RadiusType = typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension >;
+  using RadiusType = typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension>;
 
   itkSetMacro(Iterations, int);
   itkGetConstReferenceMacro(Iterations, int);
 
-  void SetScale(ScalarRealType scale)
+  void
+  SetScale(ScalarRealType scale)
   {
     m_Erode->SetScale(scale);
     m_Dilate->SetScale(scale);
   }
 
-  void SetScale(RadiusType scale)
+  void
+  SetScale(RadiusType scale)
   {
     m_Erode->SetScale(scale);
     m_Dilate->SetScale(scale);
   }
 
-  void SetUseImageSpacing(bool uis)
+  void
+  SetUseImageSpacing(bool uis)
   {
     m_Erode->SetUseImageSpacing(uis);
     m_Dilate->SetUseImageSpacing(uis);
   }
 
   // need to include the Get methods
-  const RadiusType & GetScale()
+  const RadiusType &
+  GetScale()
   {
     return m_Erode->GetScale();
   }
 
-  const bool & GetUseImageSpacing()
+  const bool &
+  GetUseImageSpacing()
   {
     return m_Erode->GetUseImageSpacing();
   }
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( SameDimension,
-                   ( Concept::SameDimension< itkGetStaticConstMacro(InputImageDimension),
-                                             itkGetStaticConstMacro(OutputImageDimension) > ) );
+  itkConceptMacro(SameDimension,
+                  (Concept::SameDimension<itkGetStaticConstMacro(InputImageDimension),
+                                          itkGetStaticConstMacro(OutputImageDimension)>));
 
-  itkConceptMacro( Comparable,
-                   ( Concept::Comparable< InputPixelType > ) );
+  itkConceptMacro(Comparable, (Concept::Comparable<InputPixelType>));
 
   /** End concept checking */
 #endif
 protected:
   MorphologicalSharpeningImageFilter();
   ~MorphologicalSharpeningImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Generate Data */
-  void GenerateData(void) override;
+  void
+  GenerateData(void) override;
 
   // do everything in the output image type, which should have high precision
-  using ErodeType = typename itk::ParabolicErodeImageFilter< OutputImageType, OutputImageType >;
-  using DilateType = typename itk::ParabolicDilateImageFilter< OutputImageType, OutputImageType >;
-  using CastType = typename itk::CastImageFilter< InputImageType, OutputImageType >;
+  using ErodeType = typename itk::ParabolicErodeImageFilter<OutputImageType, OutputImageType>;
+  using DilateType = typename itk::ParabolicDilateImageFilter<OutputImageType, OutputImageType>;
+  using CastType = typename itk::CastImageFilter<InputImageType, OutputImageType>;
 
-  using SharpenOpType = typename itk::SharpenOpImageFilter< OutputImageType, OutputImageType, OutputImageType,
-                                              OutputImageType >;
+  using SharpenOpType =
+    typename itk::SharpenOpImageFilter<OutputImageType, OutputImageType, OutputImageType, OutputImageType>;
+
 private:
   int m_Iterations;
 
@@ -171,7 +176,7 @@ private:
 };
 } // namespace itk
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMorphologicalSharpeningImageFilter.hxx"
+#  include "itkMorphologicalSharpeningImageFilter.hxx"
 #endif
 
 #endif

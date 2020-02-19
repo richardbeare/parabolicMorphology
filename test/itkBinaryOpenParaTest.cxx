@@ -26,62 +26,63 @@
 #include <itkBinaryThresholdImageFilter.h>
 #include "itkBinaryOpenParaImageFilter.h"
 
-int itkBinaryOpenParaTest(int argc, char *argv[])
+int
+itkBinaryOpenParaTest(int argc, char * argv[])
 {
-  if ( argc != 5 )
-    {
+  if (argc != 5)
+  {
     std::cerr << "Usage: " << argv[0] << " inputimage threshold size outim " << std::endl;
-    return ( EXIT_FAILURE );
-    }
+    return (EXIT_FAILURE);
+  }
 
-  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads( 1 );
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;
 
   using PType = unsigned char;
-  using IType = itk::Image< PType, dim >;
+  using IType = itk::Image<PType, dim>;
 
-  using ReaderType = itk::ImageFileReader< IType >;
+  using ReaderType = itk::ImageFileReader<IType>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   // threshold the input to create a mask
-  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
+  using ThreshType = itk::BinaryThresholdImageFilter<IType, IType>;
   ThreshType::Pointer thresh = ThreshType::New();
-  thresh->SetInput( reader->GetOutput() );
+  thresh->SetInput(reader->GetOutput());
 
-  thresh->SetUpperThreshold( std::stoi(argv[2]) );
+  thresh->SetUpperThreshold(std::stoi(argv[2]));
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(1);
   // now to apply the erosion
-  using FilterType = itk::BinaryOpenParaImageFilter< IType, IType >;
+  using FilterType = itk::BinaryOpenParaImageFilter<IType, IType>;
 
   FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( thresh->GetOutput() );
+  filter->SetInput(thresh->GetOutput());
   filter->SetUseImageSpacing(true);
-  filter->SetRadius( std::stod(argv[3]) );
+  filter->SetRadius(std::stod(argv[3]));
 
-  using WriterType = itk::ImageFileWriter< IType >;
+  using WriterType = itk::ImageFileWriter<IType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetInput( filter->GetOutput() );
+  writer->SetInput(filter->GetOutput());
   writer->SetFileName(argv[4]);
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

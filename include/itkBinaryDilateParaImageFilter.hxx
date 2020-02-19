@@ -25,9 +25,8 @@
 
 namespace itk
 {
-template< typename TInputImage, typename TOutputImage >
-BinaryDilateParaImageFilter< TInputImage, TOutputImage >
-::BinaryDilateParaImageFilter()
+template <typename TInputImage, typename TOutputImage>
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>::BinaryDilateParaImageFilter()
 {
   this->SetNumberOfRequiredOutputs(1);
   this->SetNumberOfRequiredInputs(1);
@@ -41,10 +40,9 @@ BinaryDilateParaImageFilter< TInputImage, TOutputImage >
   this->SetUseImageSpacing(false);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-BinaryDilateParaImageFilter< TInputImage, TOutputImage >
-::SetRadius(ScalarRealType radius)
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>::SetRadius(ScalarRealType radius)
 {
   RadiusType s;
 
@@ -52,42 +50,41 @@ BinaryDilateParaImageFilter< TInputImage, TOutputImage >
   this->SetRadius(s);
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-BinaryDilateParaImageFilter< TInputImage, TOutputImage >
-::GenerateData(void)
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>::GenerateData(void)
 {
   // Allocate the output
   this->AllocateOutputs();
   // set up the scaling before we pass control over to superclass
-  if ( this->m_RectPara->GetUseImageSpacing() )
-    {
+  if (this->m_RectPara->GetUseImageSpacing())
+  {
     // radius is in mm
     RadiusType R;
-    for ( unsigned P = 0; P < InputImageType::ImageDimension; P++ )
-      {
+    for (unsigned P = 0; P < InputImageType::ImageDimension; P++)
+    {
       R[P] = 0.5 * m_Radius[P] * m_Radius[P];
-      //this->SetScale(0.5*m_Radius[P] * m_Radius[P]);
-      }
+      // this->SetScale(0.5*m_Radius[P] * m_Radius[P]);
+    }
     m_RectPara->SetScale(R);
     m_CircPara->SetScale(R);
-    }
+  }
   else
-    {
+  {
     // radius is in pixels
     RadiusType R;
     // this gives us a little bit of a margin
-    for ( unsigned P = 0; P < InputImageType::ImageDimension; P++ )
-      {
-      R[P] = ( 0.5 * m_Radius[P] * m_Radius[P] + 1 );
-      }
-    //std::cout << "no image spacing " << m_Radius << R << std::endl;
+    for (unsigned P = 0; P < InputImageType::ImageDimension; P++)
+    {
+      R[P] = (0.5 * m_Radius[P] * m_Radius[P] + 1);
+    }
+    // std::cout << "no image spacing " << m_Radius << R << std::endl;
     m_RectPara->SetScale(R);
     m_CircPara->SetScale(R);
-    }
+  }
 
-  if ( m_Circular )
-    {
+  if (m_Circular)
+  {
     ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
     progress->SetMiniPipelineFilter(this);
     InputImageConstPointer inputImage;
@@ -97,21 +94,21 @@ BinaryDilateParaImageFilter< TInputImage, TOutputImage >
     progress->RegisterInternalFilter(m_CircCast, 0.2f);
 
     m_CircPara->SetInput(inputImage);
-    m_CircCast->SetInput( m_CircPara->GetOutput() );
-    //m_CircCast->SetInsideValue(0);
-    //m_CircCast->SetOutsideValue(1);
+    m_CircCast->SetInput(m_CircPara->GetOutput());
+    // m_CircCast->SetInsideValue(0);
+    // m_CircCast->SetOutsideValue(1);
     // setting the correct threshold value is a little tricky - needs would
     // to produce a result matching a bresenham circle, but these
     // circles are such that the voxel centres need to be less than radius
     m_CircCast->SetUpperThreshold(0);
     m_CircCast->SetOutsideValue(1);
     m_CircCast->SetInsideValue(0);
-    m_CircCast->GraftOutput( this->GetOutput() );
+    m_CircCast->GraftOutput(this->GetOutput());
     m_CircCast->Update();
-    this->GraftOutput( m_CircCast->GetOutput() );
-    }
+    this->GraftOutput(m_CircCast->GetOutput());
+  }
   else
-    {
+  {
     ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
     progress->SetMiniPipelineFilter(this);
     InputImageConstPointer inputImage;
@@ -121,20 +118,19 @@ BinaryDilateParaImageFilter< TInputImage, TOutputImage >
     progress->RegisterInternalFilter(m_RectCast, 0.2f);
 
     m_RectPara->SetInput(inputImage);
-    m_RectCast->SetInput( m_RectPara->GetOutput() );
+    m_RectCast->SetInput(m_RectPara->GetOutput());
     m_RectCast->SetUpperThreshold(0);
     m_RectCast->SetOutsideValue(1);
     m_RectCast->SetInsideValue(0);
-    m_RectCast->GraftOutput( this->GetOutput() );
+    m_RectCast->GraftOutput(this->GetOutput());
     m_RectCast->Update();
-    this->GraftOutput( m_RectCast->GetOutput() );
-    }
+    this->GraftOutput(m_RectCast->GetOutput());
+  }
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-BinaryDilateParaImageFilter< TInputImage, TOutputImage >
-::Modified() const
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>::Modified() const
 {
   Superclass::Modified();
   m_CircPara->Modified();
@@ -143,20 +139,19 @@ BinaryDilateParaImageFilter< TInputImage, TOutputImage >
   m_RectCast->Modified();
 }
 
-template< typename TInputImage, typename TOutputImage >
+template <typename TInputImage, typename TOutputImage>
 void
-BinaryDilateParaImageFilter< TInputImage, TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+BinaryDilateParaImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  if ( this->m_CircPara->GetUseImageSpacing() )
-    {
+  if (this->m_CircPara->GetUseImageSpacing())
+  {
     os << "Radius in world units: " << this->GetRadius() << std::endl;
-    }
+  }
   else
-    {
+  {
     os << "Radius in voxels: " << this->GetRadius() << std::endl;
-    }
+  }
 }
 } // namespace itk
 #endif

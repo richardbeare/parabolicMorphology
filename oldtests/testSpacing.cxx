@@ -11,23 +11,24 @@
 
 // sanity check of the image spacing option
 
-int main(int, char *argv[])
+int
+main(int, char * argv[])
 {
-  //itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
+  // itk::MultiThreader::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;
 
   using PType = unsigned char;
-  using IType = itk::Image< PType, dim >;
+  using IType = itk::Image<PType, dim>;
 
-  using ReaderType = itk::ImageFileReader< IType >;
+  using ReaderType = itk::ImageFileReader<IType>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
 
-  using FilterType = itk::ParabolicOpenImageFilter< IType, IType >;
+  using FilterType = itk::ParabolicOpenImageFilter<IType, IType>;
 
   FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( reader->GetOutput() );
+  filter->SetInput(reader->GetOutput());
   filter->SetSafeBorder(true);
   FilterType::RadiusType scale;
   scale[0] = 1;
@@ -37,28 +38,28 @@ int main(int, char *argv[])
   filter->SetUseImageSpacing(false);
   filter->Update();
 
-  using WriterType = itk::ImageFileWriter< IType >;
+  using WriterType = itk::ImageFileWriter<IType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetInput( filter->GetOutput() );
+  writer->SetInput(filter->GetOutput());
   writer->SetFileName(argv[2]);
   writer->Update();
 
   // now we'll change the image spacing and see if we can reproduce
   // the result
-  using ChangeType = itk::ChangeInformationImageFilter< IType >;
+  using ChangeType = itk::ChangeInformationImageFilter<IType>;
   ChangeType::Pointer changer = ChangeType::New();
-  changer->SetInput( reader->GetOutput() );
+  changer->SetInput(reader->GetOutput());
   ChangeType::SpacingType newspacing;
 
-  newspacing[0] = 1 / sqrt( (float)1 );
-  newspacing[1] = 1 / sqrt( (float)0.5 );
+  newspacing[0] = 1 / sqrt((float)1);
+  newspacing[1] = 1 / sqrt((float)0.5);
 
   changer->SetOutputSpacing(newspacing);
   changer->ChangeSpacingOn();
   // set scales to deliver the same result
   scale[0] = 1;
   scale[1] = 1;
-  filter->SetInput( changer->GetOutput() );
+  filter->SetInput(changer->GetOutput());
   filter->SetScale(scale);
   filter->SetUseImageSpacing(true);
   filter->Update();

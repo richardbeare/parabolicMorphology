@@ -26,77 +26,78 @@
 #include "itkTimeProbe.h"
 #include "itkMultiThreaderBase.h"
 
-int itkParaDTTest(int argc, char *argv[])
+int
+itkParaDTTest(int argc, char * argv[])
 {
-  //int iterations = 1;
+  // int iterations = 1;
 
-  if ( argc != 5 )
-    {
+  if (argc != 5)
+  {
     std::cerr << "Usage: " << argv[0] << " inputimage threshold outsideval outim1" << std::endl;
-    return ( EXIT_FAILURE );
-    }
+    return (EXIT_FAILURE);
+  }
 
-  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads( 1 );
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;
 
   using PType = unsigned char;
-  using IType = itk::Image< PType, dim >;
-  using FType = itk::Image< float, dim >;
+  using IType = itk::Image<PType, dim>;
+  using FType = itk::Image<float, dim>;
 
-  using ReaderType = itk::ImageFileReader< IType >;
+  using ReaderType = itk::ImageFileReader<IType>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   IType::Pointer input = reader->GetOutput();
 
   // threshold the input to create a mask
-  using ThreshType = itk::BinaryThresholdImageFilter< IType, IType >;
+  using ThreshType = itk::BinaryThresholdImageFilter<IType, IType>;
   ThreshType::Pointer thresh = ThreshType::New();
   thresh->SetInput(input);
 
-  thresh->SetUpperThreshold( std::stoi(argv[2]) );
+  thresh->SetUpperThreshold(std::stoi(argv[2]));
   thresh->SetInsideValue(0);
   thresh->SetOutsideValue(255);
 
   // now to apply the distance transform
-  using FilterType = itk::MorphologicalDistanceTransformImageFilter< IType, FType >;
+  using FilterType = itk::MorphologicalDistanceTransformImageFilter<IType, FType>;
 
   FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( thresh->GetOutput() );
-  filter->SetOutsideValue( std::stoi(argv[3]) );
+  filter->SetInput(thresh->GetOutput());
+  filter->SetOutsideValue(std::stoi(argv[3]));
   try
-    {
+  {
     filter->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  using WriterType = itk::ImageFileWriter< FType >;
+  using WriterType = itk::ImageFileWriter<FType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetInput( filter->GetOutput() );
+  writer->SetInput(filter->GetOutput());
   writer->SetFileName(argv[4]);
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

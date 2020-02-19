@@ -45,69 +45,78 @@ namespace itk
  */
 namespace Function
 {
-template< typename TInput1, typename TInput2, typename TInput3, typename TOutput >
+template <typename TInput1, typename TInput2, typename TInput3, typename TOutput>
 class SharpM
 {
 public:
   SharpM() {}
   ~SharpM() {}
-  bool operator!=(const SharpM &) const
+  bool
+  operator!=(const SharpM &) const
   {
     return false;
   }
 
-  bool operator==(const SharpM & other) const
+  bool
+  operator==(const SharpM & other) const
   {
-    return !( *this != other );
+    return !(*this != other);
   }
 
-  inline TOutput operator()(const TInput1 & A,
-                            const TInput2 & B,
-                            const TInput3 & C)
+  inline TOutput
+  operator()(const TInput1 & A, const TInput2 & B, const TInput3 & C)
   {
     // the sharpening operator. A is the dilation, B the original, C
     // the erosion
     TInput2 diff1 = A - B;
     TInput2 diff2 = B - C;
 
-    if ( diff1 < diff2 ) { return (TOutput)A; }
-    if ( diff2 < diff1 ) { return (TOutput)C; }
-    return ( (TOutput)B );
+    if (diff1 < diff2)
+    {
+      return (TOutput)A;
+    }
+    if (diff2 < diff1)
+    {
+      return (TOutput)C;
+    }
+    return ((TOutput)B);
   }
 };
-}
+} // namespace Function
 
-template< class TInputImage1, class TInputImage2,
-          class TInputImage3, class TOutputImage >
-class ITK_EXPORT SharpenOpImageFilter:
-  public
-  TernaryFunctorImageFilter< TInputImage1, TInputImage2,
-                             TInputImage3, TOutputImage,
-                             Function::SharpM< typename TInputImage1::PixelType,
-                                               typename TInputImage2::PixelType,
-                                               typename TInputImage3::PixelType,
-                                               typename TOutputImage::PixelType >   >
+template <class TInputImage1, class TInputImage2, class TInputImage3, class TOutputImage>
+class ITK_EXPORT SharpenOpImageFilter
+  : public TernaryFunctorImageFilter<TInputImage1,
+                                     TInputImage2,
+                                     TInputImage3,
+                                     TOutputImage,
+                                     Function::SharpM<typename TInputImage1::PixelType,
+                                                      typename TInputImage2::PixelType,
+                                                      typename TInputImage3::PixelType,
+                                                      typename TOutputImage::PixelType>>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(SharpenOpImageFilter);
 
   /** Standard class type alias. */
   using Self = SharpenOpImageFilter;
-  using Superclass = TernaryFunctorImageFilter< TInputImage1, TInputImage2,
-                                     TInputImage3, TOutputImage,
-                                     Function::SharpM< typename TInputImage1::PixelType,
-                                                       typename TInputImage2::PixelType,
-                                                       typename TInputImage3::PixelType,
-                                                       typename TOutputImage::PixelType >   >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = TernaryFunctorImageFilter<TInputImage1,
+                                               TInputImage2,
+                                               TInputImage3,
+                                               TOutputImage,
+                                               Function::SharpM<typename TInputImage1::PixelType,
+                                                                typename TInputImage2::PixelType,
+                                                                typename TInputImage3::PixelType,
+                                                                typename TOutputImage::PixelType>>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(SharpenOpImageFilter,
-               TernaryFunctorImageFilter);
+  itkTypeMacro(SharpenOpImageFilter, TernaryFunctorImageFilter);
+
 protected:
   SharpenOpImageFilter() {}
   ~SharpenOpImageFilter() override {}

@@ -34,78 +34,89 @@ namespace itk
  */
 namespace Function
 {
-template< typename TInput1, typename TInput2 = TInput1, typename TInput3 = TInput1, typename TOutput = TInput1 >
+template <typename TInput1, typename TInput2 = TInput1, typename TInput3 = TInput1, typename TOutput = TInput1>
 class MorphSDTHelper
 {
 public:
   MorphSDTHelper() {}
   ~MorphSDTHelper() {}
-  void SetVal(double i) { m_Val = i; }
-  bool operator!=(const MorphSDTHelper &) const
+  void
+  SetVal(double i)
+  {
+    m_Val = i;
+  }
+  bool
+  operator!=(const MorphSDTHelper &) const
   {
     return false;
   }
 
-  bool operator==(const MorphSDTHelper & other) const
+  bool
+  operator==(const MorphSDTHelper & other) const
   {
-    return !( *this != other );
+    return !(*this != other);
   }
 
-  inline TOutput operator()(const TInput1 & A, const TInput2 & B, const TInput3 & C)
+  inline TOutput
+  operator()(const TInput1 & A, const TInput2 & B, const TInput3 & C)
   {
     // A should be the output of the erosion, B the dilation, C the mask
-    if ( C > 0 )
-      {
+    if (C > 0)
+    {
       // inside the mask
-      return static_cast< TOutput >( std::sqrt( (double)A + m_Val ) );
-      }
+      return static_cast<TOutput>(std::sqrt((double)A + m_Val));
+    }
     else
-      {
+    {
       // outside the mask
-      return static_cast< TOutput >( -std::sqrt(m_Val - (double)B) );
-      }
+      return static_cast<TOutput>(-std::sqrt(m_Val - (double)B));
+    }
   }
 
 private:
   double m_Val;
 };
-}
+} // namespace Function
 
-template< typename TInputImage1, typename TInputImage2 = TInputImage1, typename TInputImage3 = TInputImage1,
-          typename TOutputImage = TInputImage1 >
-class ITK_EXPORT MorphSDTHelperImageFilter:
-  public
-  TernaryFunctorImageFilter< TInputImage1, TInputImage2, TInputImage3, TOutputImage,
-                             Function::MorphSDTHelper<
-                               typename TInputImage1::PixelType,
-                               typename TInputImage2::PixelType,
-                               typename TInputImage3::PixelType,
-                               typename TOutputImage::PixelType >   >
+template <typename TInputImage1,
+          typename TInputImage2 = TInputImage1,
+          typename TInputImage3 = TInputImage1,
+          typename TOutputImage = TInputImage1>
+class ITK_EXPORT MorphSDTHelperImageFilter
+  : public TernaryFunctorImageFilter<TInputImage1,
+                                     TInputImage2,
+                                     TInputImage3,
+                                     TOutputImage,
+                                     Function::MorphSDTHelper<typename TInputImage1::PixelType,
+                                                              typename TInputImage2::PixelType,
+                                                              typename TInputImage3::PixelType,
+                                                              typename TOutputImage::PixelType>>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(MorphSDTHelperImageFilter);
 
   /** Standard class type alias. */
   using Self = MorphSDTHelperImageFilter;
-  using Superclass = TernaryFunctorImageFilter< TInputImage1, TInputImage2, TInputImage3, TOutputImage,
-                                     Function::MorphSDTHelper<
-                                       typename TInputImage1::PixelType,
-                                       typename TInputImage2::PixelType,
-                                       typename TInputImage3::PixelType,
-                                       typename TOutputImage::PixelType >
-                                     >;
+  using Superclass = TernaryFunctorImageFilter<TInputImage1,
+                                               TInputImage2,
+                                               TInputImage3,
+                                               TOutputImage,
+                                               Function::MorphSDTHelper<typename TInputImage1::PixelType,
+                                                                        typename TInputImage2::PixelType,
+                                                                        typename TInputImage3::PixelType,
+                                                                        typename TOutputImage::PixelType>>;
 
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(MorphSDTHelperImageFilter,
-               TernaryFunctorImageFilter);
+  itkTypeMacro(MorphSDTHelperImageFilter, TernaryFunctorImageFilter);
 
-  void SetVal(double val)
+  void
+  SetVal(double val)
   {
     this->GetFunctor().SetVal(val);
     this->Modified();
@@ -113,15 +124,12 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( Input1ConvertibleToOutputCheck,
-                   ( Concept::Convertible< typename TInputImage1::PixelType,
-                                           typename TOutputImage::PixelType > ) );
-  itkConceptMacro( Input2ConvertibleToOutputCheck,
-                   ( Concept::Convertible< typename TInputImage2::PixelType,
-                                           typename TOutputImage::PixelType > ) );
-  itkConceptMacro( GreaterThanComparable,
-                   ( Concept::GreaterThanComparable< typename TInputImage3::PixelType,
-                                                     typename TInputImage3::PixelType > ) );
+  itkConceptMacro(Input1ConvertibleToOutputCheck,
+                  (Concept::Convertible<typename TInputImage1::PixelType, typename TOutputImage::PixelType>));
+  itkConceptMacro(Input2ConvertibleToOutputCheck,
+                  (Concept::Convertible<typename TInputImage2::PixelType, typename TOutputImage::PixelType>));
+  itkConceptMacro(GreaterThanComparable,
+                  (Concept::GreaterThanComparable<typename TInputImage3::PixelType, typename TInputImage3::PixelType>));
   /** End concept checking */
 #endif
 protected:

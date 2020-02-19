@@ -43,22 +43,20 @@ namespace itk
  *
  * \author Richard Beare, Department of Medicine, Monash University,
  * Australia.  <Richard.Beare@monash.edu>
-**/
+ **/
 
-template< typename TInputImage,
-          typename TOutputImage = TInputImage >
-class ITK_EXPORT ParabolicOpenImageFilter:
-  public ParabolicOpenCloseSafeBorderImageFilter< TInputImage, true,
-                                                  TOutputImage >
+template <typename TInputImage, typename TOutputImage = TInputImage>
+class ITK_EXPORT ParabolicOpenImageFilter
+  : public ParabolicOpenCloseSafeBorderImageFilter<TInputImage, true, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(ParabolicOpenImageFilter);
 
   /** Standard class type alias. */
   using Self = ParabolicOpenImageFilter;
-  using Superclass = ParabolicOpenCloseSafeBorderImageFilter< TInputImage, true, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ParabolicOpenCloseSafeBorderImageFilter<TInputImage, true, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -67,8 +65,8 @@ public:
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
   using PixelType = typename TInputImage::PixelType;
-  using RealType = typename NumericTraits< PixelType >::RealType;
-  using ScalarRealType = typename NumericTraits< PixelType >::ScalarRealType;
+  using RealType = typename NumericTraits<PixelType>::RealType;
+  using ScalarRealType = typename NumericTraits<PixelType>::ScalarRealType;
   using OutputPixelType = typename TOutputImage::PixelType;
 
   /** Smart pointer type alias support.  */
@@ -76,7 +74,7 @@ public:
   using InputImageConstPointer = typename TInputImage::ConstPointer;
 
   /** a type to represent the "kernel radius" */
-  using RadiusType = typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension >;
+  using RadiusType = typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension>;
 
   /** Image dimension. */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
@@ -84,9 +82,9 @@ public:
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
 protected:
-  ParabolicOpenImageFilter(){}
+  ParabolicOpenImageFilter() {}
   ~ParabolicOpenImageFilter() override {}
-//   void PrintSelf(std::ostream& os, Indent indent) const;
+  //   void PrintSelf(std::ostream& os, Indent indent) const;
 };
 } // end namespace itk
 

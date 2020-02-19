@@ -63,12 +63,10 @@ namespace itk
  *
  * \author Richard Beare, Department of Medicine, Monash University,
  * Australia.  <Richard.Beare@monash.edu>
-**/
+ **/
 
-template< typename TInputImage,
-          typename TOutputImage = TInputImage >
-class ITK_EXPORT BinaryOpenParaImageFilter:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage, typename TOutputImage = TInputImage>
+class ITK_EXPORT BinaryOpenParaImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 
 {
 public:
@@ -76,9 +74,9 @@ public:
 
   /** Standard class type alias. */
   using Self = BinaryOpenParaImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -90,15 +88,15 @@ public:
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
   using PixelType = typename TInputImage::PixelType;
-  using RealType = typename NumericTraits< PixelType >::RealType;
-  using ScalarRealType = typename NumericTraits< PixelType >::ScalarRealType;
+  using RealType = typename NumericTraits<PixelType>::RealType;
+  using ScalarRealType = typename NumericTraits<PixelType>::ScalarRealType;
   using OutputPixelType = typename TOutputImage::PixelType;
 
   /** Smart pointer type alias support.  */
   using InputImagePointer = typename TInputImage::Pointer;
   using InputImageConstPointer = typename TInputImage::ConstPointer;
 
-  using InternalRealType = typename NumericTraits< PixelType >::FloatType;
+  using InternalRealType = typename NumericTraits<PixelType>::FloatType;
   // perhaps a bit dodgy, change to int if you want to do enormous
   // binary operations
   using InternalIntType = short;
@@ -106,14 +104,16 @@ public:
   /** Image dimension. */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
-  using RadiusType = typename itk::FixedArray< ScalarRealType, TInputImage::ImageDimension >;
+  using RadiusType = typename itk::FixedArray<ScalarRealType, TInputImage::ImageDimension>;
 
-  void SetRadius(ScalarRealType radius);
+  void
+  SetRadius(ScalarRealType radius);
 
   itkSetMacro(Radius, RadiusType);
   itkGetConstReferenceMacro(Radius, RadiusType);
 
-  void SetUseImageSpacing(bool g)
+  void
+  SetUseImageSpacing(bool g)
   {
     m_RectErode->SetUseImageSpacing(g);
     m_RectDilate->SetUseImageSpacing(g);
@@ -130,7 +130,7 @@ public:
   itkBooleanMacro(Circular);
 
   /** A safe border is added to input image to avoid borders effects
-    * and remove it once the closing is done */
+   * and remove it once the closing is done */
   itkSetMacro(SafeBorder, bool);
   itkGetConstReferenceMacro(SafeBorder, bool);
   itkBooleanMacro(SafeBorder);
@@ -139,24 +139,27 @@ public:
 
   /* add in the traits here */
 protected:
-  void GenerateData(void) override;
+  void
+  GenerateData(void) override;
 
   BinaryOpenParaImageFilter();
   ~BinaryOpenParaImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
-  using InternalRealImageType = typename itk::Image< InternalRealType, InputImageType::ImageDimension >;
-  using InternalIntImageType = typename itk::Image< InternalIntType, InputImageType::ImageDimension >;
-  using CircErodeType = typename itk::ParabolicErodeImageFilter< TInputImage, InternalRealImageType >;
-  using RectErodeType = typename itk::ParabolicErodeImageFilter< TInputImage, InternalIntImageType >;
-  using CircDilateType = typename itk::ParabolicDilateImageFilter< OutputImageType, InternalRealImageType >;
-  using RectDilateType = typename itk::ParabolicDilateImageFilter< OutputImageType, InternalRealImageType >;
+  using InternalRealImageType = typename itk::Image<InternalRealType, InputImageType::ImageDimension>;
+  using InternalIntImageType = typename itk::Image<InternalIntType, InputImageType::ImageDimension>;
+  using CircErodeType = typename itk::ParabolicErodeImageFilter<TInputImage, InternalRealImageType>;
+  using RectErodeType = typename itk::ParabolicErodeImageFilter<TInputImage, InternalIntImageType>;
+  using CircDilateType = typename itk::ParabolicDilateImageFilter<OutputImageType, InternalRealImageType>;
+  using RectDilateType = typename itk::ParabolicDilateImageFilter<OutputImageType, InternalRealImageType>;
 
-  using CCastTypeA = typename itk::GreaterEqualValImageFilter< InternalRealImageType, OutputImageType >;
-  using CCastTypeB = typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType >;
+  using CCastTypeA = typename itk::GreaterEqualValImageFilter<InternalRealImageType, OutputImageType>;
+  using CCastTypeB = typename itk::BinaryThresholdImageFilter<InternalRealImageType, OutputImageType>;
 
-  using RCastTypeA = typename itk::GreaterEqualValImageFilter< InternalIntImageType, OutputImageType >;
-  using RCastTypeB = typename itk::BinaryThresholdImageFilter< InternalRealImageType, OutputImageType >;
+  using RCastTypeA = typename itk::GreaterEqualValImageFilter<InternalIntImageType, OutputImageType>;
+  using RCastTypeB = typename itk::BinaryThresholdImageFilter<InternalRealImageType, OutputImageType>;
+
 private:
   RadiusType m_Radius;
   bool       m_Circular;
@@ -177,7 +180,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkBinaryOpenParaImageFilter.hxx"
+#  include "itkBinaryOpenParaImageFilter.hxx"
 #endif
 
 #endif //__itkBinaryOpenParaImageFilter_h

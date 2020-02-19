@@ -28,82 +28,83 @@
 
 // sanity check of the image spacing option
 
-int itkParaErodeTest(int argc, char *argv[])
+int
+itkParaErodeTest(int argc, char * argv[])
 {
-  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads( 1 );
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(1);
   constexpr int dim = 2;
 
   using PType = unsigned char;
-  using IType = itk::Image< PType, dim >;
+  using IType = itk::Image<PType, dim>;
 
   float scale(1.0);
-  if ( argc > 4 )
-    {
+  if (argc > 4)
+  {
     scale = std::stod(argv[4]);
-    }
+  }
 
-  using ReaderType = itk::ImageFileReader< IType >;
+  using ReaderType = itk::ImageFileReader<IType>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(argv[1]);
   try
-    {
+  {
     reader->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  using FilterType = itk::ParabolicErodeImageFilter< IType, IType >;
+  using FilterType = itk::ParabolicErodeImageFilter<IType, IType>;
 
   FilterType::Pointer filter = FilterType::New();
 
-  filter->SetInput( reader->GetOutput() );
+  filter->SetInput(reader->GetOutput());
 
   filter->SetScale(scale);
   filter->SetUseImageSpacing(true);
   filter->SetParabolicAlgorithm(FilterType::INTERSECTION);
   try
-    {
+  {
     filter->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  using WriterType = itk::ImageFileWriter< IType >;
+  using WriterType = itk::ImageFileWriter<IType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetInput( filter->GetOutput() );
+  writer->SetInput(filter->GetOutput());
   writer->SetFileName(argv[2]);
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   filter->SetScale(scale);
   filter->SetUseImageSpacing(true);
   filter->SetParabolicAlgorithm(FilterType::CONTACTPOINT);
   filter->Update();
 
-  writer->SetInput( filter->GetOutput() );
+  writer->SetInput(filter->GetOutput());
   writer->SetFileName(argv[3]);
   try
-    {
+  {
     writer->Update();
-    }
-  catch ( itk::ExceptionObject & excp )
-    {
+  }
+  catch (itk::ExceptionObject & excp)
+  {
     std::cerr << excp << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }
