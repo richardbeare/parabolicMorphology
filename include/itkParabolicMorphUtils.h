@@ -20,6 +20,8 @@
 
 #include <itkArray.h>
 
+#include "itkProgressReporter.h"
+
 namespace itk
 {
 // contact point algorithm
@@ -179,6 +181,7 @@ template <typename TInIter, typename TOutIter, typename RealType, typename Outpu
 void
 doOneDimension(TInIter &      inputIterator,
                TOutIter &     outputIterator,
+               ProgressReporter & progress,
                const long     LineLength,
                const unsigned direction,
                const int      m_MagnitudeSign,
@@ -261,6 +264,7 @@ doOneDimension(TInIter &      inputIterator,
       // now onto the next line
       inputIterator.NextLine();
       outputIterator.NextLine();
+      progress.CompletedPixel();
     }
   }
   else
@@ -306,6 +310,7 @@ doOneDimension(TInIter &      inputIterator,
       // now onto the next line
       inputIterator.NextLine();
       outputIterator.NextLine();
+      progress.CompletedPixel();
     }
   }
 }
