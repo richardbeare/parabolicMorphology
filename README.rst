@@ -1,21 +1,6 @@
 ParabolicMorphology
 ===================
 
-.. |CircleCI| image:: https://circleci.com/gh/InsightSoftwareConsortium/ITKParabolicMorphology.svg?style=shield
-    :target: https://circleci.com/gh/InsightSoftwareConsortium/ITKParabolicMorphology
-
-.. |TravisCI| image:: https://travis-ci.org/InsightSoftwareConsortium/ITKParabolicMorphology.svg?branch=master
-    :target: https://travis-ci.org/InsightSoftwareConsortium/ITKParabolicMorphology
-
-.. |AppVeyor| image:: https://img.shields.io/appveyor/ci/itkrobot/itkparabolicmorphology.svg
-    :target: https://ci.appveyor.com/project/itkrobot/itkparabolicmorphology
-
-=========== =========== ===========
-   Linux      macOS       Windows
-=========== =========== ===========
-|CircleCI|  |TravisCI|  |AppVeyor|
-=========== =========== ===========
-
 Overview
 --------
 
