@@ -1,20 +1,16 @@
 ParabolicMorphology
 ===================
 
-.. |CircleCI| image:: https://circleci.com/gh/InsightSoftwareConsortium/ITKParabolicMorphology.svg?style=shield
-    :target: https://circleci.com/gh/InsightSoftwareConsortium/ITKParabolicMorphology
+.. image:: https://github.com/InsightSoftwareConsortium/ITKParabolicMorphology/workflows/Build,%20test,%20package/badge.svg
+    :alt:    Build Status
 
-.. |TravisCI| image:: https://travis-ci.org/InsightSoftwareConsortium/ITKParabolicMorphology.svg?branch=master
-    :target: https://travis-ci.org/InsightSoftwareConsortium/ITKParabolicMorphology
+.. image:: https://img.shields.io/pypi/v/itk-parabolicmorphology.svg
+    :target: https://pypi.python.org/pypi/itk-parabolicmorphology
+    :alt: PyPI Version
 
-.. |AppVeyor| image:: https://img.shields.io/appveyor/ci/itkrobot/itkparabolicmorphology.svg
-    :target: https://ci.appveyor.com/project/itkrobot/itkparabolicmorphology
-
-=========== =========== ===========
-   Linux      macOS       Windows
-=========== =========== ===========
-|CircleCI|  |TravisCI|  |AppVeyor|
-=========== =========== ===========
+.. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+    :target: https://github.com/InsightSoftwareConsortium/ITKParabolicMorphology/blob/master/LICENSE)
+    :alt: License
 
 Overview
 --------
