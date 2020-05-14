@@ -28,6 +28,13 @@ For more information, see the `Insight Journal article <http://hdl.handle.net/19
   http://hdl.handle.net/1926/1370
   http://www.insight-journal.org/browse/publication/228
 
+Installation
+------------
+
+Install Python packages with::
+
+  python -m pip install itk-parabolicmorphology
+
 License
 -------
 
