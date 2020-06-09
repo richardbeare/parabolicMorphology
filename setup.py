@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='itk-parabolicmorphology',
-    version='1.0.1',
+    version='1.1.0',
     author='Richard Beare',
     author_email='Richard.Beare@med.monash.edu.au',
     packages=['itk'],
@@ -49,6 +49,6 @@ setup(
     keywords='ITK Parabolic Morphology Erosion Dilation',
     url=r'https://github.com/InsightSoftwareConsortium/ITKParabolicMorphology',
     install_requires=[
-        r'itk>=5.1.0'
+        r'itk>=5.1.0.post2'
     ]
     )
