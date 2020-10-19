@@ -179,17 +179,17 @@ DoLineIntAlg(LineBufferType &  LineBuf,
 
 template <typename TInIter, typename TOutIter, typename RealType, typename OutputPixelType, bool doDilate>
 void
-doOneDimension(TInIter &      inputIterator,
-               TOutIter &     outputIterator,
+doOneDimension(TInIter &          inputIterator,
+               TOutIter &         outputIterator,
                ProgressReporter & progress,
-               const long     LineLength,
-               const unsigned direction,
-               const int      m_MagnitudeSign,
-               const bool     m_UseImageSpacing,
-               const RealType m_Extreme,
-               const RealType image_scale,
-               const RealType Sigma,
-               int            ParabolicAlgorithmChoice)
+               const long         LineLength,
+               const unsigned     direction,
+               const int          m_MagnitudeSign,
+               const bool         m_UseImageSpacing,
+               const RealType     m_Extreme,
+               const RealType     image_scale,
+               const RealType     Sigma,
+               int                ParabolicAlgorithmChoice)
 {
   enum ParabolicAlgorithm
   {
