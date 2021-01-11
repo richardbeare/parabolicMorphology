@@ -49,6 +49,6 @@ setup(
     keywords='ITK Parabolic Morphology Erosion Dilation',
     url=r'https://github.com/InsightSoftwareConsortium/ITKParabolicMorphology',
     install_requires=[
-        r'itk>=5.1.0.post2'
+        r'itk>=5.2rc1'
     ]
     )
