@@ -263,31 +263,32 @@ ParabolicOpenCloseImageFilter<TInputImage, DoOpen, TOutputImage>::GenerateData()
 template <typename TInputImage, bool DoOpen, typename TOutputImage>
 void
 ParabolicOpenCloseImageFilter<TInputImage, DoOpen, TOutputImage>::ThreadedGenerateData(
-  const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId)
+  const OutputImageRegionType & outputRegionForThread,
+  ThreadIdType                  threadId)
 {
-    // compute the number of rows first, so we can setup a progress reporter
-    typename std::vector< unsigned int > NumberOfRows;
-    InputSizeType size   = outputRegionForThread.GetSize();
+  // compute the number of rows first, so we can setup a progress reporter
+  typename std::vector<unsigned int> NumberOfRows;
+  InputSizeType                      size = outputRegionForThread.GetSize();
 
-    for ( unsigned int i = 0; i < InputImageDimension; i++ )
+  for (unsigned int i = 0; i < InputImageDimension; i++)
+  {
+    NumberOfRows.push_back(1);
+    for (unsigned int d = 0; d < InputImageDimension; d++)
     {
-        NumberOfRows.push_back(1);
-        for ( unsigned int d = 0; d < InputImageDimension; d++ )
-        {
-            if ( d != i )
-            {
-                NumberOfRows[i] *= size[d];
-            }
-        }
+      if (d != i)
+      {
+        NumberOfRows[i] *= size[d];
+      }
     }
-    float progressPerDimension = 1.0 / ImageDimension;
+  }
+  float progressPerDimension = 1.0 / ImageDimension;
 
-    auto *progress = new ProgressReporter(this,
-                                          threadId,
-                                          NumberOfRows[m_CurrentDimension],
-                                          30,
-                                          m_CurrentDimension * progressPerDimension,
-                                          progressPerDimension);
+  auto * progress = new ProgressReporter(this,
+                                         threadId,
+                                         NumberOfRows[m_CurrentDimension],
+                                         30,
+                                         m_CurrentDimension * progressPerDimension,
+                                         progressPerDimension);
 
   using InputConstIteratorType = ImageLinearConstIteratorWithIndex<TInputImage>;
   using OutputIteratorType = ImageLinearIteratorWithIndex<TOutputImage>;
