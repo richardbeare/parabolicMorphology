@@ -25,7 +25,7 @@ setup(
                      'parabolic structuring functions.\n'
                      'Please refer to:\n'
                      'R. Beare, "Morphology with parabolic structuring elements.", '
-                     'Insight Journal, January-June 2008, http://hdl.handle.net/1926/1370.',
+                     'Insight Journal, January-June 2008, https://hdl.handle.net/1926/1370.',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
