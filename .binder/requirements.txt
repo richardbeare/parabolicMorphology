@@ -1,0 +1,3 @@
+itk-parabolicmorphology
+itkwidgets[all]>=1.0a21
+pooch
