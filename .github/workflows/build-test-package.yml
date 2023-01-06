@@ -4,9 +4,11 @@ on: [push,pull_request]
 
 jobs:
   cxx-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@36e33ec40332bb8fd85bfcd3ee899f82aa108e79
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@e63df7ae8a13af6e1bf5b0bcffd45252e133faad
 
   python-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@36e33ec40332bb8fd85bfcd3ee899f82aa108e79
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@e63df7ae8a13af6e1bf5b0bcffd45252e133faad
+    with:
+      test-notebooks: true
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
