@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='itk-parabolicmorphology',
-    version='1.2.0',
+    version='1.2.1',
     author='Richard Beare',
     author_email='Richard.Beare@med.monash.edu.au',
     packages=['itk'],
